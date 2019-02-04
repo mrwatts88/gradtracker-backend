@@ -1,7 +1,7 @@
 before_script:
   - docker info
 
-image: registry.uwm-nm-te-capstone.com:8083/maven-docker:latest
+image: registry.uwm-nm-te-capstone.com:8083/general/maven-docker:latest
 
 stages:
   - test
