@@ -1,0 +1,44 @@
+# Created by .ignore support plugin (hsz.mobi)
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Node folder
+built/
+etc/
+node/
+node_modules/
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+.DS_Store
+*.log
+.classpath
+.project
+.springBeans
+.settings/
+target/
+.factorypath
+scratchpad/
+
+# IntelliJ
+*.iml
+.idea/
+.idea
+
+# weird directory - generated and not needed
+native
+
+#Influxdb
+/.idea/
+!/src/main/resources/aspectjweaver-1.8.10.jar
+
+#local H2 files
+/db/*.db
