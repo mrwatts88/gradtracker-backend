@@ -36,19 +36,19 @@ Build:
     - docker build -t registry.uwm-nm-te-capstone.com:8083/$CI_PROJECT_NAME:$CI_COMMIT_SHA -t registry.uwm-nm-te-capstone.com:8083/$CI_PROJECT_NAME:latest .
     - docker push registry.uwm-nm-te-capstone.com:8083/$CI_PROJECT_NAME:$CI_COMMIT_SHA
     - docker push registry.uwm-nm-te-capstone.com:8083/$CI_PROJECT_NAME:latest
-#  only:
-#    - master
+  only:
+    - master
   when: on_success
   artifacts:
     paths:
       - target/*.jar
 
-Deploy:
+.Deploy:
   stage: deploy
   script:
     - bash deploy/deploy.sh
-#  only:
-#    - master
+  only:
+    - master
 
 after_script:
   - 'echo "Image SHA Tag : $CI_COMMIT_SHA"'
