@@ -1,6 +1,9 @@
 package edu.uwm.capstone.db;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +35,7 @@ public class ProfileDao extends BaseDao<Profile> {
         }
 
         LOG.trace("Creating profile {}", profile);
+
         profile.setCreatedDate(LocalDateTime.now());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int result = this.jdbcTemplate.update(sql("createProfile"),

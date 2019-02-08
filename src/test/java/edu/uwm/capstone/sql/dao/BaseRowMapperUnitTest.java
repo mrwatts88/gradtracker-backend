@@ -1,11 +1,11 @@
 package edu.uwm.capstone.sql.dao;
 
+import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.Test;
+
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Test;
 
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.*;
