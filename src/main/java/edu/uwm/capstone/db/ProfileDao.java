@@ -1,10 +1,8 @@
 package edu.uwm.capstone.db;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.concurrent.TimeUnit;
-
+import edu.uwm.capstone.model.profile.Profile;
+import edu.uwm.capstone.sql.dao.BaseDao;
+import edu.uwm.capstone.sql.dao.BaseRowMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -12,9 +10,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
-import edu.uwm.capstone.model.profile.Profile;
-import edu.uwm.capstone.sql.dao.BaseDao;
-import edu.uwm.capstone.sql.dao.BaseRowMapper;
+import java.time.LocalDateTime;
 
 public class ProfileDao extends BaseDao<Profile> {
 
@@ -22,6 +18,7 @@ public class ProfileDao extends BaseDao<Profile> {
 
     /**
      * Create a {@link Profile} object.
+     *
      * @param profile {@link Profile}
      * @return {@link Profile}
      */
@@ -52,6 +49,7 @@ public class ProfileDao extends BaseDao<Profile> {
 
     /**
      * Retrieve a {@link Profile} object by its {@link Profile#id}.
+     *
      * @param id long
      * @return {@link Profile}
      */
@@ -67,6 +65,7 @@ public class ProfileDao extends BaseDao<Profile> {
 
     /**
      * Update the provided {@link Profile} object.
+     *
      * @param profile {@link Profile}
      */
     @Override
@@ -88,6 +87,7 @@ public class ProfileDao extends BaseDao<Profile> {
 
     /**
      * Delete a {@link Profile} object by its {@link Profile#id}.
+     *
      * @param id long
      */
     @Override
