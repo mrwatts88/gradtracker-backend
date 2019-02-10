@@ -82,13 +82,15 @@ Palindrome example:
 `Dockerfile` available at root of project could be used to create a docker image which could be shipped, shared. In order to build this container, run following commands
 
 ```
-docker build -t backend-example
+docker build -t backend-example .
 ```
  and then this docker image could be used to run application on your machine                                                                                                                            
 
 ```
 docker run -p port-to-be-run:port-of-application backend-example
 ```
+
+for example: ```docker run -p 8333:8333 backend-example```
 
 here application runs on 8333. You can also pull docker image from registry and run it locally, in order to pull centralized image from registry use following:
 
