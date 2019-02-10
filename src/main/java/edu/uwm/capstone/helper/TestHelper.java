@@ -13,6 +13,8 @@ import java.util.*;
 
 public class TestHelper {
 
+    private static final Random random = new Random();
+
     private TestHelper() { }
 
     /**
@@ -120,7 +122,6 @@ public class TestHelper {
     public static byte[] randomByteArray() {
         int max = 100;
         int min = 20;
-        Random random = new Random();
         int randomByteCount = random.nextInt(max - min + 1) + min;
         byte[] randomBytes = new byte[randomByteCount];
         random.nextBytes(randomBytes);
