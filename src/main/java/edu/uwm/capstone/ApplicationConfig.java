@@ -1,5 +1,10 @@
 package edu.uwm.capstone;
 
+import edu.uwm.capstone.db.ProfileDao;
+import edu.uwm.capstone.db.ProfileDaoRowMapper;
+import edu.uwm.capstone.sql.statement.ISqlStatementsFileLoader;
+import edu.uwm.capstone.sql.statement.SqlStatementsFileLoader;
+import edu.uwm.capstone.util.Concatenation;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.flywaydb.core.Flyway;
@@ -10,12 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.web.client.RestTemplate;
-
-import edu.uwm.capstone.db.ProfileDao;
-import edu.uwm.capstone.db.ProfileDaoRowMapper;
-import edu.uwm.capstone.sql.statement.ISqlStatementsFileLoader;
-import edu.uwm.capstone.sql.statement.SqlStatementsFileLoader;
-import edu.uwm.capstone.util.Concatenation;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
@@ -67,20 +66,27 @@ public class ApplicationConfig {
         poolProperties.setMaxAge(dbPoolMaxage);
         poolProperties.setMaxActive(600);
 
-
         DataSource ds = new DataSource();
         ds.setPoolProperties(poolProperties);
-
-        LOGGER.info("Running database migration on {}", dbDriverUrl);
-        Flyway flyway = new Flyway();
-        flyway.setLocations(dbMigrationLocation.split("\\s*,\\s*"));
-        flyway.setOutOfOrder(true);
-        flyway.setDataSource(ds);
-        flyway.repair();
-        flyway.migrate();
+        flyway(ds);
 
         return ds;
     }
+
+    @Bean
+    @Primary
+    public Flyway flyway(DataSource dataSource) {
+        LOGGER.info("Running database migration on {}", dbDriverUrl);
+        Flyway flyway = new Flyway(Flyway.configure()
+                .locations(dbMigrationLocation.split("\\s*,\\s*"))
+                .outOfOrder(true)
+                .dataSource(dataSource));
+        flyway.repair();
+        flyway.migrate();
+
+        return flyway;
+    }
+
 
     @Bean
     public ISqlStatementsFileLoader sqlStatementsFileLoader() {

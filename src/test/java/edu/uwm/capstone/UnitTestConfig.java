@@ -19,6 +19,16 @@ public class UnitTestConfig extends ApplicationConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UnitTestConfig.class);
 
+    @Bean
+    DocumentationPluginsBootstrapper documentationPluginsBootstrapper() {
+        return null;
+    }
+
+    @Bean
+    WebMvcRequestHandlerProvider webMvcRequestHandlerProvider() {
+        return null;
+    }
+
     @Override
     @Bean
     @Primary
@@ -28,16 +38,24 @@ public class UnitTestConfig extends ApplicationConfig {
         ds.setUrl(dbDriverUrl);
         ds.setUsername(dbUsername);
         ds.setPassword(dbPassword);
+        flyway(ds);
 
+        return ds;
+    }
+
+    @Bean
+    @Primary
+    @Override
+    public Flyway flyway( DataSource dataSource) {
         LOGGER.info("Running database migration on {}", dbDriverUrl);
-        Flyway flyway = new Flyway();
-        flyway.setLocations(dbMigrationLocation.split("\\s*,\\s*"));
-        flyway.setOutOfOrder(true);
-        flyway.setDataSource(ds);
+        Flyway flyway = new Flyway(Flyway.configure()
+                .locations(dbMigrationLocation.split("\\s*,\\s*"))
+                .outOfOrder(true)
+                .dataSource(dataSource));
         flyway.clean(); // needed for unit and integration tests
         flyway.migrate();
 
-        return ds;
+        return flyway;
     }
 
 }
