@@ -82,7 +82,7 @@ Palindrome example:
 `Dockerfile` available at root of project could be used to create a docker image which could be shipped, shared. In order to build this container, run following commands
 
 ```
-docker build -t backend-example
+docker build -t backend-example .
 ```
  and then this docker image could be used to run application on your machine                                                                                                                            
 
