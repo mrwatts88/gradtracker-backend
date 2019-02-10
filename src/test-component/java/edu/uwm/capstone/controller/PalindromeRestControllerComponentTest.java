@@ -31,7 +31,7 @@ public class PalindromeRestControllerComponentTest {
     @Value("${local.server.port}")
     int port;
 
-    @Value("${server.context-path}")
+    @Value("${server.servlet.context-path}")
     String basePath;
 
     @Autowired

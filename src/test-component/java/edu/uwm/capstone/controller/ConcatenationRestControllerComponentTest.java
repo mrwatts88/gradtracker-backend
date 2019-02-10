@@ -1,5 +1,6 @@
 package edu.uwm.capstone.controller;
 
+import edu.uwm.capstone.UnitTestConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +34,7 @@ public class ConcatenationRestControllerComponentTest {
     @Value("${local.server.port}")
     int port;
 
-    @Value("${server.context-path}")
+    @Value("${server.servlet.context-path}")
     String basePath;
 
     @Autowired

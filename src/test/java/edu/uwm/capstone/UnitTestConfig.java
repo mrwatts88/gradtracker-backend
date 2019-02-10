@@ -19,16 +19,6 @@ public class UnitTestConfig extends ApplicationConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UnitTestConfig.class);
 
-    @Bean
-    DocumentationPluginsBootstrapper documentationPluginsBootstrapper() {
-        return null;
-    }
-
-    @Bean
-    WebMvcRequestHandlerProvider webMvcRequestHandlerProvider() {
-        return null;
-    }
-
     @Override
     @Bean
     @Primary

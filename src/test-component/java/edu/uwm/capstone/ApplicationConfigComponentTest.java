@@ -16,7 +16,7 @@ import static org.junit.Assert.assertNotNull;
  * instantiated within {@link ApplicationConfig#restTemplate()} is correctly available to the running application.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = UnitTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class ApplicationConfigComponentTest {
 
