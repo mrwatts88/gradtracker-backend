@@ -12,17 +12,17 @@ set -e
 
 # Script arguments
 CI_PROJECT_PATH=$1
-CI_PROJECT_PATH_SLUG=$2
-CI_COMMIT_SHA=$3
-DOCKER_REPO_USER=$4
-DOCKER_REPO_PASS=$5
+CI_PROJECT_NAME=$2
+CI_COMMIT_SHA=$2
+DOCKER_REPO_USER=$3
+DOCKER_REPO_PASS=$4
 
 # Helper variables
 DOCKER_REGISTRY="registry.uwm-nm-te-capstone.com:8083"
 IMAGE_NAME="$DOCKER_REGISTRY/$CI_PROJECT_PATH"
 IMAGE_TAG=$CI_COMMIT_SHA
 FULL_IMAGE_REF="$IMAGE_NAME:$IMAGE_TAG"
-CONTAINER_NAME=$CI_PROJECT_PATH_SLUG
+CONTAINER_NAME=$CI_PROJECT_NAME
 
 # Delete previously existing docker image(s) and container
 echo "Removing previously existing container $CONTAINER_NAME ..."
