@@ -33,9 +33,9 @@ Build:
   script:
     - mvn clean -B -T 4 package
     - docker login registry.uwm-nm-te-capstone.com:8083 --username $DOCKER_REPO_USER --password $DOCKER_REPO_PASS
-    - docker build -t registry.uwm-nm-te-capstone.com:8083/$CI_PROJECT_NAME:$CI_COMMIT_SHA -t registry.uwm-nm-te-capstone.com:8083/$CI_PROJECT_NAME:latest .
-    - docker push registry.uwm-nm-te-capstone.com:8083/$CI_PROJECT_NAME:$CI_COMMIT_SHA
-    - docker push registry.uwm-nm-te-capstone.com:8083/$CI_PROJECT_NAME:latest
+    - docker build -t registry.uwm-nm-te-capstone.com:8083/$CI_PROJECT_PATH:$CI_COMMIT_SHA -t registry.uwm-nm-te-capstone.com:8083/$CI_PROJECT_PATH:latest .
+    - docker push registry.uwm-nm-te-capstone.com:8083/$CI_PROJECT_PATH:$CI_COMMIT_SHA
+    - docker push registry.uwm-nm-te-capstone.com:8083/$CI_PROJECT_PATH:latest
   only:
     - master
   when: on_success
@@ -43,7 +43,7 @@ Build:
     paths:
       - target/*.jar
 
-.Deploy:
+Deploy:
   stage: deploy
   script:
     - bash deploy/deploy.sh
