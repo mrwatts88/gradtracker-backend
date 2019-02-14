@@ -13,9 +13,9 @@ set -e
 # Script arguments
 CI_PROJECT_PATH=$1
 CI_PROJECT_NAME=$2
-CI_COMMIT_SHA=$2
-DOCKER_REPO_USER=$3
-DOCKER_REPO_PASS=$4
+CI_COMMIT_SHA=$3
+DOCKER_REPO_USER=$4
+DOCKER_REPO_PASS=$5
 
 # Helper variables
 DOCKER_REGISTRY="registry.uwm-nm-te-capstone.com:8083"
