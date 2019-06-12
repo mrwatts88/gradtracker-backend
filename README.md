@@ -95,7 +95,7 @@ for example: ```docker run -p 8333:8333 backend-example```
 here application runs on 8333. You can also pull docker image from registry and run it locally, in order to pull centralized image from registry use following:
 
 ```
-docker pull registry.uwm-nm-te-capstone.com:8083/backend-example
+docker pull registry.uwm-nm-te-capstone.com:8083/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example
 
 ```
 then use above listed run command to run this docker image on your machine. 
