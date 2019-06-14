@@ -3,6 +3,7 @@ package edu.uwm.capstone.db;
 import edu.uwm.capstone.model.profile.Profile;
 import edu.uwm.capstone.sql.dao.BaseDao;
 import edu.uwm.capstone.sql.dao.BaseRowMapper;
+import edu.uwm.capstone.sql.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -26,9 +27,9 @@ public class ProfileDao extends BaseDao<Profile> {
     public Profile create(Profile profile) {
         // validate input
         if (profile == null) {
-            throw new RuntimeException("Request to create a new Profile received null");
+            throw new DaoException("Request to create a new Profile received null");
         } else if (profile.getId() != null) {
-            throw new RuntimeException("When creating a new Profile the id should be null, but was set to " + profile.getId());
+            throw new DaoException("When creating a new Profile the id should be null, but was set to " + profile.getId());
         }
 
         LOG.trace("Creating profile {}", profile);
@@ -39,7 +40,7 @@ public class ProfileDao extends BaseDao<Profile> {
                 new MapSqlParameterSource(rowMapper.mapObject(profile)), keyHolder, new String[]{BaseRowMapper.BaseColumnType.ID.name()});
 
         if (result != 1) {
-            throw new RuntimeException("Failed attempt to create profile " + profile.toString() + " affected " + result + " rows");
+            throw new DaoException(String.format("Failed attempt to create profile %s - affected %s rows", profile.toString(), result));
         }
 
         Long id = keyHolder.getKey().longValue();
@@ -71,9 +72,9 @@ public class ProfileDao extends BaseDao<Profile> {
     @Override
     public void update(Profile profile) {
         if (profile == null) {
-            throw new RuntimeException("Request to update a Profile received null");
+            throw new DaoException("Request to update a Profile received null");
         } else if (profile.getId() == null) {
-            throw new RuntimeException("When updating a Profile the id should not be null");
+            throw new DaoException("When updating a Profile the id should not be null");
         }
 
         LOG.trace("Updating profile {}", profile);
@@ -81,7 +82,7 @@ public class ProfileDao extends BaseDao<Profile> {
         int result = this.jdbcTemplate.update(sql("updateProfile"), new MapSqlParameterSource(rowMapper.mapObject(profile)));
 
         if (result != 1) {
-            throw new RuntimeException("Failed attempt to update profile " + profile.toString() + " affected " + result + " rows");
+            throw new DaoException(String.format("Failed attempt to update profile %s - affected %s rows", profile.toString(), result));
         }
     }
 
@@ -95,8 +96,7 @@ public class ProfileDao extends BaseDao<Profile> {
         LOG.trace("Deleting profile {}", id);
         int result = this.jdbcTemplate.update(sql("deleteProfile"), new MapSqlParameterSource("id", id));
         if (result != 1) {
-            throw new RuntimeException("Failed attempt to update profile " + id + " affected " + result + " rows");
+            throw new DaoException(String.format("Failed attempt to update profile %s affected %s rows", id, result));
         }
     }
-
 }

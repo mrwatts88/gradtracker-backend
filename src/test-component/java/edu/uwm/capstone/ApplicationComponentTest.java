@@ -8,7 +8,7 @@ import org.junit.Test;
 public class ApplicationComponentTest {
 
     @Test
-    public void main() throws Exception {
+    public void main() {
         String[] args = {};
         Application.main(args);
     }

@@ -7,8 +7,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.util.Assert;
 
-import edu.uwm.capstone.util.CardDealer;
-
 /**
  * The deck of cards object model is as follows:
  * <ul>

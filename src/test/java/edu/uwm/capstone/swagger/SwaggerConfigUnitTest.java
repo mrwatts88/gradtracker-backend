@@ -1,11 +1,11 @@
 package edu.uwm.capstone.swagger;
 
+import edu.uwm.capstone.helper.TestHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import edu.uwm.capstone.helper.TestHelper;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
@@ -21,11 +21,11 @@ public class SwaggerConfigUnitTest {
     /**
      * Verify that the following methods are working correctly:
      * <ul>
-     *     <li>{@link SwaggerConfig#setDescription}</li>
-     *     <li>{@link SwaggerConfig#setTitle}</li>
-     *     <li>{@link SwaggerConfig#setVersion}</li>
-     *     <li>{@link SwaggerConfig#setHost}</li>
-     *     <li>{@link SwaggerConfig#swaggerSpringMvcPlugin}</li>
+     * <li>{@link SwaggerConfig#setDescription}</li>
+     * <li>{@link SwaggerConfig#setTitle}</li>
+     * <li>{@link SwaggerConfig#setVersion}</li>
+     * <li>{@link SwaggerConfig#setHost}</li>
+     * <li>{@link SwaggerConfig#swaggerSpringMvcPlugin}</li>
      * </ul>
      */
     @Test
@@ -42,5 +42,4 @@ public class SwaggerConfigUnitTest {
 
         assertNotNull(swaggerConfig.swaggerSpringMvcPlugin());
     }
-
 }

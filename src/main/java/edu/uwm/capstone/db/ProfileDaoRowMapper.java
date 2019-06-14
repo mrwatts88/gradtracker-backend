@@ -1,12 +1,13 @@
 package edu.uwm.capstone.db;
 
+import edu.uwm.capstone.model.profile.Profile;
+import edu.uwm.capstone.sql.dao.BaseRowMapper;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.uwm.capstone.model.profile.Profile;
-import edu.uwm.capstone.sql.dao.BaseRowMapper;
 import static edu.uwm.capstone.db.ProfileDaoRowMapper.ProfileColumnType.NAME;
 import static edu.uwm.capstone.db.ProfileDaoRowMapper.ProfileColumnType.PROJECT;
 import static edu.uwm.capstone.sql.dao.BaseRowMapper.BaseColumnType.*;
@@ -15,8 +16,7 @@ public class ProfileDaoRowMapper extends BaseRowMapper<Profile> {
 
     public enum ProfileColumnType {
         NAME(),
-        PROJECT(),
-        ;
+        PROJECT();
 
         private String columnName;
 
@@ -24,13 +24,7 @@ public class ProfileDaoRowMapper extends BaseRowMapper<Profile> {
             columnName = name().toLowerCase();
         }
 
-        ProfileColumnType(String columnName) {
-            this.columnName = columnName;
-        }
-
-        public String getColumnName(){
-            return columnName;
-        }
+        public String getColumnName() { return columnName; }
     }
 
     @Override
@@ -54,5 +48,4 @@ public class ProfileDaoRowMapper extends BaseRowMapper<Profile> {
         folder.setUpdatedDate(dateFromJavaTime(rs.getObject(UPDATED_DATE.getColumnName())));
         return folder;
     }
-
 }

@@ -1,6 +1,11 @@
 package edu.uwm.capstone.controller;
 
-import edu.uwm.capstone.UnitTestConfig;
+import edu.uwm.capstone.Application;
+import edu.uwm.capstone.helper.TestHelper;
+import edu.uwm.capstone.util.Concatenation;
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,12 +18,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
-import edu.uwm.capstone.Application;
-import edu.uwm.capstone.helper.TestHelper;
-import edu.uwm.capstone.util.Concatenation;
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.*;
 
@@ -57,7 +56,7 @@ public class ConcatenationRestControllerComponentTest {
     public void concatenate() {
         ExtractableResponse<Response> response = given()
                 .when()
-                .get(ConcatenationRestController.CONCATENATE_PATH,"one", "two")
+                .get(ConcatenationRestController.CONCATENATE_PATH, "one", "two")
                 .then()
                 .statusCode(HttpStatus.OK.value()).extract();
         assertNotNull(response);
@@ -84,7 +83,7 @@ public class ConcatenationRestControllerComponentTest {
         String secondString;
         String concatenatedString;
 
-        for (int i=0; i <= repeatTheTest; i++) {
+        for (int i = 0; i <= repeatTheTest; i++) {
             // get random sizes for our two strings
             firstStringLength = TestHelper.randomInteger(30, 90);
             secondStringLength = TestHelper.randomInteger(30, 90);
@@ -97,7 +96,7 @@ public class ConcatenationRestControllerComponentTest {
             // concatenate our two randomly sized random value strings
             ExtractableResponse<Response> response = given()
                     .when()
-                    .get(ConcatenationRestController.CONCATENATE_PATH,firstString, secondString)
+                    .get(ConcatenationRestController.CONCATENATE_PATH, firstString, secondString)
                     .then()
                     .statusCode(HttpStatus.OK.value()).extract();
             assertNotNull(response);

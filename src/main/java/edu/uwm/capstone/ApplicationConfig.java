@@ -29,11 +29,11 @@ public class ApplicationConfig {
     protected String dbUsername;
     protected String dbPassword;
     protected String dbMigrationLocation;
-    protected int dbPoolMaxwait;
-    protected boolean dbPoolRemoveabandoned;
-    protected int dbPoolRemoveabandonedtimeout;
-    protected boolean dbPoolLogabandoned;
-    protected long dbPoolMaxage;
+    protected int dbPoolMaxWait;
+    protected boolean dbPoolRemoveAbandoned;
+    protected int dbPoolRemoveAbandonedTimeout;
+    protected boolean dbPoolLogAbandoned;
+    protected long dbPoolMaxAge;
     protected String sqlStatementsResourceLocation;
 
     @Bean
@@ -59,11 +59,11 @@ public class ApplicationConfig {
         poolProperties.setValidationQuery("SELECT 1");
 
         // Set additional pool properties
-        poolProperties.setMaxWait(dbPoolMaxwait);
-        poolProperties.setRemoveAbandoned(dbPoolRemoveabandoned);
-        poolProperties.setRemoveAbandonedTimeout(dbPoolRemoveabandonedtimeout);
-        poolProperties.setLogAbandoned(dbPoolLogabandoned);
-        poolProperties.setMaxAge(dbPoolMaxage);
+        poolProperties.setMaxWait(dbPoolMaxWait);
+        poolProperties.setRemoveAbandoned(dbPoolRemoveAbandoned);
+        poolProperties.setRemoveAbandonedTimeout(dbPoolRemoveAbandonedTimeout);
+        poolProperties.setLogAbandoned(dbPoolLogAbandoned);
+        poolProperties.setMaxAge(dbPoolMaxAge);
         poolProperties.setMaxActive(600);
 
         DataSource ds = new DataSource();
@@ -149,44 +149,44 @@ public class ApplicationConfig {
         this.dbMigrationLocation = dbMigrationLocation;
     }
 
-    public int getDbPoolMaxwait() {
-        return dbPoolMaxwait;
+    public int getDbPoolMaxWait() {
+        return dbPoolMaxWait;
     }
 
-    public void setDbPoolMaxwait(int dbPoolMaxwait) {
-        this.dbPoolMaxwait = dbPoolMaxwait;
+    public void setDbPoolMaxWait(int dbPoolMaxWait) {
+        this.dbPoolMaxWait = dbPoolMaxWait;
     }
 
-    public boolean isDbPoolRemoveabandoned() {
-        return dbPoolRemoveabandoned;
+    public boolean isDbPoolRemoveAbandoned() {
+        return dbPoolRemoveAbandoned;
     }
 
-    public void setDbPoolRemoveabandoned(boolean dbPoolRemoveabandoned) {
-        this.dbPoolRemoveabandoned = dbPoolRemoveabandoned;
+    public void setDbPoolRemoveAbandoned(boolean dbPoolRemoveAbandoned) {
+        this.dbPoolRemoveAbandoned = dbPoolRemoveAbandoned;
     }
 
-    public int getDbPoolRemoveabandonedtimeout() {
-        return dbPoolRemoveabandonedtimeout;
+    public int getDbPoolRemoveAbandonedTimeout() {
+        return dbPoolRemoveAbandonedTimeout;
     }
 
-    public void setDbPoolRemoveabandonedtimeout(int dbPoolRemoveabandonedtimeout) {
-        this.dbPoolRemoveabandonedtimeout = dbPoolRemoveabandonedtimeout;
+    public void setDbPoolRemoveAbandonedTimeout(int dbPoolRemoveAbandonedTimeout) {
+        this.dbPoolRemoveAbandonedTimeout = dbPoolRemoveAbandonedTimeout;
     }
 
-    public boolean isDbPoolLogabandoned() {
-        return dbPoolLogabandoned;
+    public boolean isDbPoolLogAbandoned() {
+        return dbPoolLogAbandoned;
     }
 
-    public void setDbPoolLogabandoned(boolean dbPoolLogabandoned) {
-        this.dbPoolLogabandoned = dbPoolLogabandoned;
+    public void setDbPoolLogAbandoned(boolean dbPoolLogAbandoned) {
+        this.dbPoolLogAbandoned = dbPoolLogAbandoned;
     }
 
-    public long getDbPoolMaxage() {
-        return dbPoolMaxage;
+    public long getDbPoolMaxAge() {
+        return dbPoolMaxAge;
     }
 
-    public void setDbPoolMaxage(long dbPoolMaxage) {
-        this.dbPoolMaxage = dbPoolMaxage;
+    public void setDbPoolMaxAge(long dbPoolMaxAge) {
+        this.dbPoolMaxAge = dbPoolMaxAge;
     }
 
     public String getSqlStatementsResourceLocation() {

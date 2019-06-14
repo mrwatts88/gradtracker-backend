@@ -1,5 +1,6 @@
 package edu.uwm.capstone;
 
+import edu.uwm.capstone.util.Concatenation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
-import edu.uwm.capstone.util.Concatenation;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -27,7 +27,7 @@ public class ApplicationConfigComponentTest {
     Concatenation concatenation;
 
     @Test
-    public void verify() throws Exception {
+    public void verify() {
         assertNotNull("RestTemplate", restTemplate);
         assertNotNull("Concatenation", concatenation);
     }

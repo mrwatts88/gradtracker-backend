@@ -1,7 +1,5 @@
 package edu.uwm.capstone.model.cards;
 
-import edu.uwm.capstone.util.CardDealer;
-
 /**
  * The deck of cards object model is as follows:
  * <ul>

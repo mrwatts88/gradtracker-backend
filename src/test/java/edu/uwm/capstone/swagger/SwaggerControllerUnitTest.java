@@ -15,7 +15,7 @@ public class SwaggerControllerUnitTest {
     }
 
     @Test
-    public void swaggerui() {
+    public void testSwaggerUI() {
         assertEquals(SwaggerController.CONTROLLER_DOCS, swaggerController.swaggerui());
     }
 

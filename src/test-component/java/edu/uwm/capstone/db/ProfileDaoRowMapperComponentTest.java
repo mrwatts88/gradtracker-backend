@@ -1,10 +1,9 @@
 package edu.uwm.capstone.db;
 
-import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Map;
-
+import edu.uwm.capstone.UnitTestConfig;
+import edu.uwm.capstone.model.profile.Profile;
+import edu.uwm.capstone.sql.dao.BaseRowMapper;
+import edu.uwm.capstone.util.TestDataUtility;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,10 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import edu.uwm.capstone.UnitTestConfig;
-import edu.uwm.capstone.model.profile.Profile;
-import edu.uwm.capstone.sql.dao.BaseRowMapper;
-import edu.uwm.capstone.util.TestDataUtility;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Map;
+
 import static edu.uwm.capstone.sql.dao.BaseRowMapper.dateFromJavaTime;
 import static edu.uwm.capstone.sql.dao.BaseRowMapper.javaTimeFromDate;
 import static edu.uwm.capstone.util.TestDataUtility.randomLocalDateTime;
@@ -26,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = UnitTestConfig.class)
-public class ProfileDaoRowMapperUnitTest {
+public class ProfileDaoRowMapperComponentTest {
 
     @Autowired
     ProfileDaoRowMapper profileDaoRowMapper;
@@ -35,7 +34,7 @@ public class ProfileDaoRowMapperUnitTest {
     private ResultSet resultSet;
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
         assertNotNull(profileDaoRowMapper);
     }
 
