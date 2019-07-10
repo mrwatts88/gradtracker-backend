@@ -39,7 +39,7 @@ public class SwaggerConfig {
                 .apis(Predicates.not(RequestHandlerSelectors.basePackage("org.springframework.boot")))
                 .build()
                 .host(host)
-                .produces(Sets.newHashSet(MediaType.APPLICATION_JSON.toString()))
+                .produces(Sets.newHashSet(MediaType.APPLICATION_JSON.toString(), MediaType.TEXT_PLAIN.toString()))
                 .consumes(Sets.newHashSet(MediaType.APPLICATION_JSON.toString()))
                 .apiInfo(apiInfo());
     }
