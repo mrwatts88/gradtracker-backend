@@ -58,8 +58,18 @@ java -jar target/*.jar
 By default, application.properties configures a local instance of H2 so that anyone can use this project immediately.
 See `service/src/main/resources` for available profiles.
 
-To run with locally installed MySQL database configured via port 3306 with a schema named 'capstone'
-as defined within `service/src/main/resources/application-localmysql.properties`:
+If you want to persist your data between service restarts, you will need to use MySQL.  
+You can use MySQL in one of two ways:
+- Use docker (preferred!)
+  - Install [Docker for Windows](https://hub.docker.com/editions/community/docker-ce-desktop-windows) or [Docker for Mac](https://hub.docker.com/editions/community/docker-ce-desktop-mac)
+  - Using a terminal inside this project, run `docker-compose up -d`
+  - You're ready to go!
+- Manually install MySQL on your local machine (there are some pitfalls, beware!)
+  - Download [MySQL](https://dev.mysql.com/downloads/mysql/5.7.html)
+  - Start MySQL on port 3306
+  - Create a schema called `capstone`
+
+Whether you use docker to run MySQL, or manually install and start it, the command is still the same:
 ```
 mvn spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=localmysql"
 ```
