@@ -1,0 +1,21 @@
+# Deployment/CI yml files
+.gitlab-ci.yml
+
+# Dockerfiles
+Dockerfile
+
+# Directories
+.idea
+**/*.iml
+**/.DS_Store
+**/.git
+**/.gitignore
+
+# Temporary log files
+**/*.log
+
+# Maven dependencies
+**/target/
+
+# Git .m2 Cache
+**/.m2/
