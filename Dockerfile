@@ -2,12 +2,17 @@ FROM maven:3.6.0-jdk-11
 
 WORKDIR /backend-example
 
-COPY target/*.jar backend.jar
+# Copy source code
+ADD . /backend-example
 
-# expose port for rest interface
+# Build the service
+RUN mvn clean -B -T 4 package -DskipTests \
+    && mv target/*.jar backend.jar
+
+# Expose port for rest interface
 EXPOSE 8333
 
-# provide entry-point
+# Provide entry-point
 CMD java -jar backend.jar
 
 
