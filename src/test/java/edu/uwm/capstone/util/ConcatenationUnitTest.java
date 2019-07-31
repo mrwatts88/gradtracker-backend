@@ -19,6 +19,16 @@ public class ConcatenationUnitTest {
     }
 
     /**
+     * Verify that {@link Concatenation#concatenate} correctly concatenates "coding", "is", and "fun" into "codingisfun".
+     */
+    @Test
+    public void concatenateThree() {
+        Concatenation concatenation = new Concatenation();
+        String result = concatenation.concatenate("coding", "is", "fun");
+        assertEquals("codingisfun", result);
+    }
+
+    /**
      * This test uses our {@link TestHelper} to get random string values for use in verifying that
      * {@link Concatenation#concatenate} correctly concatenates the values that are provided.
      * The test is performed a random number of times based on the repeatTheTest provided by
