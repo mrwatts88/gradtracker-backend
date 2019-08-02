@@ -23,7 +23,7 @@ public class PalindromeUnitTest {
         String[] knownPalindromes = {"redivider", "noon", "civic", "radar", "level", "rotor", "kayak", "reviver",
                 "racecar", "redder", "madam", "refer"};
         for (String value : knownPalindromes) {
-            assertTrue(value + " is a known palindrome", palindrome.isPalindrome(value));
+            assertTrue(value + " is not a palindrome", palindrome.isPalindrome(value));
         }
     }
 
@@ -35,7 +35,7 @@ public class PalindromeUnitTest {
         String[] knownPalindromes = {"rdivder", "nzoont", "cuvic", "roder", "livul", "rater", "koyuk", "ravevir",
                 "rececar", "rudder", "modim", "rifurs"};
         for (String value : knownPalindromes) {
-            assertFalse(value + " is an invalid palindrome", palindrome.isPalindrome(value));
+            assertFalse(value + " is a valid palindrome", palindrome.isPalindrome(value));
         }
     }
 
