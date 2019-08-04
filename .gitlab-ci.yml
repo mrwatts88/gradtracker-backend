@@ -4,11 +4,6 @@ stages:
     - Deploy
 
 # region global_settings ######################################################
-# image: registry.uwm-nm-te-capstone.com:8083/general/maven-docker:latest
-# before_script:
-#     - docker info
-# after_script:
-#     - 'echo "Image SHA Tag : $CI_COMMIT_SHA"'
 variables:
     MAVEN_CLI_OPTS: '-s .m2/settings.xml --batch-mode'
     MAVEN_OPTS: '-Dmaven.repo.local=.m2/repository'
@@ -21,29 +16,34 @@ cache:
 # region Pre-Build ############################################################
 Unit Tests:
     stage: Pre-Build
-    image: maven:3.6.0-jdk-11
+    image: $DOCKER_REGISTRY/general/maven-docker:latest
     script:
         - mvn $MAVEN_CLI_OPTS install
 
 Component Tests:
     stage: Pre-Build
-    image: maven:3.6.0-jdk-11
+    image: $DOCKER_REGISTRY/general/maven-docker:latest
     script:
         - mvn $MAVEN_CLI_OPTS -P test-component test
     when: on_success
 # endregion Pre-Build #########################################################
 
 # region Build ################################################################
-.Build:
+Build:
     stage: Build
     script:
-        - docker login registry.uwm-nm-te-capstone.com:8083 --username $DOCKER_REPO_USER --password $DOCKER_REPO_PASS
-        - docker build -t registry.uwm-nm-te-capstone.com:8083/$CI_PROJECT_PATH:$CI_COMMIT_SHA -t registry.uwm-nm-te-capstone.com:8083/$CI_PROJECT_PATH:latest .
-        - docker push registry.uwm-nm-te-capstone.com:8083/$CI_PROJECT_PATH:$CI_COMMIT_SHA
-        - docker push registry.uwm-nm-te-capstone.com:8083/$CI_PROJECT_PATH:latest
+        - docker login $DOCKER_REGISTRY --username $DOCKER_USER --password $DOCKER_PASS
+        - docker build
+          --build-arg DOCKER_REGISTRY
+          -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA
+          -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:latest .
+        - docker push $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA
+        - docker push $DOCKER_REGISTRY/$CI_PROJECT_PATH:latest
     only:
         - master
     when: on_success
+    after_script:
+        - 'echo "Image SHA Tag : $CI_COMMIT_SHA"'
 # endregion Build #############################################################
 
 # region Deploy ###############################################################

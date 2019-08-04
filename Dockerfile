@@ -1,4 +1,6 @@
-FROM maven:3.6.0-jdk-11
+ARG DOCKER_REGISTRY
+
+FROM $DOCKER_REGISTRY/general/maven-docker:latest
 
 WORKDIR /backend-example
 
