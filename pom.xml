@@ -26,20 +26,20 @@
   </properties>
 
   <scm>
-    <url>https://gitlab.uwm-nm-te-capstone.com/backend-example</url>
-    <connection>scm:git:git@gitlab.uwm-nm-te-capstone.com/backend-example.git</connection>
-    <developerConnection>scm:git:git@gitlab.uwm-nm-te-capstone.com/backend-example.git</developerConnection>
+    <url>https://gitlab.nmcapstone/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example</url>
+    <connection>scm:git:git@gitlab.nmcapstone/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example.git</connection>
+    <developerConnection>scm:git:git@gitlab.nmcapstone/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>
     <snapshotRepository>
       <id>capstone-maven-snapshots</id>
-      <url>http://registry.uwm-nm-te-capstone.com:8081/repository/capstone-maven-snapshots/</url>
+      <url>https://registry.nmcapstone.com/repository/capstone-maven-snapshots/</url>
     </snapshotRepository>
     <repository>
       <id>capstone-maven-releases</id>
-      <url>http://registry.uwm-nm-te-capstone.com:8081/repository/capstone-maven-releases/</url>
+      <url>https://registry.nmcapstone.com/repository/capstone-maven-releases/</url>
     </repository>
   </distributionManagement>
 
