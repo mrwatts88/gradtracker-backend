@@ -15,7 +15,7 @@ public class Palindrome {
      */
     public boolean isPalindrome(String value) {
         Assert.notNull(value, "The value cannot be null");
-        return value.equals(StringUtils.reverse(value));
+        return value.equalsIgnoreCase(StringUtils.reverse(value));
     }
 
 }

@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
-
 import edu.uwm.capstone.Application;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -51,7 +50,7 @@ public class PalindromeRestControllerComponentTest {
      */
     @Test
     public void verifyKnownPalindromes() {
-        String[] knownPalindromes = {"redivider", "noon", "civic", "radar", "level", "rotor", "kayak", "reviver",
+        String[] knownPalindromes = {"redIvider", "noon", "civic", "radar", "level", "rotor", "kayak", "reviver",
                 "racecar", "redder", "madam", "refer"};
         for (String value : knownPalindromes) {
             ExtractableResponse<Response> response = given()
@@ -64,7 +63,7 @@ public class PalindromeRestControllerComponentTest {
             assertNotNull(response.response().body());
             assertTrue(StringUtils.isNotBlank(response.response().body().asString()));
             Boolean isPalindrome = Boolean.valueOf(response.response().body().asString());
-            assertTrue(value + " is a known palindrome", isPalindrome);
+            assertTrue(value + " is not a known palindrome", isPalindrome);
         }
     }
 
@@ -73,9 +72,9 @@ public class PalindromeRestControllerComponentTest {
      */
     @Test
     public void verifyInvalidPalindromes() {
-        String[] knownPalindromes = {"rdivder", "nzoont", "cuvic", "roder", "livul", "rater", "koyuk", "ravevir",
+        String[] notKnownPalindromes = {"rdivder", "nzoont", "cuvic", "roder", "livul", "rater", "koyuk", "ravevir",
                 "rececar", "rudder", "modim", "rifurs"};
-        for (String value : knownPalindromes) {
+        for (String value : notKnownPalindromes) {
             ExtractableResponse<Response> response = given()
                     .when()
                     .get(PalindromeRestController.PALINDROME_PATH, value)
