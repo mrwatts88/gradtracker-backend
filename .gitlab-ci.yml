@@ -18,7 +18,7 @@ Unit Tests:
     stage: Pre-Build
     image: $DOCKER_REGISTRY/general/maven-docker:latest
     script:
-        - mvn -X $MAVEN_CLI_OPTS install
+        -  mvn '-s.m2/settings.xml' '-Dmaven.repo.local=.m2/repository' '-Dmaven.wagon.http.ssl.insecure=true' '-Dmaven.wagon.http.ssl.allowall=true' --batch-mode install
 
 Component Tests:
     stage: Pre-Build
