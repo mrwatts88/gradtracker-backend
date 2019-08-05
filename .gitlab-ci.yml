@@ -6,7 +6,7 @@ stages:
 # region global_settings ######################################################
 variables:
     MAVEN_CLI_OPTS: '-s .m2/settings.xml --batch-mode'
-    MAVEN_OPTS: '-Dmaven.repo.local=.m2/repository'
+    MAVEN_OPTS: '-Dmaven.repo.local=.m2/repository -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true'
 cache:
     paths:
         - .m2/repository/
@@ -18,13 +18,13 @@ Unit Tests:
     stage: Pre-Build
     image: $DOCKER_REGISTRY/general/maven-docker:latest
     script:
-        - mvn $MAVEN_CLI_OPTS -X install
+        - mvn -X $MAVEN_CLI_OPTS $MAVEN_OPTS install
 
 Component Tests:
     stage: Pre-Build
     image: $DOCKER_REGISTRY/general/maven-docker:latest
     script:
-        - mvn -X $MAVEN_CLI_OPTS -P test-component test
+        - mvn -X $MAVEN_CLI_OPTS $ MAVEN_OPTS-P test-component test
     when: on_success
 # endregion Pre-Build #########################################################
 

@@ -29,7 +29,7 @@
 
   <repositories>
     <repository>
-      <id>maven-central</id>
+      <id>maven-group</id>
       <url>https://registry.nmcapstone.com/repository/maven-group/</url>
     </repository>
   </repositories>
