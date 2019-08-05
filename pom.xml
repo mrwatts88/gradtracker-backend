@@ -27,12 +27,12 @@
     <tag>HEAD</tag>
   </scm>
 
-  <repositories>
+  <pluginRepositories>
     <repository>
       <id>maven-group</id>
       <url>https://registry.nmcapstone.com/repository/maven-group/</url>
     </repository>
-  </repositories>
+  </pluginRepositories>
 
   <distributionManagement>
     <snapshotRepository>
