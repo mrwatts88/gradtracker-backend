@@ -34,12 +34,12 @@
 
   <distributionManagement>
     <snapshotRepository>
-      <id>capstone-maven-snapshots</id>
-      <url>https://registry.nmcapstone.com/repository/capstone-maven-snapshots/</url>
+      <id>maven-snapshots</id>
+      <url>https://registry.nmcapstone.com/repository/maven-snapshots/</url>
     </snapshotRepository>
     <repository>
-      <id>capstone-maven-releases</id>
-      <url>https://registry.nmcapstone.com/repository/capstone-maven-releases/</url>
+      <id>maven-releases</id>
+      <url>https://registry.nmcapstone.com/repository/maven-releases/</url>
     </repository>
   </distributionManagement>
 
