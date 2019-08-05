@@ -18,13 +18,13 @@ Unit Tests:
     stage: Pre-Build
     image: $DOCKER_REGISTRY/general/maven-docker:latest
     script:
-        - mvn $MAVEN_CLI_OPTS install
+        - mvn $MAVEN_CLI_OPTS -X install
 
 Component Tests:
     stage: Pre-Build
     image: $DOCKER_REGISTRY/general/maven-docker:latest
     script:
-        - mvn $MAVEN_CLI_OPTS -P test-component test
+        - mvn -X $MAVEN_CLI_OPTS -P test-component test
     when: on_success
 # endregion Pre-Build #########################################################
 
