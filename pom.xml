@@ -332,6 +332,17 @@
 
   <profiles>
     <profile>
+      <id>sonar</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <sonar.host.url>
+          https://sonarqube.nmcapstone.com
+        </sonar.host.url>
+      </properties>
+    </profile>
+    <profile>
       <id>default</id>
       <activation>
         <activeByDefault>true</activeByDefault>
