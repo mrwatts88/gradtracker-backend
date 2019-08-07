@@ -17,6 +17,13 @@
     <spring-security.version>5.1.2.RELEASE</spring-security.version>
     <jackson.version>2.9.7</jackson.version>
     <surefire-junit.version>2.6</surefire-junit.version>
+    <sonar.projectKey>edu.uwm.capstone:backend-example</sonar.projectKey>
+    <sonar.projectVersion>1.0</sonar.projectVersion>
+    <sonar.jacoco.reportPaths>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPaths>
+    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+    <sonar.binaries>target/classes</sonar.binaries>
+    <sonar.test.binaries>target/test-classes</sonar.test.binaries>
+    <sonar.exclusions>**/src/test/**/*,**/src/test-component/**/*,**/src/test-integration/**/*</sonar.exclusions>
     <start-class>edu.uwm.capstone.Application</start-class>
   </properties>
 
