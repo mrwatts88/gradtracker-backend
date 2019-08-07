@@ -44,6 +44,16 @@ Build:
     when: on_success
     after_script:
         - 'echo "Image SHA Tag : $CI_COMMIT_SHA"'
+
+SonarQube Analyze:
+    stage: Build
+    script:
+        - export SONAR_PROJECT_KEY="$(echo $CI_PROJECT_PATH | tr '/' ':')"
+        - mvn verify sonar:sonar
+    only:
+        - master
+        - sonarqube
+    when: on_success
 # endregion Build #############################################################
 
 # region Deploy ###############################################################
