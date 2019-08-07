@@ -13,6 +13,7 @@ public class MathematicsRestController {
     public static final String MATHEMATICS_SUBTRACT_PATH = "/mathematics/subtract/{value}/{value2}";
     public static final String MATHEMATICS_MULTIPLY_PATH = "/mathematics/multiply/{value}/{value2}";
     public static final String MATHEMATICS_DIVIDE_PATH = "/mathematics/divide/{value}/{value2}";
+    public static final String MATHEMATICS_SQUAREROOT_PATH = "/mathematics/squareRoot/{value}/{value2}";
 
     /**
      * This endpoint determines the result of adding the two provided values.
@@ -60,5 +61,16 @@ public class MathematicsRestController {
     @GetMapping(value = MATHEMATICS_DIVIDE_PATH)
     public int divide(@PathVariable int value, @PathVariable int value2) {
         return new Mathematics().divide(value, value2);
+    }
+
+    /**
+     * This endpoint determines the result of dividing the first value by the second.
+     * @param value {@link double} the dividend
+     * @return integer representing the final quotient
+     */
+    @ApiOperation(value = "Divide the dividend by the divisor")
+    @GetMapping(value = MATHEMATICS_SQUAREROOT_PATH)
+    public double divide(@PathVariable double value) {
+        return new Mathematics().squareRoot(value);
     }
 }
