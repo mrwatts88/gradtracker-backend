@@ -47,7 +47,7 @@ Build:
 # endregion Build #############################################################
 
 # region Deploy ###############################################################
-.Deploy:
+Deploy:
     stage: Deploy
     script:
         - bash deploy/deploy.sh
