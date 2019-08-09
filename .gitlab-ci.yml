@@ -32,8 +32,6 @@ SonarQube Analyze:
     image: $DOCKER_REGISTRY/general/maven-docker:latest
     script:
         - mvn verify sonar:sonar
-    only:
-        - master
     when: on_success
 # endregion Pre-Build #########################################################
 
