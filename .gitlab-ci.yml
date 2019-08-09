@@ -31,7 +31,6 @@ SonarQube Analyze:
     stage: Pre-Build
     image: $DOCKER_REGISTRY/general/maven-docker:latest
     script:
-        - export SONAR_PROJECT_KEY="$(echo $CI_PROJECT_PATH | tr '/' ':')"
         - mvn verify sonar:sonar
     only:
         - master
