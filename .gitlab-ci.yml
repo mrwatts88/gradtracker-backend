@@ -42,7 +42,7 @@ SonarQube Analyze:
 Build:
     stage: Build
     script:
-        - docker login $DOCKER_REGISTRY --username $DOCKER_USER --password $DOCKER_PASS
+        - docker login $DOCKER_REGISTRY --username $DOCKER_REPO_USER --password $DOCKER_REPO_PASS
         - docker build
           --build-arg DOCKER_REGISTRY
           -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA
