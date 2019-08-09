@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# This the the prompt we get whenever we ssh into the box and get the message like this
+# This is the prompt we get whenever we ssh into the box and get the message like this
 #
 # The authenticity of the host 'ip address' cannot be verified....
 #
