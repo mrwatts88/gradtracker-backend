@@ -16,4 +16,11 @@ chmod a+x ./deploy/disableHostKeyChecking.sh
 #let us ssh to deploy server in order to deploy docker image
 chmod a+x ./deploy/dockerImageUpdateAndStart.sh
 echo "deploying to ${DEPLOY_SERVER}"
-ssh centos@$DEPLOY_SERVER 'bash -s' < ./deploy/dockerImageUpdateAndStart.sh $CI_PROJECT_PATH $CI_PROJECT_NAME $CI_COMMIT_SHA $DOCKER_REPO_USER $DOCKER_REPO_PASS
+ssh centos@$DEPLOY_SERVER \
+    CI_PROJECT_PATH=$CI_PROJECT_PATH \
+    CI_PROJECT_NAME=$CI_PROJECT_NAME \
+    CI_COMMIT_SHA=$CI_COMMIT_SHA \
+    DOCKER_REGISTRY=$DOCKER_REGISTRY \
+    DOCKER_REPO_USER=$DOCKER_REPO_USER \
+    DOCKER_REPO_PASS=$DOCKER_REPO_PASS \
+    bash -s < ./deploy/dockerImageUpdateAndStart.sh
