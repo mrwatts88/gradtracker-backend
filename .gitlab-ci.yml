@@ -59,8 +59,8 @@ Build:
 # region Deploy ###############################################################
 Deploy:
     stage: Deploy
+    image: $DOCKER_REGISTRY/general/maven-docker:latest
     script:
-        - apk add --no-cache bash
         - bash deploy/deploy.sh
     only:
         - master
