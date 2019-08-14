@@ -46,8 +46,8 @@ Build:
           -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:latest .
         - docker push $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA
         - docker push $DOCKER_REGISTRY/$CI_PROJECT_PATH:latest
-#    only:
-#        - master
+    only:
+        - master
     when: on_success
     after_script:
         - 'echo "Image SHA Tag : $CI_COMMIT_SHA"'
@@ -59,6 +59,6 @@ Deploy:
     image: $DOCKER_REGISTRY/general/maven-docker:latest
     script:
         - bash deploy/deploy.sh
-#    only:
-#        - master
+    only:
+        - master
 # endregion Deploy ############################################################
