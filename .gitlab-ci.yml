@@ -42,7 +42,6 @@ Build:
         - docker push $DOCKER_REGISTRY/$CI_PROJECT_PATH:latest
     only:
         - master
-        - update-deploy-scripts
     when: on_success
     after_script:
         - 'echo "Image SHA Tag : $CI_COMMIT_SHA"'
@@ -68,5 +67,4 @@ Deploy:
         - bash deploy/deploy.sh
     only:
         - master
-        - update-deploy-scripts
 # endregion Deploy ############################################################
