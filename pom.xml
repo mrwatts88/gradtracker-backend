@@ -17,6 +17,8 @@
     <spring-security.version>5.1.2.RELEASE</spring-security.version>
     <jackson.version>2.9.7</jackson.version>
     <surefire-junit.version>2.6</surefire-junit.version>
+    <sonar.login>${env.SONARQUBE_USERNAME}</sonar.login>
+    <sonar.password>${env.SONARQUBE_PASSWORD}</sonar.password>
     <sonar.projectKey>${env.SONAR_PROJECT_KEY}</sonar.projectKey>
     <sonar.projectVersion>1.0</sonar.projectVersion>
     <sonar.jacoco.reportPaths>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPaths>
