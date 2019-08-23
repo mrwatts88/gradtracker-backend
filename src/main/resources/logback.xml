@@ -15,12 +15,17 @@
         <appender-ref ref="STDOUT" />
     </logger>
 
-    <logger name="com.nmlv.sdet.presentation.samples" level="debug" additivity="false">
+    <logger name="edu.uwm.capstone" level="debug" additivity="false">
         <appender-ref ref="STDOUT" />
     </logger>
 
-    <root level="off">
+    <root level="ERROR">
         <appender-ref ref="STDOUT" />
     </root>
+
+    <Logger name="org.flywaydb.core" level="ERROR" />
+    <Logger name="springfox" level="ERROR" />
+    <Logger name="org.apache" level="OFF" />
+    <Logger name="httpclient" level="ERROR" />
 
 </configuration>
