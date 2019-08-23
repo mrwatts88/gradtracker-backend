@@ -38,6 +38,8 @@ public class MathematicsRestControllerComponentTest {
         RestAssured.basePath = basePath;
     }
 
+    private static final double DELTA = 1e-15;
+
     /**
      * Verify that {@link MathematicsRestController#add(int, int)} correctly adds two values.
      */
@@ -124,6 +126,8 @@ public class MathematicsRestControllerComponentTest {
         assertNotNull(response.response());
         assertNotNull(response.response().body());
         assertTrue(StringUtils.isNotBlank(response.response().body().asString()));
+        double result = Double.valueOf(response.response().body().asString());
+        assertEquals(8, result, DELTA);
     }
 }
 
