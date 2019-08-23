@@ -13,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.*;
 
@@ -109,6 +108,22 @@ public class MathematicsRestControllerComponentTest {
         assertTrue(StringUtils.isNotBlank(response.response().body().asString()));
         int result = Integer.parseInt(response.response().body().asString());
         assertEquals("Wrong Result", 25, result);
+    }
+
+    /**
+     * Verify that {@link MathematicsRestController#squareRoot(double)} correctly takes square root of given number.
+     */
+    @Test
+    public void squareRoot() {
+        ExtractableResponse<Response> response = given()
+                .when()
+                .get(MathematicsRestController.MATHEMATICS_SQUAREROOT_PATH, 64)
+                .then()
+                .statusCode(HttpStatus.OK.value()).extract();
+        assertNotNull(response);
+        assertNotNull(response.response());
+        assertNotNull(response.response().body());
+        assertTrue(StringUtils.isNotBlank(response.response().body().asString()));
     }
 }
 
