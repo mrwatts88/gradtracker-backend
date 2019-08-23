@@ -64,11 +64,11 @@ public class MathematicsRestController {
     }
 
     /**
-     * This endpoint determines the result of dividing the first value by the second.
-     * @param value {@link double} the dividend
-     * @return integer representing the final quotient
+     * This endpoint determines the result of square root of given number.
+     * @param value {@link double} the number
+     * @return double representing the square root of number provided
      */
-    @ApiOperation(value = "Divide the dividend by the divisor")
+    @ApiOperation(value = "Sqaure Root of number")
     @GetMapping(value = MATHEMATICS_SQUAREROOT_PATH)
     public double divide(@PathVariable double value) {
         return new Mathematics().squareRoot(value);
