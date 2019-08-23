@@ -110,23 +110,5 @@ public class MathematicsRestControllerComponentTest {
         int result = Integer.parseInt(response.response().body().asString());
         assertEquals("Wrong Result", 25, result);
     }
-
-    /**
-     * Verify that {@link MathematicsRestController#squareRoot(double)} correctly takes squareRoot.
-     */
-    @Test
-    public void squareRoot() {
-        ExtractableResponse<Response> response = given()
-                .when()
-                .get(MathematicsRestController.MATHEMATICS_SQUAREROOT_PATH, 64)
-                .then()
-                .statusCode(HttpStatus.OK.value()).extract();
-        assertNotNull(response);
-        assertNotNull(response.response());
-        assertNotNull(response.response().body());
-        assertTrue(StringUtils.isNotBlank(response.response().body().asString()));
-        Double result = Double.parseDouble(response.response().body().asString());
-        assertEquals("Wrong Result", java.util.Optional.of(8), result);
-    }
 }
 
