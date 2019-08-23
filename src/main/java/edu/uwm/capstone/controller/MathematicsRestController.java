@@ -64,9 +64,9 @@ public class MathematicsRestController {
     }
 
     /**
-     * This endpoint determines the result of square root of given number.
+     * This endpoint determines the square root of given number.
      * @param value {@link double} the number
-     * @return double representing the square root of number provided
+     * @return double representing the square root of number
      */
     @ApiOperation(value = "Sqaure Root of number")
     @GetMapping(value = MATHEMATICS_SQUAREROOT_PATH)
