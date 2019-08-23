@@ -13,7 +13,7 @@ public class MathematicsRestController {
     public static final String MATHEMATICS_SUBTRACT_PATH = "/mathematics/subtract/{value}/{value2}";
     public static final String MATHEMATICS_MULTIPLY_PATH = "/mathematics/multiply/{value}/{value2}";
     public static final String MATHEMATICS_DIVIDE_PATH = "/mathematics/divide/{value}/{value2}";
-    public static final String MATHEMATICS_SQUAREROOT_PATH = "/mathematics/squareRoot/{value}/{value2}";
+    public static final String MATHEMATICS_SQUAREROOT_PATH = "/mathematics/squareRoot/{value}";
 
     /**
      * This endpoint determines the result of adding the two provided values.
@@ -70,7 +70,7 @@ public class MathematicsRestController {
      */
     @ApiOperation(value = "Sqaure Root of number")
     @GetMapping(value = MATHEMATICS_SQUAREROOT_PATH)
-    public double divide(@PathVariable double value) {
+    public double squareRoot(@PathVariable double value) {
         return new Mathematics().squareRoot(value);
     }
 }
