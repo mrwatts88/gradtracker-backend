@@ -58,7 +58,7 @@ public class MathematicsRestControllerComponentTest {
         }
 
     /**
-     * Verify that {@link MathematicsRestController#add(int, int)} correctly adds two values.
+     * Verify that {@link MathematicsRestController#subtract(int, int)} correctly subtracts two values.
      */
     @Test
     public void subtract() {
@@ -76,7 +76,7 @@ public class MathematicsRestControllerComponentTest {
     }
 
     /**
-     * Verify that {@link MathematicsRestController#add(int, int)} correctly adds two values.
+     * Verify that {@link MathematicsRestController#multiply(int, int)} correctly multiplies two values.
      */
     @Test
     public void multiply() {
@@ -94,7 +94,7 @@ public class MathematicsRestControllerComponentTest {
     }
 
     /**
-     * Verify that {@link MathematicsRestController#add(int, int)} correctly adds two values.
+     * Verify that {@link MathematicsRestController#divide(int, int)} correctly divides two values.
      */
     @Test
     public void divide() {
@@ -110,5 +110,23 @@ public class MathematicsRestControllerComponentTest {
         int result = Integer.parseInt(response.response().body().asString());
         assertEquals("Wrong Result", 25, result);
     }
+
+    /**
+     * Verify that {@link MathematicsRestController#squareRoot(double)} correctly takes squareRoot.
+     */
+    @Test
+    public void sqroot() {
+        ExtractableResponse<Response> response = given()
+                .when()
+                .get(MathematicsRestController.MATHEMATICS_SQUAREROOT_PATH, 64)
+                .then()
+                .statusCode(HttpStatus.OK.value()).extract();
+        assertNotNull(response);
+        assertNotNull(response.response());
+        assertNotNull(response.response().body());
+        assertTrue(StringUtils.isNotBlank(response.response().body().asString()));
+        int result = Integer.parseInt(response.response().body().asString());
+        assertEquals("Wrong Result", 8, result);
     }
+}
 
