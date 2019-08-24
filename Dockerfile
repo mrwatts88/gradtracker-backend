@@ -1,6 +1,6 @@
 ARG DOCKER_REGISTRY
 
-FROM $DOCKER_REGISTRY/general/maven-docker:latest
+FROM $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
 
 WORKDIR /backend-example
 

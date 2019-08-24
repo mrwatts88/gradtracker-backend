@@ -17,13 +17,13 @@ cache:
 # region Pre-Build ############################################################
 Unit Tests:
     stage: Pre-Build
-    image: $DOCKER_REGISTRY/general/maven-docker:latest
+    image: $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
     script:
         - mvn $MAVEN_CLI_OPTS install
 
 Component Tests:
     stage: Pre-Build
-    image: $DOCKER_REGISTRY/general/maven-docker:latest
+    image: $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
     script:
         - mvn $MAVEN_CLI_OPTS -P test-component test
     when: on_success
@@ -50,7 +50,7 @@ Build:
 # region Post-Build ###########################################################
 SonarQube Analyze:
     stage: Post-Build
-    image: $DOCKER_REGISTRY/general/maven-docker:latest
+    image: $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
     script:
         - export SONAR_PROJECT_KEY="$(echo $CI_PROJECT_PATH | tr '/' ':')"
         - mvn verify sonar:sonar
@@ -62,7 +62,7 @@ SonarQube Analyze:
 # region Deploy ###############################################################
 Deploy:
     stage: Deploy
-    image: $DOCKER_REGISTRY/general/maven-docker:latest
+    image: $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
     script:
         - bash deploy/deploy.sh
     only:
