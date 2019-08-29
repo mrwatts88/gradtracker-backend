@@ -5,13 +5,16 @@ import java.time.LocalDateTime;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import io.swagger.annotations.ApiModelProperty;
 
 public class Profile {
 
     protected Long id;
     private String name;
     private String project;
+    @ApiModelProperty(hidden = true)
     protected LocalDateTime createdDate;
+    @ApiModelProperty(hidden = true)
     protected LocalDateTime updatedDate;
 
     public Long getId() {
