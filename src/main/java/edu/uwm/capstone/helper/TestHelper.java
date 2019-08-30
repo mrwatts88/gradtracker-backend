@@ -9,11 +9,12 @@ import org.springframework.http.HttpStatus;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.util.*;
 
 public class TestHelper {
 
-    private static final Random random = new Random();
+    private static final Random random = new SecureRandom();
 
     private TestHelper() { }
 
@@ -23,7 +24,7 @@ public class TestHelper {
      * @return {@link Long} between 1L and {@link Long#MAX_VALUE}
      */
     public static Long randomLong() {
-        return new Random().longs(1L, Long.MAX_VALUE).findAny().getAsLong();
+        return random.longs(1L, Long.MAX_VALUE).findAny().getAsLong();
     }
 
     /**
@@ -32,7 +33,7 @@ public class TestHelper {
      * @return {@link Double} between 1 and {@link Double#MAX_VALUE}
      */
     public static Double randomDouble() {
-        return new Random().doubles(1, Double.MAX_VALUE).findAny().getAsDouble();
+        return random.doubles(1, Double.MAX_VALUE).findAny().getAsDouble();
     }
 
     /**
@@ -52,7 +53,7 @@ public class TestHelper {
      * @return {@link Integer} between the provided start and stop values
      */
     public static Integer randomInteger(int start, int stop) {
-        return new Random().ints(start, stop).findAny().getAsInt();
+        return random.ints(start, stop).findAny().getAsInt();
     }
 
     /**
@@ -137,7 +138,7 @@ public class TestHelper {
     public static String randomStringFromList(List<String> strings) {
         String value = null;
         if (strings != null && !strings.isEmpty()) {
-            int index = new Random().nextInt(strings.size());
+            int index = random.nextInt(strings.size());
             value = strings.get(index);
         }
         return value;
@@ -152,7 +153,7 @@ public class TestHelper {
         Rank rank = null;
         List<Rank> ranks = Arrays.asList(Rank.values());
         if (!ranks.isEmpty()) {
-            int index = new Random().nextInt(ranks.size());
+            int index = random.nextInt(ranks.size());
             rank = ranks.get(index);
         }
         return rank;
@@ -167,7 +168,7 @@ public class TestHelper {
         Suit suit = null;
         List<Suit> suits = Arrays.asList(Suit.values());
         if (!suits.isEmpty()) {
-            int index = new Random().nextInt(suits.size());
+            int index = random.nextInt(suits.size());
             suit = suits.get(index);
         }
         return suit;
@@ -183,7 +184,7 @@ public class TestHelper {
         List<Currency> currencies = new ArrayList<>();
         currencies.addAll(Currency.getAvailableCurrencies());
         if (!currencies.isEmpty()) {
-            int index = new Random().nextInt(currencies.size());
+            int index = random.nextInt(currencies.size());
             currency = currencies.get(index);
         }
         return currency;
@@ -198,7 +199,7 @@ public class TestHelper {
         HttpMethod httpMethod = null;
         List<HttpMethod> httpMethods = Arrays.asList(HttpMethod.values());
         if (!httpMethods.isEmpty()) {
-            int index = new Random().nextInt(httpMethods.size());
+            int index = random.nextInt(httpMethods.size());
             httpMethod = httpMethods.get(index);
         }
         return httpMethod;
@@ -213,7 +214,7 @@ public class TestHelper {
         HttpStatus httpStatus = null;
         List<HttpStatus> httpStatuses = Arrays.asList(HttpStatus.values());
         if (!httpStatuses.isEmpty()) {
-            int index = new Random().nextInt(httpStatuses.size());
+            int index = random.nextInt(httpStatuses.size());
             httpStatus = httpStatuses.get(index);
         }
         return httpStatus;
