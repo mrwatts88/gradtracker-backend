@@ -1,4 +1,4 @@
-package edu.uwm.capstone.model.profile;
+package edu.uwm.capstone.model;
 
 import java.time.LocalDateTime;
 

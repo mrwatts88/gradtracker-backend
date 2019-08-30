@@ -9,7 +9,7 @@ import java.util.Random;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
-import edu.uwm.capstone.model.profile.Profile;
+import edu.uwm.capstone.model.Profile;
 
 public class TestDataUtility {
 

@@ -1,17 +1,15 @@
 package edu.uwm.capstone.helper;
 
+import net.logstash.logback.encoder.org.apache.commons.lang.StringUtils;
+import org.junit.Test;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.util.*;
 
-import org.junit.Test;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-
-import edu.uwm.capstone.model.cards.Rank;
-import edu.uwm.capstone.model.cards.Suit;
-import net.logstash.logback.encoder.org.apache.commons.lang.StringUtils;
 import static org.junit.Assert.*;
 
 public class TestHelperUnitTest {
@@ -163,24 +161,6 @@ public class TestHelperUnitTest {
     }
 
     /**
-     * Verify that {@link TestHelper#randomRank} creates a random {@link Rank}.
-     */
-    @Test
-    public void randomRank() {
-        assertNotNull(TestHelper.randomRank());
-        assertTrue(TestHelper.randomRank() instanceof Rank);
-    }
-
-    /**
-     * Verify that {@link TestHelper#randomSuit} creates a random {@link Suit}.
-     */
-    @Test
-    public void randomSuit() {
-        assertNotNull(TestHelper.randomSuit());
-        assertTrue(TestHelper.randomSuit() instanceof Suit);
-    }
-
-    /**
      * Verify that {@link TestHelper#randomCurrency} creates a random {@link Currency}.
      */
     @Test
@@ -273,6 +253,7 @@ public class TestHelperUnitTest {
         private String description;
         private Integer count;
         private BigDecimal balance;
+
         TestObject(Long id, String description, Integer count, BigDecimal balance) {
             this.id = id;
             this.description = description;
@@ -284,6 +265,7 @@ public class TestHelperUnitTest {
     private class PrivateConstructorTestObject {
         private PrivateConstructorTestObject() {
         }
+
         private Long id = 1L;
         private String description = "description";
         private Integer count = 10;

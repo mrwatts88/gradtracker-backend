@@ -3,7 +3,7 @@ package edu.uwm.capstone.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uwm.capstone.Application;
 import edu.uwm.capstone.db.ProfileDao;
-import edu.uwm.capstone.model.profile.Profile;
+import edu.uwm.capstone.model.Profile;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

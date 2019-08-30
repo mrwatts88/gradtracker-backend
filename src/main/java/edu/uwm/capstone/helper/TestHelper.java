@@ -1,8 +1,6 @@
 package edu.uwm.capstone.helper;
 
 import com.google.common.net.MediaType;
-import edu.uwm.capstone.model.cards.Rank;
-import edu.uwm.capstone.model.cards.Suit;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -142,36 +140,6 @@ public class TestHelper {
             value = strings.get(index);
         }
         return value;
-    }
-
-    /**
-     * Randomly select a {@link Rank} from the supported methods within {@link Rank#values}.
-     *
-     * @return {@link Rank} that was randomly selected
-     */
-    public static Rank randomRank() {
-        Rank rank = null;
-        List<Rank> ranks = Arrays.asList(Rank.values());
-        if (!ranks.isEmpty()) {
-            int index = random.nextInt(ranks.size());
-            rank = ranks.get(index);
-        }
-        return rank;
-    }
-
-    /**
-     * Randomly select a {@link Suit} from the supported methods within {@link Suit#values}.
-     *
-     * @return {@link Suit} that was randomly selected
-     */
-    public static Suit randomSuit() {
-        Suit suit = null;
-        List<Suit> suits = Arrays.asList(Suit.values());
-        if (!suits.isEmpty()) {
-            int index = random.nextInt(suits.size());
-            suit = suits.get(index);
-        }
-        return suit;
     }
 
     /**

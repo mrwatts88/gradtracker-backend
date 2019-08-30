@@ -1,7 +1,7 @@
 package edu.uwm.capstone.db;
 
 import edu.uwm.capstone.UnitTestConfig;
-import edu.uwm.capstone.model.profile.Profile;
+import edu.uwm.capstone.model.Profile;
 import edu.uwm.capstone.sql.dao.BaseRowMapper;
 import edu.uwm.capstone.util.TestDataUtility;
 import org.junit.Before;
