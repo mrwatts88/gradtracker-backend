@@ -71,7 +71,7 @@ You can use MySQL in one of two ways:
 
 Whether you use docker to run MySQL, or manually install and start it, the command is still the same:
 ```
-mvn spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=localmysql"
+mvn spring-boot:run -D spring.profiles.active=localmysql
 ```
 
 Once the application is running locally Swagger based REST documentation and testing will be available at:
