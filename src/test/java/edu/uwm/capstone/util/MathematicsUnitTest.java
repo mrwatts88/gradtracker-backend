@@ -1,4 +1,5 @@
 package edu.uwm.capstone.util;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -102,6 +103,7 @@ public class MathematicsUnitTest {
         int result = mathematics.multiply(4, 5, 2);
         assertEquals(40, result);
     }
+
     /**
      * Verify that {@link Mathematics#multiply(double, double)} correctly multiplies 10.2 and 3.0 to equal 30.6.
      */
@@ -172,41 +174,41 @@ public class MathematicsUnitTest {
     }
 
     /**
-     * Verify that providing a 0 as the second value to {@link Mathematics#divide(int, int)} produces an {@link AssertionError}.
+     * Verify that providing a 0 as the second value to {@link Mathematics#divide(int, int)} produces an {@link IllegalArgumentException}.
      */
-    @Test(expected = AssertionError.class)
+    @Test(expected = IllegalArgumentException.class)
     public void verifyDivideAssertion() {
         mathematics.divide(5, 0);
     }
 
     /**
-     * Verify that providing a 0 as the second value to {@link Mathematics#divide(double, double)} produces an {@link AssertionError}.
+     * Verify that providing a 0 as the second value to {@link Mathematics#divide(double, double)} produces an {@link IllegalArgumentException}.
      */
-    @Test(expected = AssertionError.class)
+    @Test(expected = IllegalArgumentException.class)
     public void verifyDivideDoubleAssertion() {
         mathematics.divide(5.0, 0.0);
     }
 
     /**
-     * Verify that providing a 0 as the second or third value to {@link Mathematics#divide(int, int, int)} produces an {@link AssertionError}.
+     * Verify that providing a 0 as the second or third value to {@link Mathematics#divide(int, int, int)} produces an {@link IllegalArgumentException}.
      */
-    @Test(expected = AssertionError.class)
+    @Test(expected = IllegalArgumentException.class)
     public void verifyDivideThreeAssertion() {
         mathematics.divide(5, 8, 0);
     }
 
     /**
-     * Verify that providing a 0 as the second or third value to {@link Mathematics#divide(double, double, double)} produces an {@link AssertionError}.
+     * Verify that providing a 0 as the second or third value to {@link Mathematics#divide(double, double, double)} produces an {@link IllegalArgumentException}.
      */
-    @Test(expected = AssertionError.class)
+    @Test(expected = IllegalArgumentException.class)
     public void verifyDivideDoubleThreeAssertion() {
         mathematics.divide(5.0, 0.0, 8.2);
     }
 
     /**
-     * Verify that providing a negative number as value to {@link Mathematics#squareRoot(double)} produces an {@link AssertionError}.
+     * Verify that providing a negative number as value to {@link Mathematics#squareRoot(double)} produces an {@link IllegalArgumentException}.
      */
-    @Test(expected = AssertionError.class)
+    @Test(expected = IllegalArgumentException.class)
     public void verifyNegativeSquareRoot() {
         mathematics.squareRoot(-102);
     }

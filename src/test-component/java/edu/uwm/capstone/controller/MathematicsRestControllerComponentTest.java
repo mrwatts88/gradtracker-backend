@@ -119,7 +119,7 @@ public class MathematicsRestControllerComponentTest {
     public void squareRoot() {
         ExtractableResponse<Response> response = given()
                 .when()
-                .get(MathematicsRestController.MATHEMATICS_SQUAREROOT_PATH, 64)
+                .get(MathematicsRestController.MATHEMATICS_SQUARE_ROOT_PATH, 64)
                 .then()
                 .statusCode(HttpStatus.OK.value()).extract();
         assertNotNull(response);

@@ -7,13 +7,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@SuppressWarnings("squid:S1075") // suppress sonar warning about hard-coded URL path
 public class MathematicsRestController {
 
     public static final String MATHEMATICS_ADD_PATH = "/mathematics/add/{value}/{value2}";
     public static final String MATHEMATICS_SUBTRACT_PATH = "/mathematics/subtract/{value}/{value2}";
     public static final String MATHEMATICS_MULTIPLY_PATH = "/mathematics/multiply/{value}/{value2}";
     public static final String MATHEMATICS_DIVIDE_PATH = "/mathematics/divide/{value}/{value2}";
-    public static final String MATHEMATICS_SQUAREROOT_PATH = "/mathematics/squareRoot/{value}";
+    public static final String MATHEMATICS_SQUARE_ROOT_PATH = "/mathematics/squareRoot/{value}";
 
     /**
      * This endpoint determines the result of adding the two provided values.
@@ -69,7 +70,7 @@ public class MathematicsRestController {
      * @return double representing the square root of number
      */
     @ApiOperation(value = "Sqaure Root of number")
-    @GetMapping(value = MATHEMATICS_SQUAREROOT_PATH)
+    @GetMapping(value = MATHEMATICS_SQUARE_ROOT_PATH)
     public double squareRoot(@PathVariable double value) {
         return new Mathematics().squareRoot(value);
     }

@@ -1,6 +1,6 @@
 package edu.uwm.capstone.db;
 
-import edu.uwm.capstone.model.profile.Profile;
+import edu.uwm.capstone.model.Profile;
 import edu.uwm.capstone.sql.dao.BaseRowMapper;
 
 import java.sql.ResultSet;

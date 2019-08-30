@@ -1,7 +1,7 @@
 package edu.uwm.capstone.controller;
 
 import edu.uwm.capstone.db.ProfileDao;
-import edu.uwm.capstone.model.profile.Profile;
+import edu.uwm.capstone.model.Profile;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RestController
+@SuppressWarnings("squid:S1075") // suppress sonar warning about hard-coded URL path
 public class ProfileRestController {
 
     public static final String PROFILE_PATH = "/profile/";

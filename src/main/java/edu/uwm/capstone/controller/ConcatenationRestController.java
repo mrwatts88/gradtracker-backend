@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@SuppressWarnings("squid:S1075") // suppress sonar warning about hard-coded URL path
 public class ConcatenationRestController {
 
     public static final String CONCATENATE_PATH = "/concatenate/{firstString}/{secondString}";
