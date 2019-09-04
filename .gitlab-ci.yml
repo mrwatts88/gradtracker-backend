@@ -33,6 +33,7 @@ Component Tests:
 # region Build ################################################################
 Build:
     stage: Build
+    image: $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
     script:
         - docker login $DOCKER_REGISTRY --username $DOCKER_REPO_USER --password $DOCKER_REPO_PASS
         - docker build
