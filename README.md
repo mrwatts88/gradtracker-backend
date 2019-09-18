@@ -4,26 +4,26 @@
 ----
 
 The provided codebase is a [spring-boot](https://projects.spring.io/spring-boot/) based project that requires [git](https://git-scm.com/downloads), 
-[java 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) _(or greater)_ and 
+[java 11](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html) _(or greater)_ and 
 [apache maven](https://maven.apache.org/download.cgi) be installed on your machine.
 
 ##### Concatenation
 _The functionality to take two separate values and combines them together._
 * Java 
-    * [Implementation](https://gitlab.uwm-nm-te-capstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/main/java/edu/uwm/capstone/util/Concatenation.java)
-        * [Unit Test](https://gitlab.uwm-nm-te-capstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/test/java/edu/uwm/capstone/util/ConcatenationUnitTest.java)
-    * [Rest Controller](https://gitlab.uwm-nm-te-capstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/main/java/edu/uwm/capstone/controller/ConcatenationRestController.java) 
-        * [Unit Test](https://gitlab.uwm-nm-te-capstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/test/java/edu/uwm/capstone/controller/ConcatenationRestControllerUnitTest.java)
-        * [Component Test](https://gitlab.uwm-nm-te-capstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/test-component/java/edu/uwm/capstone/controller/ConcatenationRestControllerComponentTest.java)
+    * [Implementation](https://gitlab.nmcapstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/main/java/edu/uwm/capstone/util/Concatenation.java)
+        * [Unit Test](https://gitlab.nmcapstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/test/java/edu/uwm/capstone/util/ConcatenationUnitTest.java)
+    * [Rest Controller](https://gitlab.nmcapstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/main/java/edu/uwm/capstone/controller/ConcatenationRestController.java) 
+        * [Unit Test](https://gitlab.nmcapstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/test/java/edu/uwm/capstone/controller/ConcatenationRestControllerUnitTest.java)
+        * [Component Test](https://gitlab.nmcapstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/test-component/java/edu/uwm/capstone/controller/ConcatenationRestControllerComponentTest.java)
         
 ##### Palindrome
 _Determine whether or not the provided value is a word, phrase, or sequence that reads the same backward as forward._
 * Java 
-    * [Implementation](https://gitlab.uwm-nm-te-capstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/main/java/edu/uwm/capstone/util/Palindrome.java)
-        * [Unit Test](https://gitlab.uwm-nm-te-capstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/test/java/edu/uwm/capstone/util/PalindromeUnitTest.java)
-    * [Rest Controller](https://gitlab.uwm-nm-te-capstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/main/java/edu/uwm/capstone/controller/PalindromeRestController.java)
-        * [Unit Test](https://gitlab.uwm-nm-te-capstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/test/java/edu/uwm/capstone/controller/PalindromeRestControllerUnitTest.java)
-        * [Component Test](https://gitlab.uwm-nm-te-capstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/test-component/java/edu/uwm/capstone/controller/PalindromeRestControllerComponentTest.java)
+    * [Implementation](https://gitlab.nmcapstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/main/java/edu/uwm/capstone/util/Palindrome.java)
+        * [Unit Test](https://gitlab.nmcapstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/test/java/edu/uwm/capstone/util/PalindromeUnitTest.java)
+    * [Rest Controller](https://gitlab.nmcapstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/main/java/edu/uwm/capstone/controller/PalindromeRestController.java)
+        * [Unit Test](https://gitlab.nmcapstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/test/java/edu/uwm/capstone/controller/PalindromeRestControllerUnitTest.java)
+        * [Component Test](https://gitlab.nmcapstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example/blob/master/src/test-component/java/edu/uwm/capstone/controller/PalindromeRestControllerComponentTest.java)
         
 &nbsp;
 ---
@@ -37,7 +37,7 @@ mvn clean install
 
 To execute all component tests:
 ```
-mvn -P test-component test
+mvn clean -P test-component test
 ```
 
 &nbsp;
@@ -105,7 +105,7 @@ for example: ```docker run -p 8333:8333 backend-example```
 here application runs on 8333. You can also pull docker image from registry and run it locally, in order to pull centralized image from registry use following:
 
 ```
-docker pull registry.uwm-nm-te-capstone.com:8083/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example
+docker pull docker.nmcapstone.com/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example
 
 ```
 then use above listed run command to run this docker image on your machine. 
