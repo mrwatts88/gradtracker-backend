@@ -11,11 +11,11 @@
         </layout>
     </appender>
 
-    <logger name="ch.qos.logback" level="off" additivity="false">
+    <logger name="ch.qos.logback" level="OFF" additivity="false">
         <appender-ref ref="STDOUT" />
     </logger>
 
-    <logger name="edu.uwm.capstone" level="debug" additivity="false">
+    <logger name="edu.uwm.capstone" level="ERROR" additivity="false">
         <appender-ref ref="STDOUT" />
     </logger>
 
