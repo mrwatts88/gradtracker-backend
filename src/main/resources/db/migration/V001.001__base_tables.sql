@@ -12,8 +12,8 @@ CREATE TABLE user(
     lastname VARCHAR(255) NOT NULL,
     pantherid VARCHAR(9) NOT NULL,
     email_address VARCHAR(255) NOT NULL,
-    student_access bit NOT NULL,
-    advisor_access bit NOT NULL,
-    admin_access bit NOT NULL,
+    student_access BIT NOT NULL,
+    advisor_access BIT NOT NULL,
+    admin_access BIT NOT NULL,
     program_id int
 );
