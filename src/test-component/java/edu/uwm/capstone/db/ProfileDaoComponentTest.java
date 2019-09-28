@@ -71,7 +71,7 @@ public class ProfileDaoComponentTest {
     public void createProfileColumnTooLong() {
         // generate a test profile value with a column that will exceed the database configuration
         Profile createProfile = TestDataUtility.profileWithTestValues();
-        createProfile.setName(RandomStringUtils.randomAlphabetic(2000));
+        createProfile.setFirstName(RandomStringUtils.randomAlphabetic(2000));
         profileDao.create(createProfile);
     }
 
@@ -122,7 +122,7 @@ public class ProfileDaoComponentTest {
         Profile verifyUpdateProfile = profileDao.read(updateProfile.getId());
         assertNotNull(verifyUpdateProfile);
         assertEquals(createProfile.getId(), verifyUpdateProfile.getId());
-        assertEquals(updateProfile.getName(), verifyUpdateProfile.getName());
+        assertEquals(updateProfile.getFirstName(), verifyUpdateProfile.getFirstName());
     }
 
     /**
@@ -162,7 +162,7 @@ public class ProfileDaoComponentTest {
 
         Profile updateProfile = TestDataUtility.profileWithTestValues();
         updateProfile.setId(createProfile.getId());
-        updateProfile.setName(RandomStringUtils.randomAlphabetic(2000));
+        updateProfile.setFirstName(RandomStringUtils.randomAlphabetic(2000));
         profileDao.update(updateProfile);
     }
 

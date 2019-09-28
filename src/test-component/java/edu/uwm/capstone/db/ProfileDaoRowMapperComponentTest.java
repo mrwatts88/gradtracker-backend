@@ -65,8 +65,10 @@ public class ProfileDaoRowMapperComponentTest {
         assertNotNull(mapObject);
 
         assertEquals(profile.getId(), mapObject.get(BaseRowMapper.BaseColumnType.ID.getColumnName()));
-        assertEquals(profile.getName(), mapObject.get(ProfileDaoRowMapper.ProfileColumnType.NAME.getColumnName()));
-        assertEquals(profile.getProject(), mapObject.get(ProfileDaoRowMapper.ProfileColumnType.PROJECT.getColumnName()));
+        assertEquals(profile.getFirstName(), mapObject.get(ProfileDaoRowMapper.ProfileColumnType.FIRST_NAME.getColumnName()));
+        assertEquals(profile.getLastName(), mapObject.get(ProfileDaoRowMapper.ProfileColumnType.LAST_NAME.getColumnName()));
+        assertEquals(profile.getPantherId(), mapObject.get(ProfileDaoRowMapper.ProfileColumnType.PANTHER_ID.getColumnName()));
+        assertEquals(profile.getEmail(), mapObject.get(ProfileDaoRowMapper.ProfileColumnType.EMAIL.getColumnName()));
         assertEquals(profile.getCreatedDate(), dateFromJavaTime(mapObject.get(BaseRowMapper.BaseColumnType.CREATED_DATE.getColumnName())));
         assertEquals(profile.getUpdatedDate(), dateFromJavaTime(mapObject.get(BaseRowMapper.BaseColumnType.UPDATED_DATE.getColumnName())));
     }
@@ -85,8 +87,10 @@ public class ProfileDaoRowMapperComponentTest {
 
         // define the behavior of the resultSet that is being mocked
         when(resultSet.getLong(BaseRowMapper.BaseColumnType.ID.getColumnName())).thenReturn(profile.getId());
-        when(resultSet.getString(ProfileDaoRowMapper.ProfileColumnType.NAME.getColumnName())).thenReturn(profile.getName());
-        when(resultSet.getString(ProfileDaoRowMapper.ProfileColumnType.PROJECT.getColumnName())).thenReturn(profile.getProject());
+        when(resultSet.getString(ProfileDaoRowMapper.ProfileColumnType.FIRST_NAME.getColumnName())).thenReturn(profile.getFirstName());
+        when(resultSet.getString(ProfileDaoRowMapper.ProfileColumnType.LAST_NAME.getColumnName())).thenReturn(profile.getLastName());
+        when(resultSet.getString(ProfileDaoRowMapper.ProfileColumnType.PANTHER_ID.getColumnName())).thenReturn(profile.getPantherId());
+        when(resultSet.getString(ProfileDaoRowMapper.ProfileColumnType.EMAIL.getColumnName())).thenReturn(profile.getEmail());
         when(resultSet.getObject(BaseRowMapper.BaseColumnType.CREATED_DATE.getColumnName())).thenReturn(javaTimeFromDate(profile.getCreatedDate()));
         when(resultSet.getObject(BaseRowMapper.BaseColumnType.UPDATED_DATE.getColumnName())).thenReturn(javaTimeFromDate(profile.getUpdatedDate()));
 
@@ -95,8 +99,10 @@ public class ProfileDaoRowMapperComponentTest {
         assertNotNull(verifyProfile);
 
         assertEquals(profile.getId(), verifyProfile.getId());
-        assertEquals(profile.getName(), verifyProfile.getName());
-        assertEquals(profile.getProject(), verifyProfile.getProject());
+        assertEquals(profile.getFirstName(), verifyProfile.getFirstName());
+        assertEquals(profile.getLastName(), verifyProfile.getLastName());
+        assertEquals(profile.getPantherId(), verifyProfile.getPantherId());
+        assertEquals(profile.getEmail(), verifyProfile.getEmail());
         assertEquals(profile.getCreatedDate(), verifyProfile.getCreatedDate());
         assertEquals(profile.getUpdatedDate(), verifyProfile.getUpdatedDate());
     }

@@ -1,11 +1,15 @@
 --STATEMENT createProfile
 INSERT INTO profiles (
-  name,
-  project,
+  first_name,
+  last_name,
+  panther_id,
+  email,
   created_date
 ) VALUES (
-  :name,
-  :project,
+  :first_name,
+  :last_name,
+  :panther_id,
+  :email,
   :created_date
 );
 
@@ -13,19 +17,21 @@ INSERT INTO profiles (
 SELECT * FROM profiles WHERE id = :id;
 
 --STATEMENT readProfileByNameAndProject
-SELECT * FROM profiles WHERE name = :name AND project = :project;
+--SELECT * FROM profiles WHERE name = :name AND project = :project;
 
 --STATEMENT deleteProfile
 DELETE FROM profiles WHERE id = :id;
 
 --STATEMENT updateProfile
 UPDATE profiles SET
-  name = :name,
-  project = :project,
+  first_name = :first_name,
+  last_name = :last_name,
+  panther_id = :panther_id,
+  email = :email,
   updated_date = :updated_date
 WHERE
   id = :id;
 
 --STATEMENT getAllProfilesByProject
-SELECT * from profiles where project = :project;
+--SELECT * from profiles where project = :project;
 
