@@ -40,6 +40,7 @@ public class ProfileRestController {
     @PostMapping(value = PROFILE_PATH)
     public Profile create(@RequestBody Profile profile, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
+            Assert.notNull(profile, "profile must not be null");
             Assert.isNull(profile.getId(), "Profile ID must be null");
 
             return profileService.create(profile);

@@ -18,6 +18,9 @@ INSERT INTO profiles (
 --STATEMENT readProfile
 SELECT * FROM profiles WHERE id = :id;
 
+--STATEMENT readwithemail
+SELECT * FROM profiles WHERE email = :email;
+
 --STATEMENT readProfileByNameAndProject
 --SELECT * FROM profiles WHERE name = :name AND project = :project;
 
