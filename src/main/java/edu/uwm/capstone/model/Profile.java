@@ -12,6 +12,7 @@ public class Profile {
     protected Long id;
     private String firstName;
     private String lastName;
+    private String password;
     private String pantherId;
     private String email;
 
@@ -46,6 +47,14 @@ public class Profile {
 
     public String getPantherId() {
         return pantherId;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public CharSequence getPassword() {
+        return password;
     }
 
     public void setPantherId(String pantherId) {

@@ -113,7 +113,10 @@ public class ProfileDaoComponentTest {
         Profile verifyCreateProfile = profileDao.read(createProfile.getId());
         assertNotNull(verifyCreateProfile);
         assertEquals(createProfile.getId(), verifyCreateProfile.getId());
-        assertEquals(createProfile, verifyCreateProfile);
+        assertEquals(createProfile.getFirstName(), verifyCreateProfile.getFirstName());
+        assertEquals(createProfile.getLastName(), verifyCreateProfile.getLastName());
+        assertEquals(createProfile.getPantherId(), verifyCreateProfile.getPantherId());
+        assertEquals(createProfile.getEmail(), verifyCreateProfile.getEmail());
 
         Profile updateProfile = TestDataUtility.profileWithTestValues();
         updateProfile.setId(createProfile.getId());
@@ -123,6 +126,15 @@ public class ProfileDaoComponentTest {
         assertNotNull(verifyUpdateProfile);
         assertEquals(createProfile.getId(), verifyUpdateProfile.getId());
         assertEquals(updateProfile.getFirstName(), verifyUpdateProfile.getFirstName());
+        assertEquals(updateProfile.getLastName(), verifyUpdateProfile.getLastName());
+        assertEquals(updateProfile.getPantherId(), verifyUpdateProfile.getPantherId());
+        assertEquals(updateProfile.getEmail(), verifyUpdateProfile.getEmail());
+
+        assertNotEquals(verifyCreateProfile.getFirstName(), verifyUpdateProfile.getFirstName());
+        assertNotEquals(verifyCreateProfile.getLastName(), verifyUpdateProfile.getLastName());
+        assertNotEquals(verifyCreateProfile.getPantherId(), verifyUpdateProfile.getPantherId());
+        assertNotEquals(verifyCreateProfile.getEmail(), verifyUpdateProfile.getEmail());
+
     }
 
     /**

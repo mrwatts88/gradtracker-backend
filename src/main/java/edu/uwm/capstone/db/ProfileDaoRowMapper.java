@@ -8,11 +8,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static edu.uwm.capstone.db.ProfileDaoRowMapper.ProfileColumnType.FIRST_NAME;
-import static edu.uwm.capstone.db.ProfileDaoRowMapper.ProfileColumnType.LAST_NAME;
-import static edu.uwm.capstone.db.ProfileDaoRowMapper.ProfileColumnType.PANTHER_ID;
-import static edu.uwm.capstone.db.ProfileDaoRowMapper.ProfileColumnType.EMAIL;
-
+import static edu.uwm.capstone.db.ProfileDaoRowMapper.ProfileColumnType.*;
 import static edu.uwm.capstone.sql.dao.BaseRowMapper.BaseColumnType.*;
 
 public class ProfileDaoRowMapper extends BaseRowMapper<Profile> {
@@ -20,6 +16,7 @@ public class ProfileDaoRowMapper extends BaseRowMapper<Profile> {
     public enum ProfileColumnType {
         FIRST_NAME(),
         LAST_NAME(),
+        PASSWORD(),
         PANTHER_ID(),
         EMAIL();
 
@@ -38,6 +35,7 @@ public class ProfileDaoRowMapper extends BaseRowMapper<Profile> {
         map.put(ID.getColumnName(), object.getId());
         map.put(FIRST_NAME.getColumnName(), object.getFirstName());
         map.put(LAST_NAME.getColumnName(), object.getLastName());
+        map.put(PASSWORD.getColumnName(), object.getPassword());
         map.put(PANTHER_ID.getColumnName(), object.getPantherId());
         map.put(EMAIL.getColumnName(), object.getEmail());
         map.put(CREATED_DATE.getColumnName(), javaTimeFromDate(object.getCreatedDate()));
@@ -51,6 +49,7 @@ public class ProfileDaoRowMapper extends BaseRowMapper<Profile> {
         folder.setId(rs.getLong(ID.getColumnName()));
         folder.setFirstName(rs.getString(FIRST_NAME.getColumnName()));
         folder.setLastName(rs.getString(LAST_NAME.getColumnName()));
+        folder.setPassword(rs.getString(PASSWORD.getColumnName()));
         folder.setPantherId(rs.getString(PANTHER_ID.getColumnName()));
         folder.setEmail(rs.getString(EMAIL.getColumnName()));
         folder.setCreatedDate(dateFromJavaTime(rs.getObject(CREATED_DATE.getColumnName())));

@@ -67,6 +67,7 @@ public class ProfileDaoRowMapperComponentTest {
         assertEquals(profile.getId(), mapObject.get(BaseRowMapper.BaseColumnType.ID.getColumnName()));
         assertEquals(profile.getFirstName(), mapObject.get(ProfileDaoRowMapper.ProfileColumnType.FIRST_NAME.getColumnName()));
         assertEquals(profile.getLastName(), mapObject.get(ProfileDaoRowMapper.ProfileColumnType.LAST_NAME.getColumnName()));
+        assertEquals(profile.getPassword(), mapObject.get(ProfileDaoRowMapper.ProfileColumnType.PASSWORD.getColumnName()));
         assertEquals(profile.getPantherId(), mapObject.get(ProfileDaoRowMapper.ProfileColumnType.PANTHER_ID.getColumnName()));
         assertEquals(profile.getEmail(), mapObject.get(ProfileDaoRowMapper.ProfileColumnType.EMAIL.getColumnName()));
         assertEquals(profile.getCreatedDate(), dateFromJavaTime(mapObject.get(BaseRowMapper.BaseColumnType.CREATED_DATE.getColumnName())));
@@ -89,6 +90,7 @@ public class ProfileDaoRowMapperComponentTest {
         when(resultSet.getLong(BaseRowMapper.BaseColumnType.ID.getColumnName())).thenReturn(profile.getId());
         when(resultSet.getString(ProfileDaoRowMapper.ProfileColumnType.FIRST_NAME.getColumnName())).thenReturn(profile.getFirstName());
         when(resultSet.getString(ProfileDaoRowMapper.ProfileColumnType.LAST_NAME.getColumnName())).thenReturn(profile.getLastName());
+        when(resultSet.getString(ProfileDaoRowMapper.ProfileColumnType.PASSWORD.getColumnName())).thenReturn((String) profile.getPassword());
         when(resultSet.getString(ProfileDaoRowMapper.ProfileColumnType.PANTHER_ID.getColumnName())).thenReturn(profile.getPantherId());
         when(resultSet.getString(ProfileDaoRowMapper.ProfileColumnType.EMAIL.getColumnName())).thenReturn(profile.getEmail());
         when(resultSet.getObject(BaseRowMapper.BaseColumnType.CREATED_DATE.getColumnName())).thenReturn(javaTimeFromDate(profile.getCreatedDate()));
@@ -101,6 +103,7 @@ public class ProfileDaoRowMapperComponentTest {
         assertEquals(profile.getId(), verifyProfile.getId());
         assertEquals(profile.getFirstName(), verifyProfile.getFirstName());
         assertEquals(profile.getLastName(), verifyProfile.getLastName());
+        assertEquals(profile.getPassword(), verifyProfile.getPassword());
         assertEquals(profile.getPantherId(), verifyProfile.getPantherId());
         assertEquals(profile.getEmail(), verifyProfile.getEmail());
         assertEquals(profile.getCreatedDate(), verifyProfile.getCreatedDate());

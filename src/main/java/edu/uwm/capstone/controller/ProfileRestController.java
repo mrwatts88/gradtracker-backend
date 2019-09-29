@@ -2,6 +2,7 @@ package edu.uwm.capstone.controller;
 
 import edu.uwm.capstone.db.ProfileDao;
 import edu.uwm.capstone.model.Profile;
+import edu.uwm.capstone.service.ProfileService;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +22,12 @@ public class ProfileRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(ProfileRestController.class);
     private final ProfileDao profileDao;
+    private final ProfileService profileService;
 
     @Autowired
-    public ProfileRestController(ProfileDao profileDao) {
+    public ProfileRestController(ProfileDao profileDao, ProfileService profileService) {
         this.profileDao = profileDao;
+        this.profileService = profileService;
     }
 
     /**
@@ -40,7 +43,9 @@ public class ProfileRestController {
     public Profile create(@RequestBody Profile profile, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
             Assert.isNull(profile.getId(), "Profile ID must be null");
-            return profileDao.create(profile);
+
+            return profileDao.create(profileService.create(profile));
+
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
@@ -65,7 +70,7 @@ public class ProfileRestController {
         try {
             Assert.notNull(profile.getId(), "Profile Id must not be null");
             Assert.notNull(profileDao.read(profile.getId()), "Could not update Profile " + profile.getId() + " - record not found.");
-            profileDao.update(profile);
+            profileDao.update(profileService.update(profile));
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());

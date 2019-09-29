@@ -2,12 +2,14 @@
 INSERT INTO profiles (
   first_name,
   last_name,
+  password,
   panther_id,
   email,
   created_date
 ) VALUES (
   :first_name,
   :last_name,
+  :password,
   :panther_id,
   :email,
   :created_date
@@ -26,6 +28,7 @@ DELETE FROM profiles WHERE id = :id;
 UPDATE profiles SET
   first_name = :first_name,
   last_name = :last_name,
+  password = :password,
   panther_id = :panther_id,
   email = :email,
   updated_date = :updated_date
