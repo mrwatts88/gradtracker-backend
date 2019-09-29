@@ -19,9 +19,4 @@ public class ApplicationConfigUnitTest {
         assertNotNull(applicationConfig.restTemplate());
     }
 
-    @Test
-    public void concatenation() {
-        assertNotNull(applicationConfig.concatenation());
-    }
-
 }

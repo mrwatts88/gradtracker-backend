@@ -1,6 +1,5 @@
 package edu.uwm.capstone;
 
-import edu.uwm.capstone.util.Concatenation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +22,9 @@ public class ApplicationConfigComponentTest {
     @Autowired
     RestTemplate restTemplate;
 
-    @Autowired
-    Concatenation concatenation;
-
     @Test
     public void verify() {
         assertNotNull("RestTemplate", restTemplate);
-        assertNotNull("Concatenation", concatenation);
     }
 
 }
