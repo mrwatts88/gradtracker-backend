@@ -6,15 +6,12 @@ import edu.uwm.capstone.sql.dao.BaseRowMapper;
 import edu.uwm.capstone.sql.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
-
 
 public class ProfileDao extends BaseDao<Profile> {
 
@@ -25,18 +22,11 @@ public class ProfileDao extends BaseDao<Profile> {
      *
      * @param profile {@link Profile}
      * @return {@link Profile}
+     * @throws DaoException if profile could not be persisted
      */
     @Override
-    public Profile create(Profile profile) {
-        // validate input
-        if (profile == null) {
-            throw new DaoException("Request to create a new Profile received null");
-        } else if (profile.getId() != null) {
-            throw new DaoException("When creating a new Profile the id should be null, but was set to " + profile.getId());
-        }
-
+    public Profile create(Profile profile) throws DaoException {
         LOG.trace("Creating profile {}", profile);
-
         profile.setCreatedDate(LocalDateTime.now());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int result = this.jdbcTemplate.update(sql("createProfile"),
@@ -52,16 +42,16 @@ public class ProfileDao extends BaseDao<Profile> {
     }
 
     /**
-     * Retrieve a {@link Profile} object by its {@link Profile#id}.
+     * Retrieve a {@link Profile} object by its Id}.
      *
-     * @param id long
+     * @param profileId
      * @return {@link Profile}
      */
     @Override
-    public Profile read(long id) {
-        LOG.trace("Reading profile {}", id);
+    public Profile read(long profileId) throws DaoException {
+        LOG.trace("Reading profile {}", profileId);
         try {
-            return (Profile) this.jdbcTemplate.queryForObject(sql("readProfile"), new MapSqlParameterSource("id", id), rowMapper);
+            return (Profile) this.jdbcTemplate.queryForObject(sql("readProfile"), new MapSqlParameterSource("id", profileId), rowMapper);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -71,15 +61,11 @@ public class ProfileDao extends BaseDao<Profile> {
      * Update the provided {@link Profile} object.
      *
      * @param profile {@link Profile}
+     * @return true if successful
+     * @throws DaoException if failed to update profile
      */
     @Override
-    public void update(Profile profile) {
-        if (profile == null) {
-            throw new DaoException("Request to update a Profile received null");
-        } else if (profile.getId() == null) {
-            throw new DaoException("When updating a Profile the id should not be null");
-        }
-
+    public boolean update(Profile profile) throws DaoException {
         LOG.trace("Updating profile {}", profile);
         profile.setUpdatedDate(LocalDateTime.now());
         int result = this.jdbcTemplate.update(sql("updateProfile"), new MapSqlParameterSource(rowMapper.mapObject(profile)));
@@ -87,19 +73,23 @@ public class ProfileDao extends BaseDao<Profile> {
         if (result != 1) {
             throw new DaoException(String.format("Failed attempt to update profile %s - affected %s rows", profile.toString(), result));
         }
+        return true;
     }
 
     /**
-     * Delete a {@link Profile} object by its {@link Profile#id}.
+     * Delete a {@link Profile} object by its Id.
      *
-     * @param id long
+     * @param profileId
+     * @return true if successful
+     * @throws DaoException if failed to delete profile with Id = id
      */
     @Override
-    public void delete(long id) {
-        LOG.trace("Deleting profile {}", id);
-        int result = this.jdbcTemplate.update(sql("deleteProfile"), new MapSqlParameterSource("id", id));
+    public boolean delete(long profileId) throws DaoException {
+        LOG.trace("Deleting profile {}", profileId);
+        int result = this.jdbcTemplate.update(sql("deleteProfile"), new MapSqlParameterSource("id", profileId));
         if (result != 1) {
-            throw new DaoException(String.format("Failed attempt to update profile %s affected %s rows", id, result));
+            throw new DaoException(String.format("Failed attempt to delete profile %s affected %s rows", profileId, result));
         }
+        return true;
     }
 }

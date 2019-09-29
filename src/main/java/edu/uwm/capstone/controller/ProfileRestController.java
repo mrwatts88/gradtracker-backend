@@ -1,6 +1,5 @@
 package edu.uwm.capstone.controller;
 
-import edu.uwm.capstone.db.ProfileDao;
 import edu.uwm.capstone.model.Profile;
 import edu.uwm.capstone.service.ProfileService;
 import io.swagger.annotations.ApiOperation;
@@ -20,13 +19,12 @@ public class ProfileRestController {
 
     public static final String PROFILE_PATH = "/profile/";
 
-    private static final Logger logger = LoggerFactory.getLogger(ProfileRestController.class);
-    private final ProfileDao profileDao;
+    private static final Logger LOG = LoggerFactory.getLogger(ProfileRestController.class);
+
     private final ProfileService profileService;
 
     @Autowired
-    public ProfileRestController(ProfileDao profileDao, ProfileService profileService) {
-        this.profileDao = profileDao;
+    public ProfileRestController(ProfileService profileService) {
         this.profileService = profileService;
     }
 
@@ -42,16 +40,13 @@ public class ProfileRestController {
     @PostMapping(value = PROFILE_PATH)
     public Profile create(@RequestBody Profile profile, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
-            Assert.isNull(profile.getId(), "Profile ID must be null");
-
-            return profileDao.create(profileService.create(profile));
-
+            return profileService.create(profile);
         } catch (IllegalArgumentException e) {
-            logger.error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
             return null;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             return null;
         }
@@ -68,14 +63,12 @@ public class ProfileRestController {
     @PutMapping(value = PROFILE_PATH)
     public void update(@RequestBody Profile profile, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
-            Assert.notNull(profile.getId(), "Profile Id must not be null");
-            Assert.notNull(profileDao.read(profile.getId()), "Could not update Profile " + profile.getId() + " - record not found.");
-            profileDao.update(profileService.update(profile));
+            profileService.update(profile);
         } catch (IllegalArgumentException e) {
-            logger.error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
@@ -91,7 +84,7 @@ public class ProfileRestController {
     @ApiOperation(value = "Read Profile by ID")
     @GetMapping(value = PROFILE_PATH + "{profileId}")
     public Profile readById(@PathVariable Long profileId, @ApiIgnore HttpServletResponse response) throws IOException {
-        Profile profile = profileDao.read(profileId);
+        Profile profile = profileService.read(profileId);
 
         if (profile == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Profile with ID: " + profileId + " not found.");
@@ -110,10 +103,9 @@ public class ProfileRestController {
      */
     @ApiOperation(value = "Delete Profile by ID")
     @DeleteMapping(value = PROFILE_PATH + "{profileId}")
-    public void delete(@PathVariable Long profileId, @ApiIgnore HttpServletResponse response) throws IOException {
+    public void deleteById(@PathVariable Long profileId, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
-            Assert.notNull(profileId, "Profile Id must not be null");
-            profileDao.delete(profileId);
+            profileService.delete(profileId);
         } catch (IllegalArgumentException e) {
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
         } catch (Exception e) {

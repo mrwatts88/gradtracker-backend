@@ -21,9 +21,9 @@ public abstract class BaseDao<T> {
 
     public abstract T read(long id);
 
-    public abstract void update(T object);
+    public abstract boolean update(T object);
 
-    public abstract void delete(long id);
+    public abstract boolean delete(long id);
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
