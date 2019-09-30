@@ -18,8 +18,8 @@ INSERT INTO profiles (
 --STATEMENT readProfile
 SELECT * FROM profiles WHERE id = :id;
 
---STATEMENT readProfileByNameAndProject
---SELECT * FROM profiles WHERE name = :name AND project = :project;
+--STATEMENT readProfileByEmail
+SELECT * FROM profiles WHERE email = :email;
 
 --STATEMENT deleteProfile
 DELETE FROM profiles WHERE id = :id;

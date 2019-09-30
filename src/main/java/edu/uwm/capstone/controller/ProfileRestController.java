@@ -2,6 +2,7 @@ package edu.uwm.capstone.controller;
 
 import edu.uwm.capstone.model.Profile;
 import edu.uwm.capstone.service.ProfileService;
+import edu.uwm.capstone.sql.exception.ServiceException;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,7 @@ public class ProfileRestController {
     @PostMapping(value = PROFILE_PATH)
     public Profile create(@RequestBody Profile profile, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
+            Assert.isNull(profile.getId(), "Profile ID must be null");
             return profileService.create(profile);
         } catch (IllegalArgumentException e) {
             LOG.error(e.getMessage(), e);
@@ -48,6 +50,26 @@ public class ProfileRestController {
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Get the {@link Profile} by Id
+     *
+     * @param profileId {@link Profile#getId()}
+     * @param response  {@link HttpServletResponse}
+     * @return {@link Profile} retrieved from the database
+     * @throws IOException if error response cannot be created.
+     */
+    @ApiOperation(value = "Read Profile by ID")
+    @GetMapping(value = PROFILE_PATH + "{profileId}")
+    public Profile readById(@PathVariable Long profileId, @ApiIgnore HttpServletResponse response) throws IOException {
+        try {
+            return profileService.read(profileId);
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
             return null;
         }
     }
@@ -63,35 +85,18 @@ public class ProfileRestController {
     @PutMapping(value = PROFILE_PATH)
     public void update(@RequestBody Profile profile, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
+            Assert.notNull(profile.getId(), "Profile Id must not be null");
             profileService.update(profile);
         } catch (IllegalArgumentException e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
+        } catch (ServiceException e) {
+            LOG.error(e.getMessage(), e);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
-    }
-
-    /**
-     * Get the {@link Profile} by Id
-     *
-     * @param profileId {@link Profile#getId()}
-     * @param response  {@link HttpServletResponse}
-     * @return {@link Profile} retrieved from the database
-     * @throws IOException if error response cannot be created.
-     */
-    @ApiOperation(value = "Read Profile by ID")
-    @GetMapping(value = PROFILE_PATH + "{profileId}")
-    public Profile readById(@PathVariable Long profileId, @ApiIgnore HttpServletResponse response) throws IOException {
-        Profile profile = profileService.read(profileId);
-
-        if (profile == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Profile with ID: " + profileId + " not found.");
-            return null;
-        }
-
-        return profile;
     }
 
     /**
@@ -105,11 +110,17 @@ public class ProfileRestController {
     @DeleteMapping(value = PROFILE_PATH + "{profileId}")
     public void deleteById(@PathVariable Long profileId, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
+            Assert.notNull(profileId, "Profile Id must not be null");
             profileService.delete(profileId);
         } catch (IllegalArgumentException e) {
+            LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
-        } catch (Exception e) {
+        } catch (ServiceException e) {
+            LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 }

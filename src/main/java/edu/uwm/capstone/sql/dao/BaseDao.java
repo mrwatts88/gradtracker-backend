@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import edu.uwm.capstone.sql.statement.ISqlStatementsFileLoader;
 
-public abstract class BaseDao<T> {
+public abstract class BaseDao<K,V> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseDao.class);
 
@@ -17,13 +17,13 @@ public abstract class BaseDao<T> {
     protected ISqlStatementsFileLoader sqlStatementsFileLoader;
     protected BaseRowMapper rowMapper;
 
-    public abstract T create(T object);
+    public abstract V create(V object);
 
-    public abstract T read(long id);
+    public abstract V read(K id);
 
-    public abstract boolean update(T object);
+    public abstract boolean update(V object);
 
-    public abstract boolean delete(long id);
+    public abstract boolean delete(K id);
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;

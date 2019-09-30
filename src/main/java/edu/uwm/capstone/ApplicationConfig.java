@@ -2,6 +2,8 @@ package edu.uwm.capstone;
 
 import edu.uwm.capstone.db.ProfileDao;
 import edu.uwm.capstone.db.ProfileDaoRowMapper;
+import edu.uwm.capstone.db.UserLoginCredentialsDao;
+import edu.uwm.capstone.db.UserLoginCredentialsDaoRowMapper;
 import edu.uwm.capstone.sql.statement.ISqlStatementsFileLoader;
 import edu.uwm.capstone.sql.statement.SqlStatementsFileLoader;
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -15,8 +17,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.web.client.RestTemplate;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
 @Configuration
@@ -71,11 +71,6 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     @Primary
     public Flyway flyway(DataSource dataSource) {
         LOGGER.info("Running database migration on {}", dbDriverUrl);
@@ -88,7 +83,6 @@ public class ApplicationConfig {
 
         return flyway;
     }
-
 
     @Bean
     public ISqlStatementsFileLoader sqlStatementsFileLoader() {
@@ -107,8 +101,22 @@ public class ApplicationConfig {
     }
 
     @Bean
+    public UserLoginCredentialsDao userLoginCredentialsDao() {
+        UserLoginCredentialsDao userLoginCredentialsDao = new UserLoginCredentialsDao();
+        userLoginCredentialsDao.setDataSource(dataSource());
+        userLoginCredentialsDao.setSqlStatementsFileLoader(sqlStatementsFileLoader());
+        userLoginCredentialsDao.setRowMapper(userLoginCredentialsDaoRowMapper());
+        return userLoginCredentialsDao;
+    }
+
+    @Bean
     public ProfileDaoRowMapper profileDaoRowMapper() {
         return new ProfileDaoRowMapper();
+    }
+
+    @Bean
+    public UserLoginCredentialsDaoRowMapper userLoginCredentialsDaoRowMapper() {
+        return new UserLoginCredentialsDaoRowMapper();
     }
 
     public String getDbDriverClassName() {

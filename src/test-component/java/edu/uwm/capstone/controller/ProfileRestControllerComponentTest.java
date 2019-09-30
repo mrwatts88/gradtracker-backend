@@ -32,7 +32,7 @@ import static org.junit.Assert.assertNotNull;
 
 /**
  * This test class exercises the spring boot based {@link Application} running in memory to verify that
- * the REST endpoints provided by the {@link ConcatenationRestController} are working correctly.
+ * the REST endpoints provided by the {@link ProfileRestController} are working correctly.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -141,7 +141,7 @@ public class ProfileRestControllerComponentTest {
                 .when()
                 .put(ProfileRestController.PROFILE_PATH)
                 .then().log().ifValidationFails()
-                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("Could not update Profile " + profileToUpdate.getId() + " - record not found."));
+                .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("Could not update Profile " + profileToUpdate.getId() + " - record not found."));
     }
 
     @Test

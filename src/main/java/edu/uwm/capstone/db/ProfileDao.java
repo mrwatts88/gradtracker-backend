@@ -13,7 +13,7 @@ import org.springframework.jdbc.support.KeyHolder;
 
 import java.time.LocalDateTime;
 
-public class ProfileDao extends BaseDao<Profile> {
+public class ProfileDao extends BaseDao<Long, Profile> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProfileDao.class);
 
@@ -26,7 +26,14 @@ public class ProfileDao extends BaseDao<Profile> {
      */
     @Override
     public Profile create(Profile profile) throws DaoException {
+        if (profile == null) {
+            throw new DaoException("Request to create a new Profile received null");
+        } else if (profile.getId() != null) {
+            throw new DaoException("When creating a new Profile the id should be null, but was set to " + profile.getId());
+        }
+
         LOG.trace("Creating profile {}", profile);
+
         profile.setCreatedDate(LocalDateTime.now());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int result = this.jdbcTemplate.update(sql("createProfile"),
@@ -48,7 +55,7 @@ public class ProfileDao extends BaseDao<Profile> {
      * @return {@link Profile}
      */
     @Override
-    public Profile read(long profileId) throws DaoException {
+    public Profile read(Long profileId) {
         LOG.trace("Reading profile {}", profileId);
         try {
             return (Profile) this.jdbcTemplate.queryForObject(sql("readProfile"), new MapSqlParameterSource("id", profileId), rowMapper);
@@ -84,7 +91,7 @@ public class ProfileDao extends BaseDao<Profile> {
      * @throws DaoException if failed to delete profile with Id = id
      */
     @Override
-    public boolean delete(long profileId) throws DaoException {
+    public boolean delete(Long profileId) throws DaoException {
         LOG.trace("Deleting profile {}", profileId);
         int result = this.jdbcTemplate.update(sql("deleteProfile"), new MapSqlParameterSource("id", profileId));
         if (result != 1) {
