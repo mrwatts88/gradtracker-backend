@@ -1,9 +1,8 @@
-package edu.uwm.capstone.service;
+package edu.uwm.capstone.security;
 
 import edu.uwm.capstone.db.ProfileDao;
 import edu.uwm.capstone.model.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,6 +23,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (profile == null) {
             throw new UsernameNotFoundException(username);
         }
-        return new User(profile.getEmail(), (String) profile.getPassword(), emptyList());
+        return new UserDetailsImpl(profile, emptyList());
     }
 }
