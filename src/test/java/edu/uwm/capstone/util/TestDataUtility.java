@@ -30,7 +30,7 @@ public class TestDataUtility {
         profile.setLastName(randomAlphabetic(randomInt(1, 100)));
         profile.setPassword(randomAlphabetic(randomInt(10, 100)));
         profile.setPantherId(randomAlphabetic(randomInt(9, 10)));
-        profile.setEmail(randomAlphabetic(randomInt(1, 100)));
+        profile.setEmail(randomAlphabetic(randomInt(1, 50)) + "@" + randomAlphabetic(randomInt(1, 50)));
         // intentionally left blank -- profile.setCreatedDate(randomLocalDateTime());
         // intentionally left blank -- profile.setUpdatedDate(randomLocalDateTime());
         return profile;

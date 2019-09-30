@@ -64,6 +64,15 @@ public class ProfileDao extends BaseDao<Long, Profile> {
         }
     }
 
+    public Profile readbyemail(String email){
+        LOG.trace("Reading profile with email {}", email);
+        try {
+            return (Profile) this.jdbcTemplate.queryForObject(sql("readwithemail"), new MapSqlParameterSource("email", email), rowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
     /**
      * Update the provided {@link Profile} object.
      *

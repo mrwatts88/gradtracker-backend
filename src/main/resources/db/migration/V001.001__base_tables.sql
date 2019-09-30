@@ -9,3 +9,20 @@ CREATE TABLE profiles
     created_date BIGINT(25)   NOT NULL,
     updated_date BIGINT(25) DEFAULT NULL
 );
+
+CREATE TABLE fields(
+    field_id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    form_id BIGINT(20) AUTO_INCREMENT NOT NULL,
+    label VARCHAR(255) NOT NULL,
+    field_data VARCHAR(255) NOT NULL,
+    data_type_flag INT NOT NULL,
+    field_created_date BIGINT(25)   NOT NULL,
+    field_updated_date BIGINT(25) DEFAULT NULL
+);
+
+CREATE TABLE forms(
+    form_id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT(20) AUTO_INCREMENT NOT NULL,
+    form_created_date BIGINT(25)   NOT NULL,
+    form_updated_date BIGINT(25) DEFAULT NULL
+);
