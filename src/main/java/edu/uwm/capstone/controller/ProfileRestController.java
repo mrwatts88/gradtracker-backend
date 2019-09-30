@@ -86,6 +86,7 @@ public class ProfileRestController {
     @PutMapping(value = PROFILE_PATH)
     public void update(@RequestBody Profile profile, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
+            Assert.notNull(profile, "profile must not be null");
             Assert.notNull(profile.getId(), "Profile Id must not be null");
             profileService.update(profile);
         } catch (IllegalArgumentException e) {

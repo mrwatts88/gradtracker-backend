@@ -102,6 +102,32 @@ public class ProfileDaoComponentTest {
     }
 
     /**
+     * Verify that {@link ProfileDao#readByEmail(String)} is working correctly.
+     */
+    @Test
+    public void readByEmail() {
+        Profile createProfile = TestDataUtility.profileWithTestValues();
+        profileDao.create(createProfile);
+        assertNotNull(createProfile.getId());
+
+        Profile readProfile = profileDao.readByEmail(createProfile.getEmail());
+        assertNotNull(readProfile);
+        assertEquals(createProfile.getId(), readProfile.getId());
+        assertEquals(createProfile, readProfile);
+    }
+
+    /**
+     * Verify that {@link ProfileDao#read} is working correctly when a request for a non-existent {@link Profile#email} is made.
+     */
+    @Test
+    public void readNonExistentProfileByEmail() {
+        // create a random email that will not be in our local database
+        String email = new Random().longs(10000L, Long.MAX_VALUE).findAny().toString();
+        Profile profile = profileDao.readByEmail(email);
+        assertNull(profile);
+    }
+
+    /**
      * Verify that {@link ProfileDao#update} is working correctly.
      */
     @Test

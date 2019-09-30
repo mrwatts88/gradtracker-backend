@@ -49,7 +49,7 @@ public class ProfileDao extends BaseDao<Long, Profile> {
     }
 
     /**
-     * Retrieve a {@link Profile} object by its Id}.
+     * Retrieve a {@link Profile} object by its Id.
      *
      * @param profileId
      * @return {@link Profile}
@@ -64,10 +64,16 @@ public class ProfileDao extends BaseDao<Long, Profile> {
         }
     }
 
-    public Profile readbyemail(String email){
+    /**
+     * Retrieve a {@link Profile} object by its email.
+     *
+     * @param email
+     * @return {@link Profile}
+     */
+    public Profile readByEmail(String email){
         LOG.trace("Reading profile with email {}", email);
         try {
-            return (Profile) this.jdbcTemplate.queryForObject(sql("readwithemail"), new MapSqlParameterSource("email", email), rowMapper);
+            return (Profile) this.jdbcTemplate.queryForObject(sql("readProfileByEmail"), new MapSqlParameterSource("email", email), rowMapper);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }

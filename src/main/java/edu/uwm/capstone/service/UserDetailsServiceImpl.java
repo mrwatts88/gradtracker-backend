@@ -1,7 +1,7 @@
 package edu.uwm.capstone.service;
 
-import edu.uwm.capstone.db.UserLoginCredentialsDao;
-import edu.uwm.capstone.model.UserLoginCredentials;
+import edu.uwm.capstone.db.ProfileDao;
+import edu.uwm.capstone.model.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,14 +15,15 @@ import static java.util.Collections.emptyList;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    private UserLoginCredentialsDao userLoginCredentialsDao;
+    private ProfileDao profileDao;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserLoginCredentials userLoginCredentials = userLoginCredentialsDao.read(username);
-        if (userLoginCredentials == null) {
+        Profile profile = profileDao.readByEmail(username);
+
+        if (profile == null) {
             throw new UsernameNotFoundException(username);
         }
-        return new User(userLoginCredentials.getEmail(), userLoginCredentials.getPassword(), emptyList());
+        return new User(profile.getEmail(), (String) profile.getPassword(), emptyList());
     }
 }

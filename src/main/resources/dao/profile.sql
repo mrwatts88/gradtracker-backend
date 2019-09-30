@@ -35,6 +35,3 @@ UPDATE profiles SET
 WHERE
   id = :id;
 
---STATEMENT getAllProfilesByProject
---SELECT * from profiles where project = :project;
-
