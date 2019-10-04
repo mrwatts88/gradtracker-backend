@@ -32,7 +32,13 @@ class DataLoader implements ApplicationRunner {
     }
 
     public void run(ApplicationArguments args) {
-        final Profile defaultProfile = Profile.builder()
+        Profile defaultProfile = profileDao.read(1L);
+
+        if(defaultProfile != null) {
+            return;
+        }
+
+        defaultProfile = Profile.builder()
                 .firstName("default_first_name")
                 .lastName("default_last_name")
                 .email("default@uwm.edu")
