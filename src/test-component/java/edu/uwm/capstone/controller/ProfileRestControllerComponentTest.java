@@ -5,6 +5,7 @@ import edu.uwm.capstone.Application;
 import edu.uwm.capstone.db.ProfileDao;
 import edu.uwm.capstone.model.Profile;
 import io.restassured.RestAssured;
+import io.restassured.http.Header;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.After;
@@ -13,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static edu.uwm.capstone.security.SecurityConstants.*;
 import static edu.uwm.capstone.util.TestDataUtility.profileWithTestValues;
 import static edu.uwm.capstone.util.TestDataUtility.randomLong;
 import static io.restassured.RestAssured.given;
@@ -55,14 +58,35 @@ public class ProfileRestControllerComponentTest {
 
     private List<Profile> profilesToCleanup = new ArrayList<>();
 
+    private static String authorizationToken;
+
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         assertNotNull(basePath);
         assertNotNull(restTemplate);
         assertNotNull(profileDao);
 
         RestAssured.port = port;
         RestAssured.basePath = basePath;
+
+        // get authorization token if it's null
+        if (authorizationToken == null) {
+            String credentials = new JSONObject()
+                    .put("email", DEFAULT_USER_EMAIL)
+                    .put("password", DEFAULT_USER_PASSWORD)
+                    .toString();
+
+            // exercise authentication endpoint
+            ExtractableResponse<Response> response = given()
+                    .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                    .body(credentials)
+                    .when()
+                    .post(AUTHENTICATE_URL)
+                    .then().log().ifValidationFails()
+                    .statusCode(HttpStatus.OK.value()).extract();
+
+            authorizationToken = response.header("Authorization");
+        }
     }
 
     @After
@@ -77,6 +101,7 @@ public class ProfileRestControllerComponentTest {
 
         // exercise endpoint
         ExtractableResponse<Response> response = given()
+                .header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .body(mapper.writeValueAsString(profileToCreate))
                 .when()
@@ -100,7 +125,8 @@ public class ProfileRestControllerComponentTest {
         profile.setId(randomLong());
 
         // exercise endpoint
-        given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        given().header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .body(mapper.writeValueAsString(profile))
                 .when()
                 .post(ProfileRestController.PROFILE_PATH)
@@ -118,6 +144,7 @@ public class ProfileRestControllerComponentTest {
 
         // exercise endpoint
         given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .header(new Header("Authorization", authorizationToken))
                 .body(mapper.writeValueAsString(profileToUpdate))
                 .when()
                 .put(ProfileRestController.PROFILE_PATH)
@@ -137,6 +164,7 @@ public class ProfileRestControllerComponentTest {
 
         // exercise endpoint
         given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .header(new Header("Authorization", authorizationToken))
                 .body(mapper.writeValueAsString(profileToUpdate))
                 .when()
                 .put(ProfileRestController.PROFILE_PATH)
@@ -151,6 +179,7 @@ public class ProfileRestControllerComponentTest {
 
         // exercise endpoint
         ExtractableResponse<Response> response = given()
+                .header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .when()
                 .get(ProfileRestController.PROFILE_PATH + profile.getId())
@@ -166,7 +195,8 @@ public class ProfileRestControllerComponentTest {
         Long profileId = randomLong();
 
         // exercise endpoint
-        given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        given().header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .when()
                 .get(ProfileRestController.PROFILE_PATH + profileId)
                 .then().log().ifValidationFails()
