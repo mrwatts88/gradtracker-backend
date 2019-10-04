@@ -8,6 +8,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Component;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class Application {
@@ -22,10 +23,12 @@ public class Application {
 class DataLoader implements ApplicationRunner {
 
     private ProfileDao profileDao;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public DataLoader(ProfileDao profileDao) {
+    public DataLoader(ProfileDao profileDao, PasswordEncoder passwordEncoder) {
         this.profileDao = profileDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void run(ApplicationArguments args) {
@@ -33,8 +36,8 @@ class DataLoader implements ApplicationRunner {
                 .firstName("default_first_name")
                 .lastName("default_last_name")
                 .email("default@uwm.edu")
-                .pantherId("12345678")
-                .password("password")
+                .pantherId("123456789")
+                .password(passwordEncoder.encode("password"))
                 .build();
 
         profileDao.create(defaultProfile);
