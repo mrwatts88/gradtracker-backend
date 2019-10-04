@@ -10,14 +10,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
-import com.auth0.jwt.JWT;
 
 
 import static edu.uwm.capstone.security.SecurityConstants.*;
@@ -56,16 +54,11 @@ public class AuthenticationTest {
     }
 
     @Test
-    public void existentUserCanGetToken() throws Exception {
-        String credentials = new JSONObject()
-                .put("email", DEFAULT_USER_EMAIL)
-                .put("password", DEFAULT_USER_PASSWORD)
-                .toString();
-
+    public void existentUserCanGetToken() {
         // exercise authentication endpoint
         ExtractableResponse<Response> response = given()
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .body(credentials)
+                .body(DEFAULT_USER_CREDENTIALS)
                 .when()
                 .post(AUTHENTICATE_URL)
                 .then().log().ifValidationFails()
@@ -76,16 +69,13 @@ public class AuthenticationTest {
     }
 
     @Test
-    public void nonExistentUserCannotGetToken() throws Exception {
-        String credentials = new JSONObject()
-                .put("email", "junk")
-                .put("password", "junk")
-                .toString();
+    public void nonExistentUserCannotGetToken() {
+        String nonExistentUser = "{ \"email\" : \"junk\", \"password\" : \"junk\" }";
 
         // exercise authentication endpoint
         ExtractableResponse<Response> response = given()
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .body(credentials)
+                .body(nonExistentUser)
                 .when()
                 .post(AUTHENTICATE_URL)
                 .then().log().ifValidationFails()

@@ -14,7 +14,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -58,7 +57,7 @@ public class ProfileRestControllerComponentTest {
 
     private List<Profile> profilesToCleanup = new ArrayList<>();
 
-    private static String authorizationToken;
+    private String authorizationToken;
 
     @Before
     public void setUp() throws Exception {
@@ -71,15 +70,9 @@ public class ProfileRestControllerComponentTest {
 
         // get authorization token if it's null
         if (authorizationToken == null) {
-            String credentials = new JSONObject()
-                    .put("email", DEFAULT_USER_EMAIL)
-                    .put("password", DEFAULT_USER_PASSWORD)
-                    .toString();
-
-            // exercise authentication endpoint
             ExtractableResponse<Response> response = given()
                     .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                    .body(credentials)
+                    .body(DEFAULT_USER_CREDENTIALS)
                     .when()
                     .post(AUTHENTICATE_URL)
                     .then().log().ifValidationFails()
