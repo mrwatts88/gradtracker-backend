@@ -14,9 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static edu.uwm.capstone.security.SecurityConstants.HEADER_STRING;
-import static edu.uwm.capstone.security.SecurityConstants.SECRET;
-import static edu.uwm.capstone.security.SecurityConstants.TOKEN_PREFIX;
+import static edu.uwm.capstone.security.SecurityConstants.*;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 

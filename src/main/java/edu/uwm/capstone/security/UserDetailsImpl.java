@@ -4,8 +4,9 @@ import edu.uwm.capstone.model.Profile;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import static java.util.Collections.emptyList;
 import java.util.Collection;
+
+import static java.util.Collections.emptyList;
 
 public class UserDetailsImpl implements UserDetails {
 

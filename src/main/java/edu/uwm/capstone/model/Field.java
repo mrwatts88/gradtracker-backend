@@ -12,18 +12,17 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Profile {
+public class Field {
 
     @ApiModelProperty(hidden = true)
     protected Long id;
-    private String firstName;
-    private String lastName;
-    private String password;
-    private String pantherId;
-    private String email;
+    private Long formId;
+    private String label;
+    private String data;
+    private int dataTypeFlag;
 
     @ApiModelProperty(hidden = true)
-    protected LocalDateTime createdDate;
+    private LocalDateTime createdDate;
     @ApiModelProperty(hidden = true)
-    protected LocalDateTime updatedDate;
+    private LocalDateTime updatedDate;
 }

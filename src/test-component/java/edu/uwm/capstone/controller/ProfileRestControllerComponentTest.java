@@ -24,7 +24,8 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static edu.uwm.capstone.security.SecurityConstants.*;
+import static edu.uwm.capstone.security.SecurityConstants.AUTHENTICATE_URL;
+import static edu.uwm.capstone.security.SecurityConstants.DEFAULT_USER_CREDENTIALS;
 import static edu.uwm.capstone.util.TestDataUtility.profileWithTestValues;
 import static edu.uwm.capstone.util.TestDataUtility.randomLong;
 import static io.restassured.RestAssured.given;

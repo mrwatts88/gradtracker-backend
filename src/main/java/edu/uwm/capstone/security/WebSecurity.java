@@ -3,6 +3,7 @@ package edu.uwm.capstone.security;
 import edu.uwm.capstone.db.ProfileDao;
 import edu.uwm.capstone.model.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,9 +13,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.context.annotation.Bean;
 
-import static edu.uwm.capstone.security.SecurityConstants.*;
+import static edu.uwm.capstone.security.SecurityConstants.AUTHENTICATE_URL;
 
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {

@@ -1,7 +1,8 @@
 package edu.uwm.capstone.db;
 
-import java.util.Random;
-
+import edu.uwm.capstone.UnitTestConfig;
+import edu.uwm.capstone.model.Profile;
+import edu.uwm.capstone.util.TestDataUtility;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,9 +12,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import edu.uwm.capstone.UnitTestConfig;
-import edu.uwm.capstone.model.Profile;
-import edu.uwm.capstone.util.TestDataUtility;
+import java.util.Random;
+
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)

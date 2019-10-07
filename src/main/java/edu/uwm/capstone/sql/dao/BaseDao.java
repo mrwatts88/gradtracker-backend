@@ -1,12 +1,11 @@
 package edu.uwm.capstone.sql.dao;
 
-import javax.sql.DataSource;
-
+import edu.uwm.capstone.sql.statement.ISqlStatementsFileLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
-import edu.uwm.capstone.sql.statement.ISqlStatementsFileLoader;
+import javax.sql.DataSource;
 
 public abstract class BaseDao<K,V> {
 

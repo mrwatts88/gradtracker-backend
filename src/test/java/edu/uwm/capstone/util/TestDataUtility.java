@@ -1,15 +1,14 @@
 package edu.uwm.capstone.util;
 
+import edu.uwm.capstone.model.Profile;
+import org.apache.commons.lang3.RandomStringUtils;
+
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-
-import org.apache.commons.lang3.RandomStringUtils;
-
-import edu.uwm.capstone.model.Profile;
 
 public class TestDataUtility {
 

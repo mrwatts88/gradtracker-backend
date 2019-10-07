@@ -17,10 +17,11 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
-
-import static edu.uwm.capstone.security.SecurityConstants.*;
+import static edu.uwm.capstone.security.SecurityConstants.AUTHENTICATE_URL;
+import static edu.uwm.capstone.security.SecurityConstants.DEFAULT_USER_CREDENTIALS;
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  *

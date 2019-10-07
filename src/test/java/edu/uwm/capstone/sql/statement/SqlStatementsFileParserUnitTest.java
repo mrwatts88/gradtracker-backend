@@ -1,10 +1,10 @@
 package edu.uwm.capstone.sql.statement;
 
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Map;
 
 public class SqlStatementsFileParserUnitTest {
 
