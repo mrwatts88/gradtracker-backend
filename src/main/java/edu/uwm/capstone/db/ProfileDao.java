@@ -12,6 +12,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class ProfileDao extends BaseDao<Long, Profile> {
 
@@ -22,10 +23,9 @@ public class ProfileDao extends BaseDao<Long, Profile> {
      *
      * @param profile {@link Profile}
      * @return {@link Profile}
-     * @throws DaoException if profile could not be persisted
      */
     @Override
-    public Profile create(Profile profile) throws DaoException {
+    public Profile create(Profile profile) {
         if (profile == null) {
             throw new DaoException("Request to create a new Profile received null");
         } else if (profile.getId() != null) {
@@ -43,7 +43,7 @@ public class ProfileDao extends BaseDao<Long, Profile> {
             throw new DaoException(String.format("Failed attempt to create profile %s - affected %s rows", profile.toString(), result));
         }
 
-        Long id = keyHolder.getKey().longValue();
+        Long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
         profile.setId(id);
         return profile;
     }
@@ -84,10 +84,9 @@ public class ProfileDao extends BaseDao<Long, Profile> {
      *
      * @param profile {@link Profile}
      * @return true if successful
-     * @throws DaoException if failed to update profile
      */
     @Override
-    public boolean update(Profile profile) throws DaoException {
+    public boolean update(Profile profile) {
         LOG.trace("Updating profile {}", profile);
         profile.setUpdatedDate(LocalDateTime.now());
         int result = this.jdbcTemplate.update(sql("updateProfile"), new MapSqlParameterSource(rowMapper.mapObject(profile)));
@@ -103,10 +102,9 @@ public class ProfileDao extends BaseDao<Long, Profile> {
      *
      * @param profileId
      * @return true if successful
-     * @throws DaoException if failed to delete profile with Id = id
      */
     @Override
-    public boolean delete(Long profileId) throws DaoException {
+    public boolean delete(Long profileId) {
         LOG.trace("Deleting profile {}", profileId);
         int result = this.jdbcTemplate.update(sql("deleteProfile"), new MapSqlParameterSource("id", profileId));
         if (result != 1) {

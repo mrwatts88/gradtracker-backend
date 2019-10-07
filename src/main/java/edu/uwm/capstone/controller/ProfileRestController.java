@@ -18,7 +18,7 @@ import java.io.IOException;
 @SuppressWarnings("squid:S1075") // suppress sonar warning about hard-coded URL path
 public class ProfileRestController {
 
-    public static final String PROFILE_PATH = "/profile/";
+    static final String PROFILE_PATH = "/profile/";
 
     private static final Logger LOG = LoggerFactory.getLogger(ProfileRestController.class);
 
@@ -41,8 +41,6 @@ public class ProfileRestController {
     @PostMapping(value = PROFILE_PATH)
     public Profile create(@RequestBody Profile profile, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
-            Assert.notNull(profile, "profile must not be null");
-            Assert.isNull(profile.getId(), "Profile ID must be null");
             return profileService.create(profile);
         } catch (IllegalArgumentException e) {
             LOG.error(e.getMessage(), e);
@@ -86,8 +84,6 @@ public class ProfileRestController {
     @PutMapping(value = PROFILE_PATH)
     public void update(@RequestBody Profile profile, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
-            Assert.notNull(profile, "profile must not be null");
-            Assert.notNull(profile.getId(), "Profile Id must not be null");
             profileService.update(profile);
         } catch (IllegalArgumentException e) {
             LOG.error(e.getMessage(), e);
@@ -112,7 +108,6 @@ public class ProfileRestController {
     @DeleteMapping(value = PROFILE_PATH + "{profileId}")
     public void deleteById(@PathVariable Long profileId, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
-            Assert.notNull(profileId, "Profile Id must not be null");
             profileService.delete(profileId);
         } catch (IllegalArgumentException e) {
             LOG.error(e.getMessage(), e);

@@ -13,22 +13,22 @@ public class UserDetailsImpl implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
     /**
-     * TODO
+     * Constructs a {@link UserDetails} from a {@link Profile} without any authorities.
      *
-     * @param profile
+     * @param profile the {@link Profile}
      */
-    public UserDetailsImpl(Profile profile) {
+    UserDetailsImpl(Profile profile) {
         this.profile = profile;
         this.authorities = emptyList();
     }
 
     /**
-     * TODO
+     * Constructs a {@link UserDetails} from a {@link Profile} with authorities.
      *
-     * @param profile
-     * @param authorities
+     * @param profile the {@link Profile}
+     * @param authorities the list of {@link GrantedAuthority}s
      */
-    public UserDetailsImpl(Profile profile, Collection<? extends GrantedAuthority> authorities) {
+    UserDetailsImpl(Profile profile, Collection<? extends GrantedAuthority> authorities) {
         this.profile = profile;
         this.authorities = authorities;
     }
@@ -44,7 +44,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getPassword() {
-        return (String) profile.getPassword();
+        return profile.getPassword();
     }
 
     @Override

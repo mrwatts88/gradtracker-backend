@@ -2,13 +2,13 @@ package edu.uwm.capstone.service;
 
 import edu.uwm.capstone.db.ProfileDao;
 import edu.uwm.capstone.model.Profile;
-import edu.uwm.capstone.sql.exception.DaoException;
 import edu.uwm.capstone.sql.exception.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 @Service("profileService")
 public class ProfileService {
@@ -16,6 +16,7 @@ public class ProfileService {
     private static final Logger LOG = LoggerFactory.getLogger(ProfileService.class);
 
     private final PasswordEncoder passwordEncoder;
+
     private final ProfileDao profileDao;
 
     @Autowired
@@ -25,36 +26,34 @@ public class ProfileService {
     }
 
     /**
-     * TODO finish javaDoc
+     * Create a {@link Profile} object.
      *
-     * @param profile
-     * @return
-     * @throws ServiceException if profile could not be created
+     * @param profile {@link Profile}
+     * @return {@link Profile}
      */
-    public Profile create(Profile profile) throws ServiceException {
+    public Profile create(Profile profile) {
         LOG.trace("Creating profile {}", profile);
+
+        Assert.notNull(profile, "Profile must not be null");
+        Assert.isNull(profile.getId(), "Profile ID must be null");
+        Assert.notNull(profile.getEmail(),  "Profile email must not be null");
+        Assert.notNull(profile.getPassword(),  "Profile password must not be null");
 
         // TODO check if email is legit
         //  check if email already exists in db,
         //  check if panther id already exits in db
 
         profile.setPassword(passwordEncoder.encode(profile.getPassword()));
-        try {
-            return profileDao.create(profile);
-        } catch (DaoException e) {
-            LOG.error(e.getMessage(), e);
-            throw new ServiceException(String.format("Failed attempt to create profile %s", profile.toString()));
-        }
+        return profileDao.create(profile);
     }
 
     /**
-     * TODO finish javaDoc
+     * Retrieve a {@link Profile} object by its Id.
      *
      * @param profileId
-     * @return
-     * @throws ServiceException if profile could not be read
+     * @return {@link Profile}
      */
-    public Profile read(Long profileId) throws ServiceException {
+    public Profile read(Long profileId) {
         LOG.trace("Reading profile {}", profileId);
 
         // TODO make sure user has access to read
@@ -68,16 +67,18 @@ public class ProfileService {
     }
 
     /**
-     * TODO finish javaDoc
+     * Update the provided {@link Profile} object.
      *
-     * @param profile
-     * @return
-     * @throws ServiceException if profile could not be updated
+     * @param profile {@link Profile}
+     * @return true if successful
      */
-    public boolean update(Profile profile) throws ServiceException {
+    public boolean update(Profile profile) {
         LOG.trace("Updating profile {}", profile);
 
-        // TODO make sure user has access to update
+        Assert.notNull(profile, "Profile must not be null");
+        Assert.notNull(profile.getId(), "Profile Id must not be null");
+        Assert.notNull(profile.getEmail(),  "Profile email must not be null");
+        Assert.notNull(profile.getPassword(),  "Profile password must not be null");
 
         if (profileDao.read(profile.getId()) == null) {
             throw new ServiceException("Could not update Profile " + profile.getId() + " - record not found.");
@@ -87,16 +88,13 @@ public class ProfileService {
     }
 
     /**
-     * TODO finish javaDoc
+     * Delete a {@link Profile} object by its Id.
      *
      * @param profileId
-     * @return
-     * @throws ServiceException if profile could not be deleted
+     * @return true if successful
      */
-    public boolean delete(Long profileId) throws ServiceException {
+    public boolean delete(Long profileId) {
         LOG.trace("Deleting profile {}", profileId);
-
-        // TODO make sure user has access to delete
 
         if (profileDao.read(profileId) == null) {
             throw new ServiceException("Could not delete Profile " + profileId + " - record not found.");
