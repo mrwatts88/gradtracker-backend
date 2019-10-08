@@ -1,5 +1,5 @@
---STATEMENT createProfile
-INSERT INTO profiles (
+--STATEMENT createUser
+INSERT INTO users (
   first_name,
   last_name,
   password,
@@ -15,17 +15,17 @@ INSERT INTO profiles (
   :created_date
 );
 
---STATEMENT readProfile
-SELECT * FROM profiles WHERE id = :id;
+--STATEMENT readUser
+SELECT * FROM users WHERE id = :id;
 
---STATEMENT readProfileByEmail
-SELECT * FROM profiles WHERE email = :email;
+--STATEMENT readUserByEmail
+SELECT * FROM users WHERE email = :email;
 
---STATEMENT deleteProfile
-DELETE FROM profiles WHERE id = :id;
+--STATEMENT deleteUser
+DELETE FROM users WHERE id = :id;
 
---STATEMENT updateProfile
-UPDATE profiles SET
+--STATEMENT updateUser
+UPDATE users SET
   first_name = :first_name,
   last_name = :last_name,
   password = :password,

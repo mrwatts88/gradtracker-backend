@@ -1,7 +1,7 @@
 package edu.uwm.capstone.security;
 
-import edu.uwm.capstone.db.ProfileDao;
-import edu.uwm.capstone.model.Profile;
+import edu.uwm.capstone.db.UserDao;
+import edu.uwm.capstone.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,15 +13,15 @@ import org.springframework.stereotype.Service;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    private ProfileDao profileDao;
+    private UserDao userDao;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Profile profile = profileDao.readByEmail(username);
+        User user = userDao.readByEmail(username);
 
-        if (profile == null) {
+        if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-        return new UserDetailsImpl(profile);
+        return new UserDetailsImpl(user);
     }
 }

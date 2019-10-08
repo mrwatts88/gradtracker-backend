@@ -2,8 +2,8 @@ package edu.uwm.capstone.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uwm.capstone.Application;
-import edu.uwm.capstone.db.ProfileDao;
-import edu.uwm.capstone.model.Profile;
+import edu.uwm.capstone.db.UserDao;
+import edu.uwm.capstone.model.User;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.response.ExtractableResponse;
@@ -26,20 +26,20 @@ import java.util.List;
 
 import static edu.uwm.capstone.security.SecurityConstants.AUTHENTICATE_URL;
 import static edu.uwm.capstone.security.SecurityConstants.DEFAULT_USER_CREDENTIALS;
-import static edu.uwm.capstone.util.TestDataUtility.profileWithTestValues;
 import static edu.uwm.capstone.util.TestDataUtility.randomLong;
+import static edu.uwm.capstone.util.TestDataUtility.userWithTestValues;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
 
 /**
  * This test class exercises the spring boot based {@link Application} running in memory to verify that
- * the REST endpoints provided by the {@link ProfileRestController} are working correctly.
+ * the REST endpoints provided by the {@link UserRestController} are working correctly.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class ProfileRestControllerComponentTest {
+public class UserRestControllerComponentTest {
 
     @Value("${local.server.port}")
     private int port;
@@ -51,11 +51,11 @@ public class ProfileRestControllerComponentTest {
     private RestTemplate restTemplate;
 
     @Autowired
-    private ProfileDao profileDao;
+    private UserDao userDao;
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    private List<Profile> profilesToCleanup = new ArrayList<>();
+    private List<User> usersToCleanup = new ArrayList<>();
 
     private String authorizationToken;
 
@@ -63,7 +63,7 @@ public class ProfileRestControllerComponentTest {
     public void setUp() {
         assertNotNull(basePath);
         assertNotNull(restTemplate);
-        assertNotNull(profileDao);
+        assertNotNull(userDao);
 
         RestAssured.port = port;
         RestAssured.basePath = basePath;
@@ -84,211 +84,211 @@ public class ProfileRestControllerComponentTest {
 
     @After
     public void teardown() {
-        profilesToCleanup.forEach(profile -> profileDao.delete(profile.getId()));
-        profilesToCleanup.clear();
+        usersToCleanup.forEach(user -> userDao.delete(user.getId()));
+        usersToCleanup.clear();
     }
 
     @Test
     public void create() throws Exception {
-        Profile profileToCreate = profileWithTestValues();
+        User userToCreate = userWithTestValues();
 
         // exercise endpoint
         ExtractableResponse<Response> response = given()
                 .header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .body(mapper.writeValueAsString(profileToCreate))
+                .body(mapper.writeValueAsString(userToCreate))
                 .when()
-                .post(ProfileRestController.PROFILE_PATH)
+                .post(UserRestController.PROFILE_PATH)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value()).extract();
 
-        Profile receivedProfile = response.body().as(Profile.class);
+        User receivedUser = response.body().as(User.class);
 
         //if Id is populated - record created successfully
-        assertNotNull(receivedProfile.getId());
-        assertNotEquals(profileToCreate.getPassword(), receivedProfile.getPassword());
-        assertNotNull(receivedProfile.getCreatedDate());
-        assertEquals(profileDao.read(receivedProfile.getId()), receivedProfile);
-        profilesToCleanup.add(receivedProfile);
+        assertNotNull(receivedUser.getId());
+        assertNotEquals(userToCreate.getPassword(), receivedUser.getPassword());
+        assertNotNull(receivedUser.getCreatedDate());
+        assertEquals(userDao.read(receivedUser.getId()), receivedUser);
+        usersToCleanup.add(receivedUser);
     }
 
     @Test
     public void createPreconditionFailedId() throws Exception {
-        Profile profile = profileWithTestValues();
-        profile.setId(randomLong());
+        User user = userWithTestValues();
+        user.setId(randomLong());
 
         // exercise endpoint
         given().header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .body(mapper.writeValueAsString(profile))
+                .body(mapper.writeValueAsString(user))
                 .when()
-                .post(ProfileRestController.PROFILE_PATH)
+                .post(UserRestController.PROFILE_PATH)
                 .then().log().ifValidationFails()
-                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("Profile ID must be null"));
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("User ID must be null"));
     }
 
     @Test
     public void createPreconditionFailedEmail() throws Exception {
-        Profile profile = profileWithTestValues();
-        profile.setEmail(null);
+        User user = userWithTestValues();
+        user.setEmail(null);
 
         // exercise endpoint
         given().header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .body(mapper.writeValueAsString(profile))
+                .body(mapper.writeValueAsString(user))
                 .when()
-                .post(ProfileRestController.PROFILE_PATH)
+                .post(UserRestController.PROFILE_PATH)
                 .then().log().ifValidationFails()
-                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("Profile email must not be null"));
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("User email must not be null"));
     }
 
     @Test
     public void createPreconditionFailedPassword() throws Exception {
-        Profile profile = profileWithTestValues();
-        profile.setPassword(null);
+        User user = userWithTestValues();
+        user.setPassword(null);
 
         // exercise endpoint
         given().header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .body(mapper.writeValueAsString(profile))
+                .body(mapper.writeValueAsString(user))
                 .when()
-                .post(ProfileRestController.PROFILE_PATH)
+                .post(UserRestController.PROFILE_PATH)
                 .then().log().ifValidationFails()
-                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("Profile password must not be null"));
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("User password must not be null"));
     }
 
     @Test
     public void update() throws Exception {
-        Profile profile = profileWithTestValues();
-        profilesToCleanup.add(profileDao.create(profile));
+        User user = userWithTestValues();
+        usersToCleanup.add(userDao.create(user));
 
-        Profile profileToUpdate = profileWithTestValues();
-        profileToUpdate.setId(profile.getId());
+        User userToUpdate = userWithTestValues();
+        userToUpdate.setId(user.getId());
 
         // exercise endpoint
         given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .header(new Header("Authorization", authorizationToken))
-                .body(mapper.writeValueAsString(profileToUpdate))
+                .body(mapper.writeValueAsString(userToUpdate))
                 .when()
-                .put(ProfileRestController.PROFILE_PATH)
+                .put(UserRestController.PROFILE_PATH)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value()).extract();
 
-        Profile verifyProfile = profileDao.read(profile.getId());
-        assertNotNull(verifyProfile.getUpdatedDate());
-        assertEquals(profileToUpdate.getId(), verifyProfile.getId());
-        assertNotEquals(profileToUpdate.getPassword(), verifyProfile.getPassword());
+        User verifyUser = userDao.read(user.getId());
+        assertNotNull(verifyUser.getUpdatedDate());
+        assertEquals(userToUpdate.getId(), verifyUser.getId());
+        assertNotEquals(userToUpdate.getPassword(), verifyUser.getPassword());
     }
 
     @Test
     public void updateNotFound() throws Exception {
-        Profile profileToUpdate = profileWithTestValues();
-        profileToUpdate.setId(randomLong());
+        User userToUpdate = userWithTestValues();
+        userToUpdate.setId(randomLong());
 
         // exercise endpoint
         given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .header(new Header("Authorization", authorizationToken))
-                .body(mapper.writeValueAsString(profileToUpdate))
+                .body(mapper.writeValueAsString(userToUpdate))
                 .when()
-                .put(ProfileRestController.PROFILE_PATH)
+                .put(UserRestController.PROFILE_PATH)
                 .then().log().ifValidationFails()
-                .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("Could not update Profile " + profileToUpdate.getId() + " - record not found."));
+                .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("Could not update User " + userToUpdate.getId() + " - record not found."));
     }
 
     @Test
     public void updatePreconditionFailedEmail() throws Exception {
-        Profile profile = profileWithTestValues();
-        profilesToCleanup.add(profileDao.create(profile));
+        User user = userWithTestValues();
+        usersToCleanup.add(userDao.create(user));
 
-        Profile profileToUpdate = profileWithTestValues();
-        profileToUpdate.setId(profile.getId());
-        profileToUpdate.setEmail(null);
+        User userToUpdate = userWithTestValues();
+        userToUpdate.setId(user.getId());
+        userToUpdate.setEmail(null);
 
         // exercise endpoint
         given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .header(new Header("Authorization", authorizationToken))
-                .body(mapper.writeValueAsString(profileToUpdate))
+                .body(mapper.writeValueAsString(userToUpdate))
                 .when()
-                .put(ProfileRestController.PROFILE_PATH)
+                .put(UserRestController.PROFILE_PATH)
                 .then().log().ifValidationFails()
-                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("Profile email must not be null"));
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("User email must not be null"));
     }
 
     @Test
     public void updatePreconditionFailedPassword() throws Exception {
-        Profile profile = profileWithTestValues();
-        profilesToCleanup.add(profileDao.create(profile));
+        User user = userWithTestValues();
+        usersToCleanup.add(userDao.create(user));
 
-        Profile profileToUpdate = profileWithTestValues();
-        profileToUpdate.setId(profile.getId());
-        profileToUpdate.setPassword(null);
+        User userToUpdate = userWithTestValues();
+        userToUpdate.setId(user.getId());
+        userToUpdate.setPassword(null);
 
         // exercise endpoint
         given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .header(new Header("Authorization", authorizationToken))
-                .body(mapper.writeValueAsString(profileToUpdate))
+                .body(mapper.writeValueAsString(userToUpdate))
                 .when()
-                .put(ProfileRestController.PROFILE_PATH)
+                .put(UserRestController.PROFILE_PATH)
                 .then().log().ifValidationFails()
-                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("Profile password must not be null"));
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("User password must not be null"));
     }
 
     @Test
     public void readById() {
-        Profile profile = profileWithTestValues();
-        profilesToCleanup.add(profileDao.create(profile));
+        User user = userWithTestValues();
+        usersToCleanup.add(userDao.create(user));
 
         // exercise endpoint
         ExtractableResponse<Response> response = given()
                 .header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .when()
-                .get(ProfileRestController.PROFILE_PATH + profile.getId())
+                .get(UserRestController.PROFILE_PATH + user.getId())
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value()).extract();
 
-        Profile receivedProfile = response.body().as(Profile.class);
-        assertEquals(profile, receivedProfile);
+        User receivedUser = response.body().as(User.class);
+        assertEquals(user, receivedUser);
     }
 
     @Test
     public void readByIdNotFound() {
-        Long profileId = randomLong();
+        Long userId = randomLong();
 
         // exercise endpoint
         given().header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .when()
-                .get(ProfileRestController.PROFILE_PATH + profileId)
+                .get(UserRestController.PROFILE_PATH + userId)
                 .then().log().ifValidationFails()
-                .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("Profile with ID: " + profileId + " not found."));
+                .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("User with ID: " + userId + " not found."));
     }
 
     @Test
     public void deleteById() {
-        Profile profile = profileWithTestValues();
-        profileDao.create(profile);
+        User user = userWithTestValues();
+        userDao.create(user);
 
         // exercise endpoint
         ExtractableResponse<Response> response = given()
                 .header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .when()
-                .delete(ProfileRestController.PROFILE_PATH + profile.getId())
+                .delete(UserRestController.PROFILE_PATH + user.getId())
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
     @Test
     public void deleteByIdNotFound() {
-        Long profileId = randomLong();
+        Long userId = randomLong();
 
         // exercise endpoint
         given().header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .when()
-                .delete(ProfileRestController.PROFILE_PATH + profileId)
+                .delete(UserRestController.PROFILE_PATH + userId)
                 .then().log().ifValidationFails()
-                .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("Could not delete Profile " + profileId + " - record not found."));
+                .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("Could not delete User " + userId + " - record not found."));
     }
 }

@@ -1,7 +1,7 @@
 package edu.uwm.capstone;
 
-import edu.uwm.capstone.db.ProfileDao;
-import edu.uwm.capstone.db.ProfileDaoRowMapper;
+import edu.uwm.capstone.db.UserDao;
+import edu.uwm.capstone.db.UserDaoRowMapper;
 import edu.uwm.capstone.sql.statement.ISqlStatementsFileLoader;
 import edu.uwm.capstone.sql.statement.SqlStatementsFileLoader;
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -90,17 +90,17 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public ProfileDao profileDao() {
-        ProfileDao profileDao = new ProfileDao();
-        profileDao.setDataSource(dataSource());
-        profileDao.setSqlStatementsFileLoader(sqlStatementsFileLoader());
-        profileDao.setRowMapper(profileDaoRowMapper());
-        return profileDao;
+    public UserDao profileDao() {
+        UserDao userDao = new UserDao();
+        userDao.setDataSource(dataSource());
+        userDao.setSqlStatementsFileLoader(sqlStatementsFileLoader());
+        userDao.setRowMapper(profileDaoRowMapper());
+        return userDao;
     }
 
     @Bean
-    public ProfileDaoRowMapper profileDaoRowMapper() {
-        return new ProfileDaoRowMapper();
+    public UserDaoRowMapper profileDaoRowMapper() {
+        return new UserDaoRowMapper();
     }
 
     public String getDbDriverClassName() {

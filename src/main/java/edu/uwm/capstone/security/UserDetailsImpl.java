@@ -1,6 +1,6 @@
 package edu.uwm.capstone.security;
 
-import edu.uwm.capstone.model.Profile;
+import edu.uwm.capstone.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,32 +10,32 @@ import static java.util.Collections.emptyList;
 
 public class UserDetailsImpl implements UserDetails {
 
-    private Profile profile;
+    private User user;
     private Collection<? extends GrantedAuthority> authorities;
 
     /**
-     * Constructs a {@link UserDetails} from a {@link Profile} without any authorities.
+     * Constructs a {@link UserDetails} from a {@link User} without any authorities.
      *
-     * @param profile the {@link Profile}
+     * @param user the {@link User}
      */
-    UserDetailsImpl(Profile profile) {
-        this.profile = profile;
+    UserDetailsImpl(User user) {
+        this.user = user;
         this.authorities = emptyList();
     }
 
     /**
-     * Constructs a {@link UserDetails} from a {@link Profile} with authorities.
+     * Constructs a {@link UserDetails} from a {@link User} with authorities.
      *
-     * @param profile the {@link Profile}
+     * @param user the {@link User}
      * @param authorities the list of {@link GrantedAuthority}s
      */
-    UserDetailsImpl(Profile profile, Collection<? extends GrantedAuthority> authorities) {
-        this.profile = profile;
+    UserDetailsImpl(User user, Collection<? extends GrantedAuthority> authorities) {
+        this.user = user;
         this.authorities = authorities;
     }
 
-    public Profile getProfile() {
-        return profile;
+    public User getUser() {
+        return user;
     }
 
     @Override
@@ -45,12 +45,12 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getPassword() {
-        return profile.getPassword();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return profile.getEmail();
+        return user.getEmail();
     }
 
     @Override

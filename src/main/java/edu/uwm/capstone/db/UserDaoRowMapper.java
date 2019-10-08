@@ -1,6 +1,6 @@
 package edu.uwm.capstone.db;
 
-import edu.uwm.capstone.model.Profile;
+import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.sql.dao.BaseRowMapper;
 
 import java.sql.ResultSet;
@@ -8,12 +8,12 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static edu.uwm.capstone.db.ProfileDaoRowMapper.ProfileColumnType.*;
+import static edu.uwm.capstone.db.UserDaoRowMapper.UserColumnType.*;
 import static edu.uwm.capstone.sql.dao.BaseRowMapper.BaseColumnType.*;
 
-public class ProfileDaoRowMapper extends BaseRowMapper<Profile> {
+public class UserDaoRowMapper extends BaseRowMapper<User> {
 
-    public enum ProfileColumnType {
+    public enum UserColumnType {
         FIRST_NAME(),
         LAST_NAME(),
         PASSWORD(),
@@ -22,7 +22,7 @@ public class ProfileDaoRowMapper extends BaseRowMapper<Profile> {
 
         private String columnName;
 
-        ProfileColumnType() {
+        UserColumnType() {
             columnName = name().toLowerCase();
         }
 
@@ -30,7 +30,7 @@ public class ProfileDaoRowMapper extends BaseRowMapper<Profile> {
     }
 
     @Override
-    public Map<String, Object> mapObject(Profile object) {
+    public Map<String, Object> mapObject(User object) {
         Map<String, Object> map = new HashMap<>();
         map.put(ID.getColumnName(), object.getId());
         map.put(FIRST_NAME.getColumnName(), object.getFirstName());
@@ -44,8 +44,8 @@ public class ProfileDaoRowMapper extends BaseRowMapper<Profile> {
     }
 
     @Override
-    public Profile mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Profile folder = new Profile();
+    public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+        User folder = new User();
         folder.setId(rs.getLong(ID.getColumnName()));
         folder.setFirstName(rs.getString(FIRST_NAME.getColumnName()));
         folder.setLastName(rs.getString(LAST_NAME.getColumnName()));

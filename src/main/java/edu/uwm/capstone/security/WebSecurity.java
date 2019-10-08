@@ -1,7 +1,7 @@
 package edu.uwm.capstone.security;
 
-import edu.uwm.capstone.db.ProfileDao;
-import edu.uwm.capstone.model.Profile;
+import edu.uwm.capstone.db.UserDao;
+import edu.uwm.capstone.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,14 +61,14 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    private ProfileDao profileDao;
+    private UserDao userDao;
 
     private void persistDefaultUser(PasswordEncoder passwordEncoder) {
-        Profile defaultProfile = profileDao.readByEmail(DEFAULT_USER_EMAIL);
+        User defaultUser = userDao.readByEmail(DEFAULT_USER_EMAIL);
 
-        if (defaultProfile != null) return;
+        if (defaultUser != null) return;
 
-        defaultProfile = Profile.builder()
+        defaultUser = User.builder()
                 .firstName(DEFAULT_USER_FIRST_NAME)
                 .lastName(DEFAULT_USER_LAST_NAME)
                 .email(DEFAULT_USER_EMAIL)
@@ -76,7 +76,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .password(passwordEncoder.encode(DEFAULT_USER_PASSWORD))
                 .build();
 
-        LOGGER.info("Persisting default user {}", defaultProfile);
-        profileDao.create(defaultProfile);
+        LOGGER.info("Persisting default user {}", defaultUser);
+        userDao.create(defaultUser);
     }
 }

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Profile {
+public class User {
 
     @ApiModelProperty(hidden = true)
     protected Long id;

@@ -2,7 +2,7 @@ package edu.uwm.capstone.security;
 
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.uwm.capstone.model.Profile;
+import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.model.UserLoginRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -54,15 +54,15 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             Authentication auth) throws IOException, ServletException {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
-        Profile profile = userDetails.getProfile();
+        User user = userDetails.getUser();
 
         String token = JWT.create()
                 .withSubject(userDetails.getUsername())
-                .withClaim(JWT_CLAIM_ID, profile.getId())
-                .withClaim(JWT_CLAIM_FIRST_NAME, profile.getFirstName())
-                .withClaim(JWT_CLAIM_LAST_NAME, profile.getLastName())
-                .withClaim(JWT_CLAIM_PANTHER_ID, profile.getPantherId())
-                .withClaim(JWT_CLAIM_EMAIL, profile.getEmail())
+                .withClaim(JWT_CLAIM_ID, user.getId())
+                .withClaim(JWT_CLAIM_FIRST_NAME, user.getFirstName())
+                .withClaim(JWT_CLAIM_LAST_NAME, user.getLastName())
+                .withClaim(JWT_CLAIM_PANTHER_ID, user.getPantherId())
+                .withClaim(JWT_CLAIM_EMAIL, user.getEmail())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .sign(HMAC512(SECRET.getBytes()));
 

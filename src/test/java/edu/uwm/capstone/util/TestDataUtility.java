@@ -1,6 +1,6 @@
 package edu.uwm.capstone.util;
 
-import edu.uwm.capstone.model.Profile;
+import edu.uwm.capstone.model.User;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.LocalDateTime;
@@ -19,20 +19,20 @@ public class TestDataUtility {
     }
 
     /**
-     * Generate a {@link Profile} object that is fully loaded with random values for testing purposes.
-     * @return {@link Profile}
+     * Generate a {@link User} object that is fully loaded with random values for testing purposes.
+     * @return {@link User}
      */
-    public static Profile profileWithTestValues() {
-        Profile profile = new Profile();
+    public static User userWithTestValues() {
+        User user = new User();
         // intentionally left blank -- profile.setId();
-        profile.setFirstName(randomAlphabetic(randomInt(1, 100)));
-        profile.setLastName(randomAlphabetic(randomInt(1, 100)));
-        profile.setPassword(randomAlphabetic(randomInt(10, 100)));
-        profile.setPantherId(randomAlphabetic(randomInt(9, 10)));
-        profile.setEmail(randomAlphabetic(randomInt(1, 50)) + "@" + randomAlphabetic(randomInt(1, 50)));
+        user.setFirstName(randomAlphabetic(randomInt(1, 100)));
+        user.setLastName(randomAlphabetic(randomInt(1, 100)));
+        user.setPassword(randomAlphabetic(randomInt(10, 100)));
+        user.setPantherId(randomAlphabetic(randomInt(9, 10)));
+        user.setEmail(randomAlphabetic(randomInt(1, 50)) + "@" + randomAlphabetic(randomInt(1, 50)));
         // intentionally left blank -- profile.setCreatedDate(randomLocalDateTime());
         // intentionally left blank -- profile.setUpdatedDate(randomLocalDateTime());
-        return profile;
+        return user;
     }
 
     /**

@@ -3,8 +3,8 @@ package edu.uwm.capstone.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.Claim;
 import edu.uwm.capstone.Application;
-import edu.uwm.capstone.model.Profile;
-import edu.uwm.capstone.service.ProfileService;
+import edu.uwm.capstone.model.User;
+import edu.uwm.capstone.service.UserService;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import static edu.uwm.capstone.security.SecurityConstants.*;
-import static edu.uwm.capstone.util.TestDataUtility.profileWithTestValues;
+import static edu.uwm.capstone.util.TestDataUtility.userWithTestValues;
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.*;
 
@@ -42,22 +42,22 @@ public class AuthenticationComponentTest {
     private String basePath;
 
     @Autowired
-    private ProfileService profileService;
+    private UserService userService;
 
-    private List<Profile> profilesToCleanup = new ArrayList<>();
+    private List<User> usersToCleanup = new ArrayList<>();
 
     @Before
     public void setUp() {
         assertNotNull(basePath);
-        assertNotNull(profileService);
+        assertNotNull(userService);
         RestAssured.port = port;
         RestAssured.basePath = basePath;
     }
 
     @After
     public void teardown() {
-        profilesToCleanup.forEach(profile -> profileService.delete(profile.getId()));
-        profilesToCleanup.clear();
+        usersToCleanup.forEach(user -> userService.delete(user.getId()));
+        usersToCleanup.clear();
     }
 
     @Test
@@ -77,10 +77,10 @@ public class AuthenticationComponentTest {
 
     @Test
     public void existentUserCanGetToken() {
-        Profile profile = profileWithTestValues();
-        String credentials = "{ \"email\" : \"" + profile.getEmail() + "\", \"password\" : \"" + profile.getPassword() + "\" }";
-        profileService.create(profile);
-        profilesToCleanup.add(profile);
+        User user = userWithTestValues();
+        String credentials = "{ \"email\" : \"" + user.getEmail() + "\", \"password\" : \"" + user.getPassword() + "\" }";
+        userService.create(user);
+        usersToCleanup.add(user);
 
         // exercise authentication endpoint
         ExtractableResponse<Response> response = given()
@@ -135,10 +135,10 @@ public class AuthenticationComponentTest {
 
     @Test
     public void existentUserJWTClaims() {
-        Profile profile = profileWithTestValues();
-        String credentials = "{ \"email\" : \"" + profile.getEmail() + "\", \"password\" : \"" + profile.getPassword() + "\" }";
-        profileService.create(profile);
-        profilesToCleanup.add(profile);
+        User user = userWithTestValues();
+        String credentials = "{ \"email\" : \"" + user.getEmail() + "\", \"password\" : \"" + user.getPassword() + "\" }";
+        userService.create(user);
+        usersToCleanup.add(user);
 
         // exercise authentication endpoint
         ExtractableResponse<Response> response = given()
@@ -153,10 +153,10 @@ public class AuthenticationComponentTest {
         assertNotNull(token);
 
         Map<String, Claim> claimsMap = JWT.decode(token).getClaims();
-        assertEquals(claimsMap.get(JWT_CLAIM_ID).asLong(), profile.getId());
-        assertEquals(claimsMap.get(JWT_CLAIM_FIRST_NAME).asString(), profile.getFirstName());
-        assertEquals(claimsMap.get(JWT_CLAIM_LAST_NAME).asString(), profile.getLastName());
-        assertEquals(claimsMap.get(JWT_CLAIM_PANTHER_ID).asString(), profile.getPantherId());
-        assertEquals(claimsMap.get(JWT_CLAIM_EMAIL).asString(), profile.getEmail());
+        assertEquals(claimsMap.get(JWT_CLAIM_ID).asLong(), user.getId());
+        assertEquals(claimsMap.get(JWT_CLAIM_FIRST_NAME).asString(), user.getFirstName());
+        assertEquals(claimsMap.get(JWT_CLAIM_LAST_NAME).asString(), user.getLastName());
+        assertEquals(claimsMap.get(JWT_CLAIM_PANTHER_ID).asString(), user.getPantherId());
+        assertEquals(claimsMap.get(JWT_CLAIM_EMAIL).asString(), user.getEmail());
     }
 }
