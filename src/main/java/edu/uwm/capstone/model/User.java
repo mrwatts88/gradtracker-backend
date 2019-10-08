@@ -1,21 +1,18 @@
 package edu.uwm.capstone.model;
 
-import java.time.LocalDateTime;
-
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import io.swagger.annotations.ApiModelProperty;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Profile {
+public class User {
 
     @ApiModelProperty(hidden = true)
     protected Long id;

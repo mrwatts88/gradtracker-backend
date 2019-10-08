@@ -1,9 +1,7 @@
 package edu.uwm.capstone;
 
-import edu.uwm.capstone.db.ProfileDao;
-import edu.uwm.capstone.db.ProfileDaoRowMapper;
-import edu.uwm.capstone.db.UserLoginCredentialsDao;
-import edu.uwm.capstone.db.UserLoginCredentialsDaoRowMapper;
+import edu.uwm.capstone.db.UserDao;
+import edu.uwm.capstone.db.UserDaoRowMapper;
 import edu.uwm.capstone.sql.statement.ISqlStatementsFileLoader;
 import edu.uwm.capstone.sql.statement.SqlStatementsFileLoader;
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -92,31 +90,17 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public ProfileDao profileDao() {
-        ProfileDao profileDao = new ProfileDao();
-        profileDao.setDataSource(dataSource());
-        profileDao.setSqlStatementsFileLoader(sqlStatementsFileLoader());
-        profileDao.setRowMapper(profileDaoRowMapper());
-        return profileDao;
+    public UserDao profileDao() {
+        UserDao userDao = new UserDao();
+        userDao.setDataSource(dataSource());
+        userDao.setSqlStatementsFileLoader(sqlStatementsFileLoader());
+        userDao.setRowMapper(profileDaoRowMapper());
+        return userDao;
     }
 
     @Bean
-    public UserLoginCredentialsDao userLoginCredentialsDao() {
-        UserLoginCredentialsDao userLoginCredentialsDao = new UserLoginCredentialsDao();
-        userLoginCredentialsDao.setDataSource(dataSource());
-        userLoginCredentialsDao.setSqlStatementsFileLoader(sqlStatementsFileLoader());
-        userLoginCredentialsDao.setRowMapper(userLoginCredentialsDaoRowMapper());
-        return userLoginCredentialsDao;
-    }
-
-    @Bean
-    public ProfileDaoRowMapper profileDaoRowMapper() {
-        return new ProfileDaoRowMapper();
-    }
-
-    @Bean
-    public UserLoginCredentialsDaoRowMapper userLoginCredentialsDaoRowMapper() {
-        return new UserLoginCredentialsDaoRowMapper();
+    public UserDaoRowMapper profileDaoRowMapper() {
+        return new UserDaoRowMapper();
     }
 
     public String getDbDriverClassName() {

@@ -1,16 +1,16 @@
-package edu.uwm.capstone.sql.exception;
+package edu.uwm.capstone.service.exception;
 
 /**
  * More Descriptive Runtime Exception.
  */
-public class ServiceException extends RuntimeException {
+public class UserNotFoundException extends RuntimeException {
 
     /**
      * Constructs a new runtime exception with {@code null} as its
      * detail message.  The cause is not initialized, and may subsequently be
      * initialized by a call to {@link #initCause}.
      */
-    public ServiceException() {
+    public UserNotFoundException() {
         super();
     }
 
@@ -22,7 +22,7 @@ public class ServiceException extends RuntimeException {
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public ServiceException(String message) {
+    public UserNotFoundException(String message) {
         super(message);
     }
 
@@ -40,7 +40,7 @@ public class ServiceException extends RuntimeException {
      *                unknown.)
      * @since 1.4
      */
-    public ServiceException(String message, Throwable cause) {
+    public UserNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -57,7 +57,7 @@ public class ServiceException extends RuntimeException {
      *              unknown.)
      * @since 1.4
      */
-    public ServiceException(Throwable cause) {
+    public UserNotFoundException(Throwable cause) {
         super(cause);
     }
 }

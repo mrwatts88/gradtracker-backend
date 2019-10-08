@@ -1,6 +1,6 @@
 package edu.uwm.capstone.model;
 
-public class UserLoginCredentials {
+public class UserLoginRequest {
 
     private String email;
     private String password;

@@ -35,7 +35,7 @@ public class SqlStatementsFileLoaderUnitTest {
      * Verify that {@link SqlStatementsFileLoader#sql(String)} works correctly when a valid
      * {@link SqlStatementsFileLoader#statementResourceLocation} and
      * {@link SqlStatementsFileLoader#setApplicationContext(ApplicationContext)} are provided.
-     * This test uses /main/resources/sql/profile.sql as the resource to be parsed.
+     * This test uses /main/resources/sql/users.sql as the resource to be parsed.
      */
     @Test
     public void sqlWithStatementResourceLocation() {
@@ -44,10 +44,10 @@ public class SqlStatementsFileLoaderUnitTest {
         sqlStatementsFileLoader.setApplicationContext(applicationContext);
 
         assertNotNull(sqlStatementsFileLoader.getStatementResourceLocation());
-        assertNotNull(sqlStatementsFileLoader.sql("createProfile"));
-        assertNotNull(sqlStatementsFileLoader.sql("readProfile"));
-        assertNotNull(sqlStatementsFileLoader.sql("updateProfile"));
-        assertNotNull(sqlStatementsFileLoader.sql("deleteProfile"));
+        assertNotNull(sqlStatementsFileLoader.sql("createUser"));
+        assertNotNull(sqlStatementsFileLoader.sql("readUser"));
+        assertNotNull(sqlStatementsFileLoader.sql("updateUser"));
+        assertNotNull(sqlStatementsFileLoader.sql("deleteUser"));
     }
 
     /**

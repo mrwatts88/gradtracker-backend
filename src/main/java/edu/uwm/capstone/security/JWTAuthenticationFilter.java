@@ -2,13 +2,12 @@ package edu.uwm.capstone.security;
 
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.uwm.capstone.model.UserLoginCredentials;
+import edu.uwm.capstone.model.User;
+import edu.uwm.capstone.model.UserLoginRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -25,16 +24,17 @@ import static edu.uwm.capstone.security.SecurityConstants.*;
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JWTAuthenticationFilter(String processUrl, AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
+        setFilterProcessesUrl(processUrl);
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) throws AuthenticationException {
         try {
-            UserLoginCredentials creds = new ObjectMapper()
-                    .readValue(req.getInputStream(), UserLoginCredentials.class);
+            UserLoginRequest creds = new ObjectMapper()
+                    .readValue(req.getInputStream(), UserLoginRequest.class);
 
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -53,10 +53,20 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
 
+        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+        User user = userDetails.getUser();
+
         String token = JWT.create()
-                .withSubject(((User) auth.getPrincipal()).getUsername())
+                .withSubject(userDetails.getUsername())
+                .withClaim(JWT_CLAIM_ID, user.getId())
+                .withClaim(JWT_CLAIM_FIRST_NAME, user.getFirstName())
+                .withClaim(JWT_CLAIM_LAST_NAME, user.getLastName())
+                .withClaim(JWT_CLAIM_PANTHER_ID, user.getPantherId())
+                .withClaim(JWT_CLAIM_EMAIL, user.getEmail())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .sign(HMAC512(SECRET.getBytes()));
+
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
     }
+
 }
