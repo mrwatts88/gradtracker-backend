@@ -17,6 +17,7 @@ public class Form {
 
     @ApiModelProperty(hidden = true)
     protected Long id;
+    private Long user_id;
     private List<Field> fieldsList;
 
     @ApiModelProperty(hidden = true)
@@ -33,5 +34,45 @@ public class Form {
         if (this.fieldsList != null)
             return this.fieldsList.remove(f);
         return false;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
+    }
+
+    public List<Field> getFieldsList() {
+        return fieldsList;
+    }
+
+    public void setFieldsList(List<Field> fieldsList) {
+        this.fieldsList = fieldsList;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public LocalDateTime getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(LocalDateTime updatedDate) {
+        this.updatedDate = updatedDate;
     }
 }
