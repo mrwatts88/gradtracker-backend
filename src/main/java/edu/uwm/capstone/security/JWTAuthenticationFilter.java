@@ -58,11 +58,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String token = JWT.create()
                 .withSubject(userDetails.getUsername())
-                .withClaim("profile id", profile.getId())
-                .withClaim("first name", profile.getFirstName())
-                .withClaim("last name", profile.getLastName())
-                .withClaim("panther id", profile.getPantherId())
-                .withClaim("email", profile.getEmail())
+                .withClaim(JWT_CLAIM_ID, profile.getId())
+                .withClaim(JWT_CLAIM_FIRST_NAME, profile.getFirstName())
+                .withClaim(JWT_CLAIM_LAST_NAME, profile.getLastName())
+                .withClaim(JWT_CLAIM_PANTHER_ID, profile.getPantherId())
+                .withClaim(JWT_CLAIM_EMAIL, profile.getEmail())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .sign(HMAC512(SECRET.getBytes()));
 
