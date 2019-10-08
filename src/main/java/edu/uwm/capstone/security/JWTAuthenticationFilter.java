@@ -4,10 +4,10 @@ import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.model.UserLoginRequest;
+import edu.uwm.capstone.security.exception.JWTAuthenticationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -31,7 +31,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req,
-                                                HttpServletResponse res) throws AuthenticationException {
+                                                HttpServletResponse res) {
         try {
             UserLoginRequest creds = new ObjectMapper()
                     .readValue(req.getInputStream(), UserLoginRequest.class);
@@ -43,7 +43,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                             new ArrayList<>())
             );
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new JWTAuthenticationException(e);
         }
     }
 

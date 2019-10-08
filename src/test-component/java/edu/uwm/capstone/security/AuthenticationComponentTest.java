@@ -127,10 +127,10 @@ public class AuthenticationComponentTest {
         assertNotNull(token);
 
         Map<String, Claim> claimsMap = JWT.decode(token).getClaims();
-        assertEquals(claimsMap.get(JWT_CLAIM_FIRST_NAME).asString(), DEFAULT_USER_FIRST_NAME);
-        assertEquals(claimsMap.get(JWT_CLAIM_LAST_NAME).asString(), DEFAULT_USER_LAST_NAME);
-        assertEquals(claimsMap.get(JWT_CLAIM_PANTHER_ID).asString(), DEFAULT_USER_PANTHER_ID);
-        assertEquals(claimsMap.get(JWT_CLAIM_EMAIL).asString(), DEFAULT_USER_EMAIL);
+        assertEquals(DEFAULT_USER_FIRST_NAME, claimsMap.get(JWT_CLAIM_FIRST_NAME).asString());
+        assertEquals(DEFAULT_USER_LAST_NAME, claimsMap.get(JWT_CLAIM_LAST_NAME).asString());
+        assertEquals(DEFAULT_USER_PANTHER_ID, claimsMap.get(JWT_CLAIM_PANTHER_ID).asString());
+        assertEquals(DEFAULT_USER_EMAIL, claimsMap.get(JWT_CLAIM_EMAIL).asString());
     }
 
     @Test
@@ -153,10 +153,10 @@ public class AuthenticationComponentTest {
         assertNotNull(token);
 
         Map<String, Claim> claimsMap = JWT.decode(token).getClaims();
-        assertEquals(claimsMap.get(JWT_CLAIM_ID).asLong(), user.getId());
-        assertEquals(claimsMap.get(JWT_CLAIM_FIRST_NAME).asString(), user.getFirstName());
-        assertEquals(claimsMap.get(JWT_CLAIM_LAST_NAME).asString(), user.getLastName());
-        assertEquals(claimsMap.get(JWT_CLAIM_PANTHER_ID).asString(), user.getPantherId());
-        assertEquals(claimsMap.get(JWT_CLAIM_EMAIL).asString(), user.getEmail());
+        assertEquals(user.getId(), claimsMap.get(JWT_CLAIM_ID).asLong());
+        assertEquals(user.getFirstName(), claimsMap.get(JWT_CLAIM_FIRST_NAME).asString());
+        assertEquals(user.getLastName(), claimsMap.get(JWT_CLAIM_LAST_NAME).asString());
+        assertEquals(user.getPantherId(), claimsMap.get(JWT_CLAIM_PANTHER_ID).asString());
+        assertEquals(user.getEmail(), claimsMap.get(JWT_CLAIM_EMAIL).asString());
     }
 }

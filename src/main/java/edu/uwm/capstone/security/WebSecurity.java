@@ -24,6 +24,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurity.class);
 
     @Bean
+    @Override
     public UserDetailsService userDetailsService() {
         return new UserDetailsServiceImpl();
     }
@@ -35,7 +36,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // TODO swaggerui is inaccessible unless authenticated
         LOGGER.info("Configuring security chain");
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/swagger**").permitAll()

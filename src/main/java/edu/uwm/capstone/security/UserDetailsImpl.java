@@ -10,7 +10,7 @@ import static java.util.Collections.emptyList;
 
 public class UserDetailsImpl implements UserDetails {
 
-    private User user;
+    private transient User user;
     private Collection<? extends GrantedAuthority> authorities;
 
     /**
@@ -55,21 +55,21 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;  // TODO
+        return true;  // TODO need to know if a user account is expired
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;  // TODO
+        return true;  // TODO need to know if a user account is locked
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;  // TODO
+        return true;  // TODO need to know if a user's credentials are expired
     }
 
     @Override
     public boolean isEnabled() {
-        return true;  // TODO
+        return true;  // TODO need to know if a user account is enabled
     }
 }
