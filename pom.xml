@@ -5,7 +5,7 @@
             http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>edu.uwm.capstone</groupId>
-    <artifactId>backend-example</artifactId>
+    <artifactId>uwm-cs595-nm-backend</artifactId>
     <version>0.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -27,12 +27,12 @@
     </properties>
 
     <scm>
-        <url>https://gitlab.nmcapstone/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example</url>
+        <url>https://gitlab.nmcapstone.com/uwm-2019-fall/uwm-cs595-nm-backend.git</url>
         <connection>
-            scm:git:git@gitlab.nmcapstone/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example.git
+            scm:git:git@gitlab.nmcapstone.com/uwm-2019-fall/uwm-cs595-nm-backend.git
         </connection>
         <developerConnection>
-            scm:git:git@gitlab.nmcapstone/nm-capstone-cookbooks/nm-capstone-backend-cookbooks/backend-example.git
+            scm:git:git@gitlab.nmcapstone.com/uwm-2019-fall/uwm-cs595-nm-backend.git
         </developerConnection>
         <tag>HEAD</tag>
     </scm>
@@ -365,7 +365,7 @@
                 </property>
             </activation>
             <properties>
-                <sonar.projectKey>edu.uwm.capstone:backend-example</sonar.projectKey>
+                <sonar.projectKey>edu.uwm.capstone:uwm-cs595-nm-backend</sonar.projectKey>
             </properties>
         </profile>
         <profile>

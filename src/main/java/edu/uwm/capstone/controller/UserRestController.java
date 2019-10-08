@@ -17,7 +17,7 @@ import java.io.IOException;
 @SuppressWarnings("squid:S1075") // suppress sonar warning about hard-coded URL path
 public class UserRestController {
 
-    static final String PROFILE_PATH = "/profile/";
+    static final String PROFILE_PATH = "/user/";
 
     private static final Logger LOG = LoggerFactory.getLogger(UserRestController.class);
 
@@ -36,7 +36,7 @@ public class UserRestController {
      * @return {@link User}
      * @throws IOException if error response cannot be created.
      */
-    @ApiOperation(value = "Create Profile")
+    @ApiOperation(value = "Create User")
     @PostMapping(value = PROFILE_PATH)
     public User create(@RequestBody User user, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
@@ -55,16 +55,16 @@ public class UserRestController {
     /**
      * Get the {@link User} by Id
      *
-     * @param profileId {@link User#getId()}
+     * @param userId {@link User#getId()}
      * @param response  {@link HttpServletResponse}
      * @return {@link User} retrieved from the database
      * @throws IOException if error response cannot be created.
      */
-    @ApiOperation(value = "Read Profile by ID")
-    @GetMapping(value = PROFILE_PATH + "{profileId}")
-    public User readById(@PathVariable Long profileId, @ApiIgnore HttpServletResponse response) throws IOException {
+    @ApiOperation(value = "Read User by ID")
+    @GetMapping(value = PROFILE_PATH + "{userId}")
+    public User readById(@PathVariable Long userId, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
-            return userService.read(profileId);
+            return userService.read(userId);
         } catch (UserNotFoundException e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
@@ -79,7 +79,7 @@ public class UserRestController {
      * @param response {@link HttpServletResponse}
      * @throws IOException if error response cannot be created.
      */
-    @ApiOperation(value = "Update Profile")
+    @ApiOperation(value = "Update User")
     @PutMapping(value = PROFILE_PATH)
     public void update(@RequestBody User user, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
@@ -99,15 +99,15 @@ public class UserRestController {
     /**
      * Delete the {@link User} by Id
      *
-     * @param profileId {@link User#getId()}
+     * @param userId {@link User#getId()}
      * @param response  {@link HttpServletResponse}
      * @throws IOException if error response cannot be created.
      */
-    @ApiOperation(value = "Delete Profile by ID")
-    @DeleteMapping(value = PROFILE_PATH + "{profileId}")
-    public void deleteById(@PathVariable Long profileId, @ApiIgnore HttpServletResponse response) throws IOException {
+    @ApiOperation(value = "Delete User by ID")
+    @DeleteMapping(value = PROFILE_PATH + "{userId}")
+    public void deleteById(@PathVariable Long userId, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
-            userService.delete(profileId);
+            userService.delete(userId);
         } catch (IllegalArgumentException e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
