@@ -1,11 +1,13 @@
 --STATEMENT createfield
 INSERT INTO fields (
+  fields_id,
   form_id,
   label,
   field_data,
   data_type_flag,
   field_created_date
 ) VALUES (
+  :fields_id,
   :form_id,
   :label,
   :field_data,

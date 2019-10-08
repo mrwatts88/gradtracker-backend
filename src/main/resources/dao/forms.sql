@@ -1,8 +1,10 @@
 --STATEMENT createform
 INSERT INTO forms (
+  form_id,
   user_id,
   form_created_date
 ) VALUES (
+  :form_id,
   :user_id,
   :form_created_date
 );
