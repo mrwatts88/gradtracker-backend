@@ -2,7 +2,7 @@ package edu.uwm.capstone.service;
 
 import edu.uwm.capstone.db.ProfileDao;
 import edu.uwm.capstone.model.Profile;
-import edu.uwm.capstone.sql.exception.ServiceException;
+import edu.uwm.capstone.service.exception.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +34,7 @@ public class ProfileService {
     public Profile create(Profile profile) {
         LOG.trace("Creating profile {}", profile);
 
-        Assert.notNull(profile, "Profile must not be null");
-        Assert.isNull(profile.getId(), "Profile ID must be null");
-        Assert.notNull(profile.getEmail(),  "Profile email must not be null");
-        Assert.notNull(profile.getPassword(),  "Profile password must not be null");
+        checkValidProfile(profile, true);
 
         // TODO check if email is legit
         //  check if email already exists in db,
@@ -61,7 +58,7 @@ public class ProfileService {
         Profile profile = profileDao.read(profileId);
 
         if (profile == null) {
-            throw new ServiceException("Profile with ID: " + profileId + " not found.");
+            throw new UserNotFoundException("Profile with ID: " + profileId + " not found.");
         }
         return profile;
     }
@@ -75,13 +72,10 @@ public class ProfileService {
     public boolean update(Profile profile) {
         LOG.trace("Updating profile {}", profile);
 
-        Assert.notNull(profile, "Profile must not be null");
-        Assert.notNull(profile.getId(), "Profile Id must not be null");
-        Assert.notNull(profile.getEmail(),  "Profile email must not be null");
-        Assert.notNull(profile.getPassword(),  "Profile password must not be null");
+        checkValidProfile(profile, false);
 
         if (profileDao.read(profile.getId()) == null) {
-            throw new ServiceException("Could not update Profile " + profile.getId() + " - record not found.");
+            throw new UserNotFoundException("Could not update Profile " + profile.getId() + " - record not found.");
         }
         profile.setPassword(passwordEncoder.encode(profile.getPassword()));
         return profileDao.update(profile);
@@ -97,8 +91,19 @@ public class ProfileService {
         LOG.trace("Deleting profile {}", profileId);
 
         if (profileDao.read(profileId) == null) {
-            throw new ServiceException("Could not delete Profile " + profileId + " - record not found.");
+            throw new UserNotFoundException("Could not delete Profile " + profileId + " - record not found.");
         }
         return profileDao.delete(profileId);
+    }
+
+    private void checkValidProfile(Profile profile, boolean checkId) {
+        Assert.notNull(profile, "Profile must not be null");
+        if (checkId)
+            Assert.isNull(profile.getId(), "Profile ID must be null");
+        Assert.notNull(profile.getEmail(),  "Profile email must not be null");
+        Assert.notNull(profile.getPassword(),  "Profile password must not be null");
+        Assert.notNull(profile.getFirstName(),  "Profile first name must not be null");
+        Assert.notNull(profile.getFirstName(),  "Profile last name must not be null");
+        Assert.notNull(profile.getFirstName(),  "Profile panther id must not be null");
     }
 }

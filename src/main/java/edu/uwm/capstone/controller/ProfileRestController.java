@@ -2,7 +2,8 @@ package edu.uwm.capstone.controller;
 
 import edu.uwm.capstone.model.Profile;
 import edu.uwm.capstone.service.ProfileService;
-import edu.uwm.capstone.sql.exception.ServiceException;
+import edu.uwm.capstone.service.exception.ServiceException;
+import edu.uwm.capstone.service.exception.UserNotFoundException;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +66,7 @@ public class ProfileRestController {
     public Profile readById(@PathVariable Long profileId, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
             return profileService.read(profileId);
-        } catch (Exception e) {
+        } catch (UserNotFoundException e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
             return null;
@@ -87,7 +88,7 @@ public class ProfileRestController {
         } catch (IllegalArgumentException e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
-        } catch (ServiceException e) {
+        } catch (UserNotFoundException e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         } catch (Exception e) {
@@ -111,7 +112,7 @@ public class ProfileRestController {
         } catch (IllegalArgumentException e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
-        } catch (ServiceException e) {
+        } catch (UserNotFoundException e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         } catch (Exception e) {

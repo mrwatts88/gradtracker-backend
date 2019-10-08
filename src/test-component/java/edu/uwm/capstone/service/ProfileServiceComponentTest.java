@@ -46,8 +46,11 @@ public class ProfileServiceComponentTest {
     @Test
     public void create() {
         Profile createProfile = TestDataUtility.profileWithTestValues();
+        String passwordBefore = createProfile.getPassword();
         profileService.create(createProfile);
         assertNotNull(createProfile.getId());
+        assertNotNull(createProfile.getCreatedDate());
+        assertNotEquals(createProfile.getPassword(), passwordBefore);
         profilesToCleanup.add(createProfile);
     }
 
@@ -140,11 +143,7 @@ public class ProfileServiceComponentTest {
 
         Profile verifyCreateProfile = profileService.read(createProfile.getId());
         assertNotNull(verifyCreateProfile);
-        assertEquals(createProfile.getId(), verifyCreateProfile.getId());
-        assertEquals(createProfile.getFirstName(), verifyCreateProfile.getFirstName());
-        assertEquals(createProfile.getLastName(), verifyCreateProfile.getLastName());
-        assertEquals(createProfile.getPantherId(), verifyCreateProfile.getPantherId());
-        assertEquals(createProfile.getEmail(), verifyCreateProfile.getEmail());
+        assertEquals(createProfile, verifyCreateProfile);
 
         Profile updateProfile = TestDataUtility.profileWithTestValues();
         updateProfile.setId(createProfile.getId());
