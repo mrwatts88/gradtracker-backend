@@ -357,7 +357,7 @@
     </build>
 
     <profiles>
-        <user>
+        <profile>
             <id>sonar-local</id>
             <activation>
                 <property>
@@ -367,8 +367,8 @@
             <properties>
                 <sonar.projectKey>edu.uwm.capstone:backend-example</sonar.projectKey>
             </properties>
-        </user>
-        <user>
+        </profile>
+        <profile>
             <id>sonar-pipeline</id>
             <activation>
                 <property>
@@ -383,8 +383,8 @@
                 <!--suppress UnresolvedMavenProperty -->
                 <sonar.password>${env.SONARQUBE_PASSWORD}</sonar.password>
             </properties>
-        </user>
-        <user>
+        </profile>
+        <profile>
             <id>default</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -410,8 +410,8 @@
                     </plugin>
                 </plugins>
             </build>
-        </user>
-        <user>
+        </profile>
+        <profile>
             <id>test-component</id>
             <build>
                 <plugins>
@@ -434,7 +434,7 @@
                     </plugin>
                 </plugins>
             </build>
-        </user>
+        </profile>
     </profiles>
 
 </project>
