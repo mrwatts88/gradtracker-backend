@@ -1,5 +1,7 @@
 package edu.uwm.capstone;
 
+import edu.uwm.capstone.db.FormDefinitionDao;
+import edu.uwm.capstone.db.FormDefinitionDaoRowMapper;
 import edu.uwm.capstone.db.UserDao;
 import edu.uwm.capstone.db.UserDaoRowMapper;
 import edu.uwm.capstone.sql.statement.ISqlStatementsFileLoader;
@@ -35,6 +37,7 @@ public class ApplicationConfig {
     protected boolean dbPoolLogAbandoned;
     protected long dbPoolMaxAge;
     protected String sqlStatementsResourceLocation;
+    protected DataSource ds;
 
     @Bean
     RestTemplate restTemplate() {
@@ -44,26 +47,28 @@ public class ApplicationConfig {
     @Bean
     @Primary
     public DataSource dataSource() {
-        LOGGER.info("Loading DataSource");
-        PoolProperties poolProperties = new PoolProperties();
-        poolProperties.setDriverClassName(dbDriverClassName);
-        poolProperties.setUrl(dbDriverUrl);
-        poolProperties.setUsername(dbUsername);
-        poolProperties.setPassword(dbPassword);
-        poolProperties.setTestOnBorrow(true);
-        poolProperties.setValidationQuery("SELECT 1");
+        if (ds == null) {
+            LOGGER.info("Loading DataSource");
+            PoolProperties poolProperties = new PoolProperties();
+            poolProperties.setDriverClassName(dbDriverClassName);
+            poolProperties.setUrl(dbDriverUrl);
+            poolProperties.setUsername(dbUsername);
+            poolProperties.setPassword(dbPassword);
+            poolProperties.setTestOnBorrow(true);
+            poolProperties.setValidationQuery("SELECT 1");
 
-        // Set additional pool properties
-        poolProperties.setMaxWait(dbPoolMaxWait);
-        poolProperties.setRemoveAbandoned(dbPoolRemoveAbandoned);
-        poolProperties.setRemoveAbandonedTimeout(dbPoolRemoveAbandonedTimeout);
-        poolProperties.setLogAbandoned(dbPoolLogAbandoned);
-        poolProperties.setMaxAge(dbPoolMaxAge);
-        poolProperties.setMaxActive(600);
+            // Set additional pool properties
+            poolProperties.setMaxWait(dbPoolMaxWait);
+            poolProperties.setRemoveAbandoned(dbPoolRemoveAbandoned);
+            poolProperties.setRemoveAbandonedTimeout(dbPoolRemoveAbandonedTimeout);
+            poolProperties.setLogAbandoned(dbPoolLogAbandoned);
+            poolProperties.setMaxAge(dbPoolMaxAge);
+            poolProperties.setMaxActive(600);
 
-        DataSource ds = new DataSource();
-        ds.setPoolProperties(poolProperties);
-        flyway(ds);
+            ds = new DataSource();
+            ds.setPoolProperties(poolProperties);
+            flyway(ds);
+        }
 
         return ds;
     }
@@ -90,17 +95,31 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public UserDao profileDao() {
+    public UserDao userDao() {
         UserDao userDao = new UserDao();
         userDao.setDataSource(dataSource());
         userDao.setSqlStatementsFileLoader(sqlStatementsFileLoader());
-        userDao.setRowMapper(profileDaoRowMapper());
+        userDao.setRowMapper(userDaoRowMapper());
         return userDao;
     }
 
     @Bean
-    public UserDaoRowMapper profileDaoRowMapper() {
+    public FormDefinitionDao formDefinitionDao() {
+        FormDefinitionDao formDefinitionDao = new FormDefinitionDao();
+        formDefinitionDao.setDataSource(dataSource());
+        formDefinitionDao.setSqlStatementsFileLoader(sqlStatementsFileLoader());
+        formDefinitionDao.setRowMapper(formDefinitionDaoRowMapper());
+        return formDefinitionDao;
+    }
+
+    @Bean
+    public UserDaoRowMapper userDaoRowMapper() {
         return new UserDaoRowMapper();
+    }
+
+    @Bean
+    public FormDefinitionDaoRowMapper formDefinitionDaoRowMapper() {
+        return new FormDefinitionDaoRowMapper();
     }
 
     public String getDbDriverClassName() {

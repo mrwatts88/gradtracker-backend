@@ -1,4 +1,5 @@
 package edu.uwm.capstone.db;
+
 import edu.uwm.capstone.model.Form;
 import edu.uwm.capstone.sql.dao.BaseRowMapper;
 
@@ -7,7 +8,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static edu.uwm.capstone.db.FormDaoRowMapper.FormColumnType.*;
+import static edu.uwm.capstone.db.FormDaoRowMapper.FormColumnType.USER_ID;
 import static edu.uwm.capstone.sql.dao.BaseRowMapper.BaseColumnType.*;
 
 public class FormDaoRowMapper extends BaseRowMapper<Form> {

@@ -17,7 +17,7 @@ import java.io.IOException;
 @SuppressWarnings("squid:S1075") // suppress sonar warning about hard-coded URL path
 public class UserRestController {
 
-    static final String PROFILE_PATH = "/user/";
+    static final String USER_PATH = "/user/";
 
     private static final Logger LOG = LoggerFactory.getLogger(UserRestController.class);
 
@@ -37,7 +37,7 @@ public class UserRestController {
      * @throws IOException if error response cannot be created.
      */
     @ApiOperation(value = "Create User")
-    @PostMapping(value = PROFILE_PATH)
+    @PostMapping(value = USER_PATH)
     public User create(@RequestBody User user, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
             return userService.create(user);
@@ -61,7 +61,7 @@ public class UserRestController {
      * @throws IOException if error response cannot be created.
      */
     @ApiOperation(value = "Read User by ID")
-    @GetMapping(value = PROFILE_PATH + "{userId}")
+    @GetMapping(value = USER_PATH + "{userId}")
     public User readById(@PathVariable Long userId, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
             return userService.read(userId);
@@ -80,7 +80,7 @@ public class UserRestController {
      * @throws IOException if error response cannot be created.
      */
     @ApiOperation(value = "Update User")
-    @PutMapping(value = PROFILE_PATH)
+    @PutMapping(value = USER_PATH)
     public void update(@RequestBody User user, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
             userService.update(user);
@@ -104,7 +104,7 @@ public class UserRestController {
      * @throws IOException if error response cannot be created.
      */
     @ApiOperation(value = "Delete User by ID")
-    @DeleteMapping(value = PROFILE_PATH + "{userId}")
+    @DeleteMapping(value = USER_PATH + "{userId}")
     public void deleteById(@PathVariable Long userId, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
             userService.delete(userId);

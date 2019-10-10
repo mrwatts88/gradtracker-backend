@@ -1,0 +1,93 @@
+package edu.uwm.capstone.db;
+
+import edu.uwm.capstone.model.FormDefinition;
+import edu.uwm.capstone.sql.dao.BaseDao;
+import edu.uwm.capstone.sql.dao.BaseRowMapper;
+import edu.uwm.capstone.sql.exception.DaoException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+
+import java.time.LocalDateTime;
+
+@SpringBootApplication
+public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
+    private static final Logger LOG = LoggerFactory.getLogger(FormDefinitionDao.class);
+
+    @Override
+    public FormDefinition create(FormDefinition formDef) {
+        if(formDef == null)
+        {
+            throw new DaoException("formDef cannot be null");
+        }
+        else if(formDef.getId() != null)
+        {
+            throw new DaoException("When creating a new form def the id should be null, but was set to " + formDef.getId());
+        }
+        LOG.trace("Creating form definition {}", formDef);
+
+        formDef.setCreatedDate(LocalDateTime.now());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        int result = this.jdbcTemplate.update(sql("createFormDef"),
+                new MapSqlParameterSource(rowMapper.mapObject(formDef)), keyHolder, new String[]{BaseRowMapper.BaseColumnType.ID.name()});
+        if (result != 1) {
+            throw new DaoException(String.format("Failed attempt to create form def %s - affected %s rows", formDef.toString(), result));
+        }
+
+        Long id = keyHolder.getKey().longValue();
+        formDef.setId(id);
+        return formDef;
+    }
+
+    @Override
+    public FormDefinition read(Long id) {
+//        if(id == null)
+//        {
+//            throw new DaoException("FormDefinition_id cannot be null");
+//        }
+//        LOG.trace("Reading profile {}", id);
+//        try {
+//            return (FormDefinition) this.jdbcTemplate.queryForObject(sql("readform"), new MapSqlParameterSource("id", id), rowMapper);
+//        } catch (EmptyResultDataAccessException e) {
+//            return null;
+//        }
+        return null;
+    }
+
+    @Override
+    public boolean update(FormDefinition form) {
+//        if(form == null)
+//        {
+//            throw new DaoException("form cannot be null");
+//        }
+//        else if(form.getId() == null)
+//        {
+//            throw new DaoException("When creating a new form the id should not be null, it was null");
+//        }
+//
+//        LOG.trace("Updating profile {}", form);
+//        form.setUpdatedDate(LocalDateTime.now());
+//        int result = this.jdbcTemplate.update(sql("updateform"), new MapSqlParameterSource(rowMapper.mapObject(form)));
+//        if (result != 1) {
+//            throw new DaoException(String.format("Failed attempt to update form %s - affected %s rows", form.toString(), result));
+//        }
+        return true;
+    }
+
+    @Override
+    public boolean delete(Long id) {
+//        if(id == null)
+//        {
+//            throw new DaoException("FormDefinition_id cannot be null");
+//        }
+//        LOG.trace("Deleting profile {}", id);
+//        int result = this.jdbcTemplate.update(sql("deleteform"), new MapSqlParameterSource("id", id));
+//        if (result != 1) {
+//            throw new DaoException(String.format("Failed attempt to delete form %s affected %s rows", id, result));
+//        }
+        return true;
+    }
+}

@@ -98,7 +98,7 @@ public class UserRestControllerComponentTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .body(mapper.writeValueAsString(userToCreate))
                 .when()
-                .post(UserRestController.PROFILE_PATH)
+                .post(UserRestController.USER_PATH)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value()).extract();
 
@@ -122,7 +122,7 @@ public class UserRestControllerComponentTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .body(mapper.writeValueAsString(user))
                 .when()
-                .post(UserRestController.PROFILE_PATH)
+                .post(UserRestController.USER_PATH)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("User ID must be null"));
     }
@@ -137,7 +137,7 @@ public class UserRestControllerComponentTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .body(mapper.writeValueAsString(user))
                 .when()
-                .post(UserRestController.PROFILE_PATH)
+                .post(UserRestController.USER_PATH)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("User email must not be null"));
     }
@@ -152,7 +152,7 @@ public class UserRestControllerComponentTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .body(mapper.writeValueAsString(user))
                 .when()
-                .post(UserRestController.PROFILE_PATH)
+                .post(UserRestController.USER_PATH)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("User password must not be null"));
     }
@@ -170,7 +170,7 @@ public class UserRestControllerComponentTest {
                 .header(new Header("Authorization", authorizationToken))
                 .body(mapper.writeValueAsString(userToUpdate))
                 .when()
-                .put(UserRestController.PROFILE_PATH)
+                .put(UserRestController.USER_PATH)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value()).extract();
 
@@ -190,7 +190,7 @@ public class UserRestControllerComponentTest {
                 .header(new Header("Authorization", authorizationToken))
                 .body(mapper.writeValueAsString(userToUpdate))
                 .when()
-                .put(UserRestController.PROFILE_PATH)
+                .put(UserRestController.USER_PATH)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("Could not update User " + userToUpdate.getId() + " - record not found."));
     }
@@ -209,7 +209,7 @@ public class UserRestControllerComponentTest {
                 .header(new Header("Authorization", authorizationToken))
                 .body(mapper.writeValueAsString(userToUpdate))
                 .when()
-                .put(UserRestController.PROFILE_PATH)
+                .put(UserRestController.USER_PATH)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("User email must not be null"));
     }
@@ -228,7 +228,7 @@ public class UserRestControllerComponentTest {
                 .header(new Header("Authorization", authorizationToken))
                 .body(mapper.writeValueAsString(userToUpdate))
                 .when()
-                .put(UserRestController.PROFILE_PATH)
+                .put(UserRestController.USER_PATH)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("User password must not be null"));
     }
@@ -243,7 +243,7 @@ public class UserRestControllerComponentTest {
                 .header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .when()
-                .get(UserRestController.PROFILE_PATH + user.getId())
+                .get(UserRestController.USER_PATH + user.getId())
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value()).extract();
 
@@ -259,7 +259,7 @@ public class UserRestControllerComponentTest {
         given().header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .when()
-                .get(UserRestController.PROFILE_PATH + userId)
+                .get(UserRestController.USER_PATH + userId)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("User with ID: " + userId + " not found."));
     }
@@ -274,7 +274,7 @@ public class UserRestControllerComponentTest {
                 .header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .when()
-                .delete(UserRestController.PROFILE_PATH + user.getId())
+                .delete(UserRestController.USER_PATH + user.getId())
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value()).extract();
     }
@@ -287,7 +287,7 @@ public class UserRestControllerComponentTest {
         given().header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .when()
-                .delete(UserRestController.PROFILE_PATH + userId)
+                .delete(UserRestController.USER_PATH + userId)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("Could not delete User " + userId + " - record not found."));
     }
