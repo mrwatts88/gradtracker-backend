@@ -163,21 +163,23 @@ public class UserRestControllerComponentTest {
         usersToCleanup.add(userDao.create(user));
 
         User userToUpdate = userWithTestValues();
-        userToUpdate.setId(user.getId());
 
         // exercise endpoint
         given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .header(new Header("Authorization", authorizationToken))
                 .body(mapper.writeValueAsString(userToUpdate))
                 .when()
-                .put(UserRestController.USER_PATH)
+                .put(UserRestController.USER_PATH + user.getId())
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value()).extract();
 
         User verifyUser = userDao.read(user.getId());
         assertNotNull(verifyUser.getUpdatedDate());
-        assertEquals(userToUpdate.getId(), verifyUser.getId());
         assertNotEquals(userToUpdate.getPassword(), verifyUser.getPassword());
+        assertEquals(userToUpdate.getFirstName(), verifyUser.getFirstName());
+        assertEquals(userToUpdate.getLastName(), verifyUser.getLastName());
+        assertEquals(userToUpdate.getEmail(), verifyUser.getEmail());
+        assertEquals(userToUpdate.getPantherId(), verifyUser.getPantherId());
     }
 
     @Test
@@ -190,7 +192,7 @@ public class UserRestControllerComponentTest {
                 .header(new Header("Authorization", authorizationToken))
                 .body(mapper.writeValueAsString(userToUpdate))
                 .when()
-                .put(UserRestController.USER_PATH)
+                .put(UserRestController.USER_PATH + userToUpdate.getId())
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("Could not update User " + userToUpdate.getId() + " - record not found."));
     }
@@ -201,7 +203,6 @@ public class UserRestControllerComponentTest {
         usersToCleanup.add(userDao.create(user));
 
         User userToUpdate = userWithTestValues();
-        userToUpdate.setId(user.getId());
         userToUpdate.setEmail(null);
 
         // exercise endpoint
@@ -209,7 +210,7 @@ public class UserRestControllerComponentTest {
                 .header(new Header("Authorization", authorizationToken))
                 .body(mapper.writeValueAsString(userToUpdate))
                 .when()
-                .put(UserRestController.USER_PATH)
+                .put(UserRestController.USER_PATH + user.getId())
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("User email must not be null"));
     }
@@ -220,7 +221,6 @@ public class UserRestControllerComponentTest {
         usersToCleanup.add(userDao.create(user));
 
         User userToUpdate = userWithTestValues();
-        userToUpdate.setId(user.getId());
         userToUpdate.setPassword(null);
 
         // exercise endpoint
@@ -228,7 +228,7 @@ public class UserRestControllerComponentTest {
                 .header(new Header("Authorization", authorizationToken))
                 .body(mapper.writeValueAsString(userToUpdate))
                 .when()
-                .put(UserRestController.USER_PATH)
+                .put(UserRestController.USER_PATH + user.getId())
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("User password must not be null"));
     }

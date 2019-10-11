@@ -73,16 +73,18 @@ public class UserRestController {
     }
 
     /**
-     * Updates the provided {@link User}
+     * Updates the provided {@link User} by Id
      *
+     * @param userId {@link User#getId()}
      * @param user  {@link User}
      * @param response {@link HttpServletResponse}
      * @throws IOException if error response cannot be created.
      */
     @ApiOperation(value = "Update User")
-    @PutMapping(value = USER_PATH)
-    public void update(@RequestBody User user, @ApiIgnore HttpServletResponse response) throws IOException {
+    @PutMapping(value = USER_PATH + "{userId}")
+    public void update(@PathVariable Long userId, @RequestBody User user, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
+            user.setId(userId);
             userService.update(user);
         } catch (IllegalArgumentException e) {
             LOG.error(e.getMessage(), e);
