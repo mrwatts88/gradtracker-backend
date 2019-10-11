@@ -1,6 +1,7 @@
 package edu.uwm.capstone.service;
 
 import edu.uwm.capstone.db.FormDefinitionDao;
+import edu.uwm.capstone.model.FieldDefinition;
 import edu.uwm.capstone.model.FormDefinition;
 import edu.uwm.capstone.service.exception.ServiceException;
 import org.slf4j.Logger;
@@ -8,14 +9,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
+
 @Service("formDefinitionService")
 public class FormDefinitionService {
     private static final Logger LOG = LoggerFactory.getLogger(FormDefinitionService.class);
     private final FormDefinitionDao formDefinitionDao;
+    private final FieldDefinitionService fieldDefinitionService;
 
     @Autowired
-    public FormDefinitionService(FormDefinitionDao formDefinitionDao) {
+    public FormDefinitionService(FormDefinitionDao formDefinitionDao, FieldDefinitionService fieldDefinitionService) {
         this.formDefinitionDao = formDefinitionDao;
+        this.fieldDefinitionService = fieldDefinitionService;
     }
 
     /**
@@ -23,12 +28,18 @@ public class FormDefinitionService {
      *
      * @param formDef
      * @return
-     * @throws ServiceException if form could not be created
      */
     public FormDefinition create(FormDefinition formDef) {
         LOG.trace("Creating form definition {}", formDef);
 
-        return formDefinitionDao.create(formDef);
+        formDefinitionDao.create(formDef);
+
+        for (FieldDefinition fd : formDef) {
+            fd.setFormDefId(formDef.getId());
+            fieldDefinitionService.create(fd);
+        }
+
+        return formDef;
     }
 
 //    /**
@@ -36,7 +47,6 @@ public class FormDefinitionService {
 //     *
 //     * @param formDefId
 //     * @return
-//     * @throws ServiceException if form could not be read
 //     */
 //    public FormDefinition read(Long formDefId) {
 //        LOG.trace("Reading form {}", formDefId);
@@ -54,7 +64,6 @@ public class FormDefinitionService {
 //     *
 //     * @param formDef
 //     * @return
-//     * @throws ServiceException if form could not be updated
 //     */
 //    public boolean update(FormDefinition formDef) {
 //        LOG.trace("Updating form {}", formDef);
@@ -70,7 +79,6 @@ public class FormDefinitionService {
 //     *
 //     * @param formDefId
 //     * @return
-//     * @throws ServiceException if profile could not be deleted
 //     */
 //    public boolean delete(Long formDefId) {
 //        LOG.trace("Deleting profile {}", formDefId);

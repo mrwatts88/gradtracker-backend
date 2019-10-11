@@ -1,14 +1,3 @@
--- CREATE TABLE users(
---     id           BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
---     first_name   VARCHAR(255) NOT NULL,
---     last_name    VARCHAR(255) NOT NULL,
---     password     VARCHAR(255) NOT NULL,
---     panther_id   VARCHAR(9)   NOT NULL,
---     email        VARCHAR(255) NOT NULL,
---     created_date BIGINT(25)   NOT NULL,
---     updated_date BIGINT(25) DEFAULT NULL
--- );
---
 -- CREATE TABLE fields(
 --     field_id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
 --     form_id BIGINT(20) AUTO_INCREMENT NOT NULL,
@@ -27,14 +16,15 @@
 -- );
 
 CREATE TABLE users(
-    id           BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    id           BIGINT(20) AUTO_INCREMENT,
     first_name   VARCHAR(255) NOT NULL,
     last_name    VARCHAR(255) NOT NULL,
     password     VARCHAR(255) NOT NULL,
     panther_id   VARCHAR(9)   NOT NULL,
     email        VARCHAR(255) NOT NULL,
     created_date BIGINT(25)   NOT NULL,
-    updated_date BIGINT(25) DEFAULT NULL
+    updated_date BIGINT(25) DEFAULT NULL,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE form_defs(

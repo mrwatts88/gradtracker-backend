@@ -1,9 +1,6 @@
 package edu.uwm.capstone;
 
-import edu.uwm.capstone.db.FormDefinitionDao;
-import edu.uwm.capstone.db.FormDefinitionDaoRowMapper;
-import edu.uwm.capstone.db.UserDao;
-import edu.uwm.capstone.db.UserDaoRowMapper;
+import edu.uwm.capstone.db.*;
 import edu.uwm.capstone.sql.statement.ISqlStatementsFileLoader;
 import edu.uwm.capstone.sql.statement.SqlStatementsFileLoader;
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -113,6 +110,15 @@ public class ApplicationConfig {
     }
 
     @Bean
+    public FieldDefinitionDao fieldDefinitionDao() {
+        FieldDefinitionDao fieldDefinitionDao = new FieldDefinitionDao();
+        fieldDefinitionDao.setDataSource(dataSource());
+        fieldDefinitionDao.setSqlStatementsFileLoader(sqlStatementsFileLoader());
+        fieldDefinitionDao.setRowMapper(fieldDefinitionDaoRowMapper());
+        return fieldDefinitionDao;
+    }
+
+    @Bean
     public UserDaoRowMapper userDaoRowMapper() {
         return new UserDaoRowMapper();
     }
@@ -120,6 +126,11 @@ public class ApplicationConfig {
     @Bean
     public FormDefinitionDaoRowMapper formDefinitionDaoRowMapper() {
         return new FormDefinitionDaoRowMapper();
+    }
+
+    @Bean
+    public FieldDefinitionDaoRowMapper fieldDefinitionDaoRowMapper() {
+        return new FieldDefinitionDaoRowMapper();
     }
 
     public String getDbDriverClassName() {

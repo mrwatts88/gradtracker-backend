@@ -6,25 +6,20 @@ import edu.uwm.capstone.sql.dao.BaseRowMapper;
 import edu.uwm.capstone.sql.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.time.LocalDateTime;
 
-@SpringBootApplication
 public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
     private static final Logger LOG = LoggerFactory.getLogger(FormDefinitionDao.class);
 
     @Override
     public FormDefinition create(FormDefinition formDef) {
-        if(formDef == null)
-        {
+        if (formDef == null) {
             throw new DaoException("formDef cannot be null");
-        }
-        else if(formDef.getId() != null)
-        {
+        } else if (formDef.getId() != null) {
             throw new DaoException("When creating a new form def the id should be null, but was set to " + formDef.getId());
         }
         LOG.trace("Creating form definition {}", formDef);

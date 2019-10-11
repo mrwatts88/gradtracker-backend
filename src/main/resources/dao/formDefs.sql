@@ -8,14 +8,13 @@ INSERT INTO form_defs (
 );
 
 --STATEMENT readForm
-SELECT * FROM forms WHERE form_id = :form_id;
+SELECT * FROM forms WHERE id = :id;
 
 --STATEMENT deleteForm
-DELETE FROM forms WHERE form_id = :form_id;
+DELETE FROM forms WHERE id = :id;
 
 --STATEMENT updateForm
 UPDATE forms SET
-  user_id = :user_id,
   form_updated_date = :form_updated_date
 WHERE
-  form_id = :form_id;
+  id = :id;
