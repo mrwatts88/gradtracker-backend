@@ -73,7 +73,7 @@ public class FormDefinitionService {
 //     * @param formDef
 //     * @return
 //     */
-//    public boolean update(FormDefinition formDef) {
+//    public void update(FormDefinition formDef) {
 //        LOG.trace("Updating form {}", formDef);
 //
 //        if (formDefinitionDao.read(formDef.getId()) == null) {

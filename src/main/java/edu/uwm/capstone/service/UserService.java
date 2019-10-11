@@ -69,7 +69,7 @@ public class UserService {
      * @param user {@link User}
      * @return true if successful
      */
-    public boolean update(User user) {
+    public void update(User user) {
         LOG.trace("Updating user {}", user);
 
         checkValidUser(user, false);
@@ -78,7 +78,7 @@ public class UserService {
             throw new EntityNotFoundException("Could not update User " + user.getId() + " - record not found.");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userDao.update(user);
+        userDao.update(user);
     }
 
     /**
@@ -87,13 +87,13 @@ public class UserService {
      * @param userId
      * @return true if successful
      */
-    public boolean delete(Long userId) {
+    public void delete(Long userId) {
         LOG.trace("Deleting user {}", userId);
 
         if (userDao.read(userId) == null) {
             throw new EntityNotFoundException("Could not delete User " + userId + " - record not found.");
         }
-        return userDao.delete(userId);
+        userDao.delete(userId);
     }
 
     private void checkValidUser(User user, boolean checkId) {

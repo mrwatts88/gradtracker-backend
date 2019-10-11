@@ -50,7 +50,7 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
     }
 
     @Override
-    public boolean update(FormDefinition form) {
+    public void update(FormDefinition form) {
 //        if(form == null)
 //        {
 //            throw new DaoException("form cannot be null");
@@ -66,16 +66,14 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
 //        if (result != 1) {
 //            throw new DaoException(String.format("Failed attempt to update form %s - affected %s rows", form.toString(), result));
 //        }
-        return true;
     }
 
     @Override
-    public boolean delete(Long id) {
+    public void delete(Long id) {
         LOG.trace("Deleting form definition {}", id);
         int result = this.jdbcTemplate.update(sql("deleteFormDef"), new MapSqlParameterSource("id", id));
         if (result != 1) {
             throw new DaoException(String.format("Failed attempt to delete form %s affected %s rows", id, result));
         }
-        return true;
     }
 }

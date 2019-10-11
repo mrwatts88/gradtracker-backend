@@ -20,9 +20,9 @@ public abstract class BaseDao<K,V> {
 
     public abstract V read(K id);
 
-    public abstract boolean update(V object);
+    public abstract void update(V object);
 
-    public abstract boolean delete(K id);
+    public abstract void delete(K id);
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;

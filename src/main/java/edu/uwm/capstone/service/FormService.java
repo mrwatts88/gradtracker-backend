@@ -61,13 +61,13 @@ public class FormService {
      * @return
      * @throws ServiceException if form could not be updated
      */
-    public boolean update(Form form) throws ServiceException {
+    public void update(Form form) throws ServiceException {
         LOG.trace("Updating form {}", form);
 
         if (FormDao.read(form.getId()) == null) {
             throw new ServiceException("Could not update form " + form.getId() + " - record not found.");
         }
-        return FormDao.update(form);
+        FormDao.update(form);
     }
 
     /**
@@ -77,12 +77,12 @@ public class FormService {
      * @return
      * @throws ServiceException if profile could not be deleted
      */
-    public boolean delete(Long formId) throws ServiceException {
+    public void delete(Long formId) throws ServiceException {
         LOG.trace("Deleting profile {}", formId);
 
         if (FormDao.read(formId) == null) {
             throw new ServiceException("Could not delete form " + formId + " - record not found.");
         }
-        return FormDao.delete(formId);
+        FormDao.delete(formId);
     }
 }

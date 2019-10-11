@@ -86,7 +86,7 @@ public class UserDao extends BaseDao<Long, User> {
      * @return true if successful
      */
     @Override
-    public boolean update(User user) {
+    public void update(User user) {
         LOG.trace("Updating user {}", user);
         user.setUpdatedDate(LocalDateTime.now());
         int result = this.jdbcTemplate.update(sql("updateUser"), new MapSqlParameterSource(rowMapper.mapObject(user)));
@@ -94,7 +94,6 @@ public class UserDao extends BaseDao<Long, User> {
         if (result != 1) {
             throw new DaoException(String.format("Failed attempt to update user %s - affected %s rows", user.toString(), result));
         }
-        return true;
     }
 
     /**
@@ -104,12 +103,11 @@ public class UserDao extends BaseDao<Long, User> {
      * @return true if successful
      */
     @Override
-    public boolean delete(Long userId) {
+    public void delete(Long userId) {
         LOG.trace("Deleting user {}", userId);
         int result = this.jdbcTemplate.update(sql("deleteUser"), new MapSqlParameterSource("id", userId));
         if (result != 1) {
             throw new DaoException(String.format("Failed attempt to delete user %s affected %s rows", userId, result));
         }
-        return true;
     }
 }

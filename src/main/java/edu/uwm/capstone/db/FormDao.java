@@ -57,7 +57,7 @@ public class FormDao extends BaseDao<Long, Form> {
     }
 
     @Override
-    public boolean update(Form form) {
+    public void update(Form form) {
         if(form == null)
         {
             throw new DaoException("form cannot be null");
@@ -73,11 +73,10 @@ public class FormDao extends BaseDao<Long, Form> {
         if (result != 1) {
             throw new DaoException(String.format("Failed attempt to update form %s - affected %s rows", form.toString(), result));
         }
-        return true;
     }
 
     @Override
-    public boolean delete(Long id) {
+    public void delete(Long id) {
         if(id == null)
         {
             throw new DaoException("Form_id cannot be null");
@@ -87,6 +86,5 @@ public class FormDao extends BaseDao<Long, Form> {
         if (result != 1) {
             throw new DaoException(String.format("Failed attempt to delete form %s affected %s rows", id, result));
         }
-        return true;
     }
 }

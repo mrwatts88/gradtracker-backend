@@ -59,7 +59,7 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
     }
 
     @Override
-    public boolean update(FieldDefinition field) {
+    public void update(FieldDefinition field) {
 //        if(field == null)
 //        {
 //            throw new DaoException("field cannot be null");
@@ -75,25 +75,22 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
 //        if (result != 1) {
 //            throw new DaoException(String.format("Failed attempt to update field %s - affected %s rows", field.toString(), result));
 //        }
-        return true;
     }
 
     @Override
-    public boolean delete(Long id) {
+    public void delete(Long id) {
         LOG.trace("Deleting profile {}", id);
         int result = this.jdbcTemplate.update(sql("deleteFieldDef"), new MapSqlParameterSource("id", id));
         if (result != 1) {
             throw new DaoException(String.format("Failed attempt to delete field %s affected %s rows", id, result));
         }
-        return true;
     }
 
-    public boolean deleteFieldDefsByFromDefId(Long id, int numberOfFields) {
+    public void deleteFieldDefsByFromDefId(Long id, int numberOfFields) {
         LOG.trace("Deleting field definitions with form_def_id {}", id);
         int result = this.jdbcTemplate.update(sql("deleteFieldDefsByFormDefId"), new MapSqlParameterSource("id", id));
         if (result != numberOfFields) {
             throw new DaoException(String.format("Failed attempt to delete fields with form_def_id %s affected %s rows", id, result));
         }
-        return true;
     }
 }
