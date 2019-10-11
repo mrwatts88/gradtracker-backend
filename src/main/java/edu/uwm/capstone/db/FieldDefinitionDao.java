@@ -17,8 +17,6 @@ import java.util.List;
 public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
     private static final Logger LOG = LoggerFactory.getLogger(FieldDefinitionDao.class);
 
-//    private FieldDefinitionDaoRowMapper rowMapper;
-
     @Override
     public FieldDefinition create(FieldDefinition fieldDef) {
         if (fieldDef == null) {
@@ -82,15 +80,20 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
 
     @Override
     public boolean delete(Long id) {
-//        if(id == null)
-//        {
-//            throw new DaoException("FieldDefinition_id cannot be null");
-//        }
-//        LOG.trace("Deleting profile {}", id);
-//        int result = this.jdbcTemplate.update(sql("deletefield"), new MapSqlParameterSource("id", id));
-//        if (result != 1) {
-//            throw new DaoException(String.format("Failed attempt to delete field %s affected %s rows", id, result));
-//        }
+        LOG.trace("Deleting profile {}", id);
+        int result = this.jdbcTemplate.update(sql("deleteFieldDef"), new MapSqlParameterSource("id", id));
+        if (result != 1) {
+            throw new DaoException(String.format("Failed attempt to delete field %s affected %s rows", id, result));
+        }
+        return true;
+    }
+
+    public boolean deleteFieldDefsByFromDefId(Long id, int numberOfFields) {
+        LOG.trace("Deleting field definitions with form_def_id {}", id);
+        int result = this.jdbcTemplate.update(sql("deleteFieldDefsByFormDefId"), new MapSqlParameterSource("id", id));
+        if (result != numberOfFields) {
+            throw new DaoException(String.format("Failed attempt to delete fields with form_def_id %s affected %s rows", id, result));
+        }
         return true;
     }
 }

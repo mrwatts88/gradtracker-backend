@@ -21,4 +21,7 @@ public class FormDefinition extends BaseEntity implements Iterable<FieldDefiniti
         return fieldDefinitions.iterator();
     }
 
+    public int size() {
+        return fieldDefinitions.size();
+    }
 }

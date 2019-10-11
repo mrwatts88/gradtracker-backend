@@ -3,6 +3,7 @@ package edu.uwm.capstone.service;
 import edu.uwm.capstone.db.FieldDefinitionDao;
 import edu.uwm.capstone.db.FormDefinitionDao;
 import edu.uwm.capstone.model.FieldDefinition;
+import edu.uwm.capstone.model.Form;
 import edu.uwm.capstone.model.FormDefinition;
 import edu.uwm.capstone.service.exception.EntityNotFoundException;
 import edu.uwm.capstone.service.exception.ServiceException;
@@ -53,19 +54,19 @@ public class FormDefinitionService {
      * @return
      */
     public FormDefinition read(Long formDefId) {
-        LOG.trace("Reading form {}", formDefId);
+        LOG.trace("Reading form definition {}", formDefId);
 
         FormDefinition formDef = formDefinitionDao.read(formDefId);
 
         if (formDef == null) {
-            throw new EntityNotFoundException("Form with ID: " + formDefId + " not found.");
+            throw new EntityNotFoundException("Form definition with ID: " + formDefId + " not found.");
         }
 
         formDef.setFieldDefinitions(fieldDefinitionDao.readFieldDefsByFormDefId(formDefId));
 
         return formDef;
     }
-//
+
 //    /**
 //     * TODO finish javaDoc
 //     *
@@ -80,19 +81,21 @@ public class FormDefinitionService {
 //        }
 //        return formDefinitionDao.update(formDef);
 //    }
-//
-//    /**
-//     * TODO finish javaDoc
-//     *
-//     * @param formDefId
-//     * @return
-//     */
-//    public boolean delete(Long formDefId) {
-//        LOG.trace("Deleting profile {}", formDefId);
-//
-//        if (formDefinitionDao.read(formDefId) == null) {
-//            throw new ServiceException("Could not delete form " + formDefId + " - record not found.");
-//        }
-//        return formDefinitionDao.delete(formDefId);
-//    }
+
+    /**
+     * TODO finish javaDoc
+     *
+     * @param formDefId
+     * @return
+     */
+    public void delete(Long formDefId) {
+        LOG.trace("Deleting form definition {}", formDefId);
+        FormDefinition fd = read(formDefId);
+        if (fd == null) {
+            throw new EntityNotFoundException("Could not delete form definition " + formDefId + " - record not found.");
+        }
+        int numberOfFields = fieldDefinitionDao.readFieldDefsByFormDefId(formDefId).size();
+        fieldDefinitionDao.deleteFieldDefsByFromDefId(formDefId, numberOfFields);
+        formDefinitionDao.delete(formDefId);
+    }
 }

@@ -1,5 +1,6 @@
 package edu.uwm.capstone.db;
 
+import edu.uwm.capstone.model.FieldDefinition;
 import edu.uwm.capstone.model.FormDefinition;
 import edu.uwm.capstone.sql.dao.BaseDao;
 import edu.uwm.capstone.sql.dao.BaseRowMapper;
@@ -70,15 +71,11 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
 
     @Override
     public boolean delete(Long id) {
-//        if(id == null)
-//        {
-//            throw new DaoException("FormDefinition_id cannot be null");
-//        }
-//        LOG.trace("Deleting profile {}", id);
-//        int result = this.jdbcTemplate.update(sql("deleteform"), new MapSqlParameterSource("id", id));
-//        if (result != 1) {
-//            throw new DaoException(String.format("Failed attempt to delete form %s affected %s rows", id, result));
-//        }
+        LOG.trace("Deleting form definition {}", id);
+        int result = this.jdbcTemplate.update(sql("deleteFormDef"), new MapSqlParameterSource("id", id));
+        if (result != 1) {
+            throw new DaoException(String.format("Failed attempt to delete form %s affected %s rows", id, result));
+        }
         return true;
     }
 }

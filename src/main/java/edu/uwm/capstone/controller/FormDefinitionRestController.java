@@ -56,16 +56,16 @@ public class FormDefinitionRestController {
     /**
      * Get the {@link FormDefinition} by Id
      *
-     * @param formId {@link FormDefinition#getId()}
+     * @param formDefId {@link FormDefinition#getId()}
      * @param response  {@link HttpServletResponse}
      * @return {@link FormDefinition} retrieved from the database
      * @throws IOException if error response cannot be created.
      */
     @ApiOperation(value = "Read Form by ID")
-    @GetMapping(value = FORM_DEF_PATH + "{formId}")
-    public FormDefinition readById(@PathVariable Long formId, @ApiIgnore HttpServletResponse response) throws IOException {
+    @GetMapping(value = FORM_DEF_PATH + "{formDefId}")
+    public FormDefinition readById(@PathVariable Long formDefId, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
-            return formDefinitionService.read(formId);
+            return formDefinitionService.read(formDefId);
         } catch (EntityNotFoundException e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
@@ -96,28 +96,28 @@ public class FormDefinitionRestController {
 //            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 //        }
 //    }
-//
-//    /**
-//     * Delete the {@link User} by Id
-//     *
-//     * @param userId {@link User#getId()}
-//     * @param response  {@link HttpServletResponse}
-//     * @throws IOException if error response cannot be created.
-//     */
-//    @ApiOperation(value = "Delete User by ID")
-//    @DeleteMapping(value = FORM_DEF_PATH + "{userId}")
-//    public void deleteById(@PathVariable Long userId, @ApiIgnore HttpServletResponse response) throws IOException {
-//        try {
-//            formDefinitionService.delete(userId);
-//        } catch (IllegalArgumentException e) {
-//            LOG.error(e.getMessage(), e);
-//            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
-//        } catch (UserNotFoundException e) {
-//            LOG.error(e.getMessage(), e);
-//            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-//        } catch (Exception e) {
-//            LOG.error(e.getMessage(), e);
-//            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-//        }
-//    }
+
+    /**
+     * Delete the {@link FormDefinition} by Id
+     *
+     * @param formDefId {@link FormDefinition#getId()}
+     * @param response  {@link HttpServletResponse}
+     * @throws IOException if error response cannot be created.
+     */
+    @ApiOperation(value = "Delete FormDefinition by ID")
+    @DeleteMapping(value = FORM_DEF_PATH + "{formDefId}")
+    public void deleteById(@PathVariable Long formDefId, @ApiIgnore HttpServletResponse response) throws IOException {
+        try {
+            formDefinitionService.delete(formDefId);
+        } catch (IllegalArgumentException e) {
+            LOG.error(e.getMessage(), e);
+            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            LOG.error(e.getMessage(), e);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
 }
