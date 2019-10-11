@@ -2,7 +2,7 @@ package edu.uwm.capstone.controller;
 
 import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.service.UserService;
-import edu.uwm.capstone.service.exception.UserNotFoundException;
+import edu.uwm.capstone.service.exception.EntityNotFoundException;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +65,7 @@ public class UserRestController {
     public User readById(@PathVariable Long userId, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
             return userService.read(userId);
-        } catch (UserNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
             return null;
@@ -89,7 +89,7 @@ public class UserRestController {
         } catch (IllegalArgumentException e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
-        } catch (UserNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         } catch (Exception e) {
@@ -113,7 +113,7 @@ public class UserRestController {
         } catch (IllegalArgumentException e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
-        } catch (UserNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         } catch (Exception e) {

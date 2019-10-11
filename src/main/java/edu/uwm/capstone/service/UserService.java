@@ -2,7 +2,7 @@ package edu.uwm.capstone.service;
 
 import edu.uwm.capstone.db.UserDao;
 import edu.uwm.capstone.model.User;
-import edu.uwm.capstone.service.exception.UserNotFoundException;
+import edu.uwm.capstone.service.exception.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +58,7 @@ public class UserService {
         User user = userDao.read(userId);
 
         if (user == null) {
-            throw new UserNotFoundException("User with ID: " + userId + " not found.");
+            throw new EntityNotFoundException("User with ID: " + userId + " not found.");
         }
         return user;
     }
@@ -75,7 +75,7 @@ public class UserService {
         checkValidUser(user, false);
 
         if (userDao.read(user.getId()) == null) {
-            throw new UserNotFoundException("Could not update User " + user.getId() + " - record not found.");
+            throw new EntityNotFoundException("Could not update User " + user.getId() + " - record not found.");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userDao.update(user);
@@ -91,7 +91,7 @@ public class UserService {
         LOG.trace("Deleting user {}", userId);
 
         if (userDao.read(userId) == null) {
-            throw new UserNotFoundException("Could not delete User " + userId + " - record not found.");
+            throw new EntityNotFoundException("Could not delete User " + userId + " - record not found.");
         }
         return userDao.delete(userId);
     }

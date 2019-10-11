@@ -13,14 +13,17 @@ INSERT INTO field_defs (
   :created_date
 );
 
---STATEMENT readField
-SELECT * FROM fields WHERE id = :id;
+--STATEMENT readFieldDef
+SELECT * FROM field_defs WHERE id = :id;
+
+--STATEMENT readFieldDefsByFormDefId
+SELECT * FROM field_defs WHERE form_def_id = :id;
 
 --STATEMENT deleteField
-DELETE FROM fields WHERE id = :id;
+DELETE FROM field_defs WHERE id = :id;
 
 --STATEMENT updateField
-UPDATE fields SET
+UPDATE field_defs SET
   form_def_id = :form_def_id,
   label = :label,
   data_type = :data_type,

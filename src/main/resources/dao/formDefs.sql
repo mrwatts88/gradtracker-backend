@@ -7,14 +7,14 @@ INSERT INTO form_defs (
   :created_date
 );
 
---STATEMENT readForm
-SELECT * FROM forms WHERE id = :id;
+--STATEMENT readFormDef
+SELECT * FROM form_defs WHERE id = :id;
 
---STATEMENT deleteForm
-DELETE FROM forms WHERE id = :id;
+--STATEMENT deleteFormDef
+DELETE FROM form_defs WHERE id = :id;
 
---STATEMENT updateForm
-UPDATE forms SET
-  form_updated_date = :form_updated_date
+--STATEMENT updateFormDef
+UPDATE form_defs SET
+  updated_date = :updated_date
 WHERE
   id = :id;

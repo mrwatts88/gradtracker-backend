@@ -1,8 +1,10 @@
 package edu.uwm.capstone.service;
 
+import edu.uwm.capstone.db.FieldDefinitionDao;
 import edu.uwm.capstone.db.FormDefinitionDao;
 import edu.uwm.capstone.model.FieldDefinition;
 import edu.uwm.capstone.model.FormDefinition;
+import edu.uwm.capstone.service.exception.EntityNotFoundException;
 import edu.uwm.capstone.service.exception.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,12 +17,14 @@ import java.util.Iterator;
 public class FormDefinitionService {
     private static final Logger LOG = LoggerFactory.getLogger(FormDefinitionService.class);
     private final FormDefinitionDao formDefinitionDao;
-    private final FieldDefinitionService fieldDefinitionService;
+    private final FieldDefinitionDao fieldDefinitionDao;
+
+//    private final FieldDefinitionService fieldDefinitionService; // not sure if we even need this
 
     @Autowired
-    public FormDefinitionService(FormDefinitionDao formDefinitionDao, FieldDefinitionService fieldDefinitionService) {
+    public FormDefinitionService(FormDefinitionDao formDefinitionDao, FieldDefinitionDao fieldDefinitionDao) {
         this.formDefinitionDao = formDefinitionDao;
-        this.fieldDefinitionService = fieldDefinitionService;
+        this.fieldDefinitionDao = fieldDefinitionDao;
     }
 
     /**
@@ -36,28 +40,31 @@ public class FormDefinitionService {
 
         for (FieldDefinition fd : formDef) {
             fd.setFormDefId(formDef.getId());
-            fieldDefinitionService.create(fd);
+            fieldDefinitionDao.create(fd);
         }
 
         return formDef;
     }
 
-//    /**
-//     * TODO finish javaDoc
-//     *
-//     * @param formDefId
-//     * @return
-//     */
-//    public FormDefinition read(Long formDefId) {
-//        LOG.trace("Reading form {}", formDefId);
-//
-//        FormDefinition formDef = formDefinitionDao.read(formDefId);
-//
-//        if (formDef == null) {
-//            throw new ServiceException("Form with ID: " + formDefId + " not found.");
-//        }
-//        return formDef;
-//    }
+    /**
+     * TODO finish javaDoc
+     *
+     * @param formDefId
+     * @return
+     */
+    public FormDefinition read(Long formDefId) {
+        LOG.trace("Reading form {}", formDefId);
+
+        FormDefinition formDef = formDefinitionDao.read(formDefId);
+
+        if (formDef == null) {
+            throw new EntityNotFoundException("Form with ID: " + formDefId + " not found.");
+        }
+
+        formDef.setFieldDefinitions(fieldDefinitionDao.readFieldDefsByFormDefId(formDefId));
+
+        return formDef;
+    }
 //
 //    /**
 //     * TODO finish javaDoc

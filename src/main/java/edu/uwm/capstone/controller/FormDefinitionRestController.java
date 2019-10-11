@@ -3,13 +3,12 @@ package edu.uwm.capstone.controller;
 import edu.uwm.capstone.model.FormDefinition;
 import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.service.FormDefinitionService;
+import edu.uwm.capstone.service.exception.EntityNotFoundException;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
@@ -31,11 +30,11 @@ public class FormDefinitionRestController {
     }
 
     /**
-     * Creates the provided {@link User}
+     * Creates the provided {@link FormDefinition}
      *
-     * @param formDef  {@link User}
+     * @param formDef  {@link FormDefinition}
      * @param response {@link HttpServletResponse}
-     * @return {@link User}
+     * @return {@link FormDefinition}
      * @throws IOException if error response cannot be created.
      */
     @ApiOperation(value = "Create Form")
@@ -54,25 +53,25 @@ public class FormDefinitionRestController {
         }
     }
 
-//    /**
-//     * Get the {@link User} by Id
-//     *
-//     * @param userId {@link User#getId()}
-//     * @param response  {@link HttpServletResponse}
-//     * @return {@link User} retrieved from the database
-//     * @throws IOException if error response cannot be created.
-//     */
-//    @ApiOperation(value = "Read User by ID")
-//    @GetMapping(value = FORM_DEF_PATH + "{userId}")
-//    public User readById(@PathVariable Long userId, @ApiIgnore HttpServletResponse response) throws IOException {
-//        try {
-//            return formDefinitionService.read(userId);
-//        } catch (UserNotFoundException e) {
-//            LOG.error(e.getMessage(), e);
-//            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-//            return null;
-//        }
-//    }
+    /**
+     * Get the {@link FormDefinition} by Id
+     *
+     * @param formId {@link FormDefinition#getId()}
+     * @param response  {@link HttpServletResponse}
+     * @return {@link FormDefinition} retrieved from the database
+     * @throws IOException if error response cannot be created.
+     */
+    @ApiOperation(value = "Read Form by ID")
+    @GetMapping(value = FORM_DEF_PATH + "{formId}")
+    public FormDefinition readById(@PathVariable Long formId, @ApiIgnore HttpServletResponse response) throws IOException {
+        try {
+            return formDefinitionService.read(formId);
+        } catch (EntityNotFoundException e) {
+            LOG.error(e.getMessage(), e);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+            return null;
+        }
+    }
 //
 //    /**
 //     * Updates the provided {@link User}

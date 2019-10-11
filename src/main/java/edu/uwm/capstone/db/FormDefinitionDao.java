@@ -6,6 +6,7 @@ import edu.uwm.capstone.sql.dao.BaseRowMapper;
 import edu.uwm.capstone.sql.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -39,17 +40,12 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
 
     @Override
     public FormDefinition read(Long id) {
-//        if(id == null)
-//        {
-//            throw new DaoException("FormDefinition_id cannot be null");
-//        }
-//        LOG.trace("Reading profile {}", id);
-//        try {
-//            return (FormDefinition) this.jdbcTemplate.queryForObject(sql("readform"), new MapSqlParameterSource("id", id), rowMapper);
-//        } catch (EmptyResultDataAccessException e) {
-//            return null;
-//        }
-        return null;
+        LOG.trace("Reading form definition {}", id);
+        try {
+            return (FormDefinition) this.jdbcTemplate.queryForObject(sql("readFormDef"), new MapSqlParameterSource("id", id), rowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override

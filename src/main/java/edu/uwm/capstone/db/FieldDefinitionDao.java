@@ -6,14 +6,18 @@ import edu.uwm.capstone.sql.dao.BaseRowMapper;
 import edu.uwm.capstone.sql.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
     private static final Logger LOG = LoggerFactory.getLogger(FieldDefinitionDao.class);
+
+//    private FieldDefinitionDaoRowMapper rowMapper;
 
     @Override
     public FieldDefinition create(FieldDefinition fieldDef) {
@@ -39,17 +43,21 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
 
     @Override
     public FieldDefinition read(Long id) {
-//        if(id == null)
-//        {
-//            throw new DaoException("FieldDefinition_id cannot be null");
-//        }
-//        LOG.trace("Reading profile {}", id);
-//        try {
-//            return (FieldDefinition) this.jdbcTemplate.queryForObject(sql("readfield"), new MapSqlParameterSource("id", id), rowMapper);
-//        } catch (EmptyResultDataAccessException e) {
-//            return null;
-//        }
-        return null;
+        LOG.trace("Reading field definition {}", id);
+        try {
+            return (FieldDefinition) this.jdbcTemplate.queryForObject(sql("readField"), new MapSqlParameterSource("id", id), rowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    public List<FieldDefinition> readFieldDefsByFormDefId(Long id) {
+        LOG.trace("Reading field definitions with form_def_id {}", id);
+        try {
+            return this.jdbcTemplate.query(sql("readFieldDefsByFormDefId"), new MapSqlParameterSource("id", id), rowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override
