@@ -36,11 +36,13 @@ public class FormDefinitionService {
     public FormDefinition create(FormDefinition formDef) {
         LOG.trace("Creating form definition {}", formDef);
 
+        Assert.notNull(formDef.getName(),"Form definition name cannot be null");
         formDefinitionDao.create(formDef);
 
         for (FieldDefinition fd : formDef) {
-            Assert.notNull(fd.getLabel(), "Field label cannot be null");
-            Assert.notNull(fd.getLabel(), "Field label cannot be null");
+            Assert.notNull(fd.getLabel(), "Field definition label cannot be null");
+            Assert.notNull(fd.getInputType(), "Field definition input type cannot be null");
+            Assert.notNull(fd.getDataType(), "Field definition data type cannot be null");
 
             fd.setFormDefId(formDef.getId());
             fieldDefinitionDao.create(fd);
@@ -64,7 +66,7 @@ public class FormDefinitionService {
             throw new EntityNotFoundException("Form definition with ID: " + formDefId + " not found.");
         }
 
-        formDef.setFieldDefinitions(fieldDefinitionDao.readFieldDefsByFormDefId(formDefId));
+        formDef.setFieldDefs(fieldDefinitionDao.readFieldDefsByFormDefId(formDefId));
 
         return formDef;
     }

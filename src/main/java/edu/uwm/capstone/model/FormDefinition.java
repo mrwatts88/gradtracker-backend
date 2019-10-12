@@ -14,14 +14,14 @@ import java.util.List;
 @AllArgsConstructor
 public class FormDefinition extends BaseEntity implements Iterable<FieldDefinition> {
     private String name;
-    private List<FieldDefinition> fieldDefinitions;
+    private List<FieldDefinition> fieldDefs;
 
     @Override
     public Iterator<FieldDefinition> iterator() {
-        return fieldDefinitions.iterator();
+        return fieldDefs.iterator();
     }
 
     public int size() {
-        return fieldDefinitions.size();
+        return fieldDefs.size();
     }
 }
