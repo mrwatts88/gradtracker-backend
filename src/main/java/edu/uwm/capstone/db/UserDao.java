@@ -12,6 +12,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 public class UserDao extends BaseDao<Long, User> {
@@ -62,6 +63,16 @@ public class UserDao extends BaseDao<Long, User> {
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
+    }
+
+    /**
+     * TODO
+     *
+     * @return
+     */
+    public List<User> readAll() {
+        LOG.trace("Reading all users");
+        return this.jdbcTemplate.query(sql("readAllUsers"), rowMapper);
     }
 
     /**

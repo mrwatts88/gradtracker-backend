@@ -12,6 +12,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @SuppressWarnings("squid:S1075") // suppress sonar warning about hard-coded URL path
@@ -65,6 +66,25 @@ public class UserRestController {
     public User readById(@PathVariable Long userId, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
             return userService.read(userId);
+        } catch (EntityNotFoundException e) {
+            LOG.error(e.getMessage(), e);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Get all the {@link User}s
+     *
+     * @param response  {@link HttpServletResponse}
+     * @return {@link User} retrieved from the database
+     * @throws IOException if error response cannot be created.
+     */
+    @ApiOperation(value = "Read All Users")
+    @GetMapping(value = USER_PATH)
+    public List<User> readAll(@ApiIgnore HttpServletResponse response) throws IOException {
+        try {
+            return userService.readAll();
         } catch (EntityNotFoundException e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());

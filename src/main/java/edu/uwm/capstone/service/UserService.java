@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.List;
+
 @Service("userService")
 public class UserService {
 
@@ -63,6 +65,14 @@ public class UserService {
         return user;
     }
 
+    public List<User> readAll() {
+        LOG.trace("Reading all users");
+
+        // TODO make sure user has access to read
+
+        return userDao.readAll();
+    }
+
     /**
      * Update the provided {@link User} object.
      *
@@ -106,4 +116,6 @@ public class UserService {
         Assert.notNull(user.getFirstName(),  "User last name must not be null");
         Assert.notNull(user.getFirstName(),  "User panther id must not be null");
     }
+
+
 }

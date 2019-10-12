@@ -18,6 +18,9 @@ INSERT INTO users (
 --STATEMENT readUser
 SELECT * FROM users WHERE id = :id;
 
+--STATEMENT readAllUsers
+SELECT * FROM users;
+
 --STATEMENT readUserByEmail
 SELECT * FROM users WHERE email = :email;
 
