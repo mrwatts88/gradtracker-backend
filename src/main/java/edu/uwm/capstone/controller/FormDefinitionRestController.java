@@ -1,7 +1,6 @@
 package edu.uwm.capstone.controller;
 
 import edu.uwm.capstone.model.FormDefinition;
-import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.service.FormDefinitionService;
 import edu.uwm.capstone.service.exception.EntityNotFoundException;
 import io.swagger.annotations.ApiOperation;
@@ -13,6 +12,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @SuppressWarnings("squid:S1075") // suppress sonar warning about hard-coded URL path
@@ -72,7 +72,26 @@ public class FormDefinitionRestController {
             return null;
         }
     }
-//
+
+    /**
+     * Get the {@link FormDefinition} by Id
+     *
+     * @param response  {@link HttpServletResponse}
+     * @return {@link FormDefinition} retrieved from the database
+     * @throws IOException if error response cannot be created.
+     */
+    @ApiOperation(value = "Read All Forms")
+    @GetMapping(value = FORM_DEF_PATH)
+    public List<FormDefinition> readAll(@ApiIgnore HttpServletResponse response) throws IOException {
+        try {
+            return formDefinitionService.readAll();
+        } catch (EntityNotFoundException e) {
+            LOG.error(e.getMessage(), e);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+            return null;
+        }
+    }
+
 //    /**
 //     * Updates the provided {@link User}
 //     *

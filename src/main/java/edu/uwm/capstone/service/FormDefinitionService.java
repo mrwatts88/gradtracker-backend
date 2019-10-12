@@ -3,16 +3,14 @@ package edu.uwm.capstone.service;
 import edu.uwm.capstone.db.FieldDefinitionDao;
 import edu.uwm.capstone.db.FormDefinitionDao;
 import edu.uwm.capstone.model.FieldDefinition;
-import edu.uwm.capstone.model.Form;
 import edu.uwm.capstone.model.FormDefinition;
 import edu.uwm.capstone.service.exception.EntityNotFoundException;
-import edu.uwm.capstone.service.exception.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Iterator;
+import java.util.List;
 
 @Service("formDefinitionService")
 public class FormDefinitionService {
@@ -97,5 +95,9 @@ public class FormDefinitionService {
         int numberOfFields = fieldDefinitionDao.readFieldDefsByFormDefId(formDefId).size();
         fieldDefinitionDao.deleteFieldDefsByFromDefId(formDefId, numberOfFields);
         formDefinitionDao.delete(formDefId);
+    }
+
+    public List<FormDefinition> readAll() {
+        return formDefinitionDao.readAll();
     }
 }

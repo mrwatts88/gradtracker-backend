@@ -1,6 +1,5 @@
 package edu.uwm.capstone.db;
 
-import edu.uwm.capstone.model.FieldDefinition;
 import edu.uwm.capstone.model.FormDefinition;
 import edu.uwm.capstone.sql.dao.BaseDao;
 import edu.uwm.capstone.sql.dao.BaseRowMapper;
@@ -13,6 +12,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
     private static final Logger LOG = LoggerFactory.getLogger(FormDefinitionDao.class);
@@ -47,6 +47,11 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
+    }
+
+    public List<FormDefinition> readAll() {
+        LOG.trace("Reading all form definitions");
+        return this.jdbcTemplate.query(sql("readAllFormDefs"), rowMapper);
     }
 
     @Override
