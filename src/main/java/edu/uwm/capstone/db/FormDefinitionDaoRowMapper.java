@@ -8,15 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static edu.uwm.capstone.db.FormDefinitionDaoRowMapper.FormDefColumnType.*;
-//import static edu.uwm.capstone.sql.dao.BaseRowMapper.BaseColumnType.*;
+import static edu.uwm.capstone.sql.dao.BaseRowMapper.BaseColumnType.*;
 
 public class FormDefinitionDaoRowMapper extends BaseRowMapper<FormDefinition> {
 
     public enum FormDefColumnType {
-        ID(),
-        NAME(),
-        CREATED_DATE(),
-        UPDATED_DATE();
+        NAME();
 
 
         private String columnName;
@@ -32,7 +29,7 @@ public class FormDefinitionDaoRowMapper extends BaseRowMapper<FormDefinition> {
     public Map<String, Object> mapObject(FormDefinition object) {
         Map<String, Object> map = new HashMap<>();
         map.put(ID.getColumnName(), object.getId());
-        map.put(NAME.getColumnName(), object.getId());
+        map.put(NAME.getColumnName(), object.getName());
         map.put(CREATED_DATE.getColumnName(), javaTimeFromDate(object.getCreatedDate()));
         map.put(UPDATED_DATE.getColumnName(), javaTimeFromDate(object.getUpdatedDate()));
         return map;
