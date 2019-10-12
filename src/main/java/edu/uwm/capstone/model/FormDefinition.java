@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FormDefinition extends BaseEntity implements Iterable<FieldDefinition> {
-
+    private String name;
     private List<FieldDefinition> fieldDefinitions;
 
     @Override

@@ -1,9 +1,11 @@
 --STATEMENT createFormDef
 INSERT INTO form_defs (
   id,
+  name,
   created_date
 ) VALUES (
   :id,
+  :name,
   :created_date
 );
 
@@ -18,6 +20,7 @@ DELETE FROM form_defs WHERE id = :id;
 
 --STATEMENT updateFormDef
 UPDATE form_defs SET
+  name = :name,
   updated_date = :updated_date
 WHERE
   id = :id;

@@ -29,6 +29,7 @@ CREATE TABLE users(
 
 CREATE TABLE form_defs(
     id BIGINT(20) AUTO_INCREMENT,
+    name        VARCHAR(255) NOT NULL,
     created_date BIGINT(25)   NOT NULL,
     updated_date BIGINT(25) DEFAULT NULL,
     PRIMARY KEY (id)
