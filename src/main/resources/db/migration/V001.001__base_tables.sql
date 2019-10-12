@@ -38,6 +38,8 @@ CREATE TABLE field_defs(
     id BIGINT(20) AUTO_INCREMENT,
     form_def_id BIGINT(20) NOT NULL,
     label VARCHAR(255) NOT NULL,
+    field_index INT NOT NULL,
+    input_type VARCHAR(255) NOT NULL,
     data_type VARCHAR(255) NOT NULL,
     created_date BIGINT(25) NOT NULL,
     updated_date BIGINT(25) DEFAULT NULL,

@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -38,6 +39,9 @@ public class FormDefinitionService {
         formDefinitionDao.create(formDef);
 
         for (FieldDefinition fd : formDef) {
+            Assert.notNull(fd.getLabel(), "Field label cannot be null");
+            Assert.notNull(fd.getLabel(), "Field label cannot be null");
+
             fd.setFormDefId(formDef.getId());
             fieldDefinitionDao.create(fd);
         }

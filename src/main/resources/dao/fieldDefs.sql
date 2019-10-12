@@ -3,12 +3,16 @@ INSERT INTO field_defs (
   id,
   form_def_id,
   label,
+  field_index,
+  input_type,
   data_type,
   created_date
 ) VALUES (
   :id,
   :form_def_id,
   :label,
+  :field_index,
+  :input_type,
   :data_type,
   :created_date
 );
