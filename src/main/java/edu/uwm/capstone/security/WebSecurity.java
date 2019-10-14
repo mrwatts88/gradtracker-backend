@@ -38,9 +38,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         LOGGER.info("Configuring security chain");
         http.cors().and().csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/swagger**").permitAll()
+                .antMatchers(HttpMethod.GET,"/swaggerui","/v2/api-docs", "/swagger-resources/configuration/ui", "/swagger-resources", "/swagger-resources/configuration/security", "/swagger-ui.html", "/webjars/**").permitAll()
                 .antMatchers(HttpMethod.POST, AUTHENTICATE_URL).permitAll()
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(AUTHENTICATE_URL, authenticationManager()))
                 .addFilter(new JWTAuthorizationFilter(authenticationManager()))
