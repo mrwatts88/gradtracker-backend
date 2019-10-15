@@ -86,10 +86,10 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
         }
     }
 
-    public void deleteFieldDefsByFromDefId(Long id, int numberOfFields) {
+    public void deleteFieldDefsByFromDefId(Long id) {
         LOG.trace("Deleting field definitions with form_def_id {}", id);
         int result = this.jdbcTemplate.update(sql("deleteFieldDefsByFormDefId"), new MapSqlParameterSource("id", id));
-        if (result != numberOfFields) {
+        if (result < 1) {
             throw new DaoException(String.format("Failed attempt to delete fields with form_def_id %s affected %s rows", id, result));
         }
     }

@@ -1,6 +1,5 @@
 package edu.uwm.capstone.service;
 
-import edu.uwm.capstone.db.FieldDefinitionDao;
 import edu.uwm.capstone.db.FormDefinitionDao;
 import edu.uwm.capstone.model.FieldDefinition;
 import edu.uwm.capstone.model.FormDefinition;
@@ -17,12 +16,10 @@ import java.util.List;
 public class FormDefinitionService {
     private static final Logger LOG = LoggerFactory.getLogger(FormDefinitionService.class);
     private final FormDefinitionDao formDefinitionDao;
-    private final FieldDefinitionDao fieldDefinitionDao;
 
     @Autowired
-    public FormDefinitionService(FormDefinitionDao formDefinitionDao, FieldDefinitionDao fieldDefinitionDao) {
+    public FormDefinitionService(FormDefinitionDao formDefinitionDao) {
         this.formDefinitionDao = formDefinitionDao;
-        this.fieldDefinitionDao = fieldDefinitionDao;
     }
 
     /**
@@ -35,15 +32,17 @@ public class FormDefinitionService {
         LOG.trace("Creating form definition {}", formDef);
 
         Assert.notNull(formDef.getName(),"Form definition name cannot be null");
+        Assert.isNull(formDef.getId(), "Form definition id should be null");
         Assert.notEmpty(formDef.getFieldDefs(), "Form definition must have at least one field definition");
-        formDefinitionDao.create(formDef);
 
         for (FieldDefinition fd : formDef) {
+            Assert.isNull(fd.getId(), "Field definition id should be null");
             Assert.notNull(fd.getLabel(), "Field definition label cannot be null");
             Assert.notNull(fd.getInputType(), "Field definition input type cannot be null");
             Assert.notNull(fd.getDataType(), "Field definition data type cannot be null");
-            fieldDefinitionDao.create(fd);
         }
+
+        formDefinitionDao.create(formDef);
 
         return formDef;
     }
@@ -62,8 +61,6 @@ public class FormDefinitionService {
         if (formDef == null) {
             throw new EntityNotFoundException("Form definition with ID: " + formDefId + " not found.");
         }
-
-        formDef.setFieldDefs(fieldDefinitionDao.readFieldDefsByFormDefId(formDefId));
 
         return formDef;
     }
@@ -91,12 +88,9 @@ public class FormDefinitionService {
      */
     public void delete(Long formDefId) {
         LOG.trace("Deleting form definition {}", formDefId);
-        FormDefinition fd = read(formDefId);
-        if (fd == null) {
-            throw new EntityNotFoundException("Could not delete form definition " + formDefId + " - record not found.");
+        if (formDefinitionDao.read(formDefId) == null) {
+            throw new EntityNotFoundException("Could not delete Form definition " + formDefId + " - record not found.");
         }
-        int numberOfFields = fieldDefinitionDao.readFieldDefsByFormDefId(formDefId).size();
-        fieldDefinitionDao.deleteFieldDefsByFromDefId(formDefId, numberOfFields);
         formDefinitionDao.delete(formDefId);
     }
 
