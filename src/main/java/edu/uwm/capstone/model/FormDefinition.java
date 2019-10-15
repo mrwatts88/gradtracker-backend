@@ -24,4 +24,11 @@ public class FormDefinition extends BaseEntity implements Iterable<FieldDefiniti
     public int size() {
         return fieldDefs.size();
     }
+
+    public void setId(Long id) {
+        this.id = id;
+        for(FieldDefinition fd : this) {
+            fd.setFormDefId(id);
+        }
+    }
 }

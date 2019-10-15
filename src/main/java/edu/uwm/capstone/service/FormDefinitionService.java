@@ -35,14 +35,13 @@ public class FormDefinitionService {
         LOG.trace("Creating form definition {}", formDef);
 
         Assert.notNull(formDef.getName(),"Form definition name cannot be null");
+        Assert.notEmpty(formDef.getFieldDefs(), "Form definition must have at least one field definition");
         formDefinitionDao.create(formDef);
 
         for (FieldDefinition fd : formDef) {
             Assert.notNull(fd.getLabel(), "Field definition label cannot be null");
             Assert.notNull(fd.getInputType(), "Field definition input type cannot be null");
             Assert.notNull(fd.getDataType(), "Field definition data type cannot be null");
-
-            fd.setFormDefId(formDef.getId());
             fieldDefinitionDao.create(fd);
         }
 

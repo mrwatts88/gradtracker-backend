@@ -42,13 +42,27 @@ public class TestDataUtility {
      * Generate a {@link FormDefinition} object that is fully loaded with random values for testing purposes.
      * @return {@link FormDefinition}
      */
-    public static FormDefinition formdefsWithTestValues(){
+    public static FormDefinition formDefWithTestValues(){
         FormDefinition formDefinition = new FormDefinition();
         formDefinition.setName(randomAlphabetic(randomInt(1, 100)));
-        //TODO: check whether using array list is ok in the unit test
-        formDefinition.setCreatedDate(randomLocalDateTime());
-        formDefinition.setUpdatedDate(randomLocalDateTime());
+        ArrayList<FieldDefinition> fieldDefinitions = new ArrayList<>();
+        int j = randomInt(5, 20);
+        for(int i = 0; i < j; i++) {
+            fieldDefinitions.add(fieldDefWithTestValues());
+        }
+        formDefinition.setFieldDefs(fieldDefinitions);
+        // intentionally left blank -- formDefinition.setCreatedDate(randomLocalDateTime());
+        // intentionally left blank -- formDefinition.setUpdatedDate(randomLocalDateTime());
         return formDefinition;
+    }
+
+    private static FieldDefinition fieldDefWithTestValues() {
+        FieldDefinition fieldDefinition = new FieldDefinition();
+        fieldDefinition.setLabel(randomAlphabetic(randomInt(1, 50)));
+        fieldDefinition.setInputType(randomAlphabetic(randomInt(1, 10))); // this may need to change
+        fieldDefinition.setDataType(randomAlphabetic(randomInt(1, 10)));  // this may need to change
+        fieldDefinition.setFieldIndex(randomInt());
+        return fieldDefinition;
     }
 
     /**

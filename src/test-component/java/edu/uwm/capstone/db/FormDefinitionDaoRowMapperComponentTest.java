@@ -53,7 +53,7 @@ public class FormDefinitionDaoRowMapperComponentTest {
     @Test
     public void mapObject() {
         // generate a FormDefinition object with test values
-        FormDefinition sample_form_def = TestDataUtility.formdefsWithTestValues();
+        FormDefinition sample_form_def = TestDataUtility.formDefWithTestValues();
         sample_form_def.setId(TestDataUtility.randomLong());
         sample_form_def.setCreatedDate(randomLocalDateTime());
         sample_form_def.setUpdatedDate(randomLocalDateTime());
@@ -76,7 +76,7 @@ public class FormDefinitionDaoRowMapperComponentTest {
     @Test
     public void mapRow() throws SQLException {
         // generate a FormDefinition object with test values
-        FormDefinition sample_form_def = TestDataUtility.formdefsWithTestValues();
+        FormDefinition sample_form_def = TestDataUtility.formDefWithTestValues();
         sample_form_def.setId(TestDataUtility.randomLong());
         sample_form_def.setCreatedDate(randomLocalDateTime());
         sample_form_def.setUpdatedDate(randomLocalDateTime());

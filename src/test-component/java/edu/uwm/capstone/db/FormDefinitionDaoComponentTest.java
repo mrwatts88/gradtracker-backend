@@ -39,7 +39,7 @@ public class FormDefinitionDaoComponentTest {
      */
     @Test
     public void create() {
-        FormDefinition create_form_def = TestDataUtility.formdefsWithTestValues();
+        FormDefinition create_form_def = TestDataUtility.formDefWithTestValues();
         formDefinitionDao.create(create_form_def);
         assertNotNull(create_form_def.getId());
     }
@@ -57,7 +57,7 @@ public class FormDefinitionDaoComponentTest {
      */
     @Test(expected = RuntimeException.class)
     public void createNonNullFormDefId() {
-        FormDefinition create_form_def = TestDataUtility.formdefsWithTestValues();
+        FormDefinition create_form_def = TestDataUtility.formDefWithTestValues();
         create_form_def.setId(new Random().longs(1L, Long.MAX_VALUE).findAny().getAsLong());
         formDefinitionDao.create(create_form_def);
     }
@@ -68,7 +68,7 @@ public class FormDefinitionDaoComponentTest {
      */
     @Test(expected = RuntimeException.class)
     public void createFormDefinitionColumnTooLong() {
-        FormDefinition create_form_def = TestDataUtility.formdefsWithTestValues();
+        FormDefinition create_form_def = TestDataUtility.formDefWithTestValues();
         create_form_def.setName(RandomStringUtils.randomAlphabetic(2000));
         formDefinitionDao.create(create_form_def);
     }
@@ -78,7 +78,7 @@ public class FormDefinitionDaoComponentTest {
      */
     @Test
     public void read() {
-        FormDefinition create_form_def = TestDataUtility.formdefsWithTestValues();
+        FormDefinition create_form_def = TestDataUtility.formDefWithTestValues();
         formDefinitionDao.create(create_form_def);
         assertNotNull(create_form_def.getId());
 
@@ -141,7 +141,7 @@ public class FormDefinitionDaoComponentTest {
      */
     @Test
     public void delete() {
-        FormDefinition sample_form_def = TestDataUtility.formdefsWithTestValues();
+        FormDefinition sample_form_def = TestDataUtility.formDefWithTestValues();
         formDefinitionDao.create(sample_form_def);
         assertNotNull(sample_form_def.getId());
 
@@ -170,7 +170,7 @@ public class FormDefinitionDaoComponentTest {
      */
     @Test
     public void readAllformdef(){
-        FormDefinition createUser = TestDataUtility.formdefsWithTestValues();
+        FormDefinition createUser = TestDataUtility.formDefWithTestValues();
         formDefinitionDao.create(createUser);
         assertNotNull(formDefinitionDao.readAll());
     }
