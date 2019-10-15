@@ -3,17 +3,26 @@ package edu.uwm.capstone.swagger;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Sets;
+
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import org.springframework.http.MediaType;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger.web.ApiKeyVehicle;
+import springfox.documentation.swagger.web.SecurityConfiguration;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+
+
+import java.io.IOException;
+
 
 import static com.google.common.base.Predicates.or;
 import static springfox.documentation.builders.PathSelectors.regex;
@@ -28,6 +37,15 @@ public class SwaggerConfig {
     private String title;
     private String version;
     private String host;
+
+    @Bean
+    public SecurityConfiguration security() {
+        return new SecurityConfiguration(null, // "client id",
+                null, // "client secret",
+                null, // "realm",
+                null, // "app",
+                "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkZWZhdWx0QHV3bS5lZHUiLCJwYW50aGVyIGlkIjoiMTIzNDU2Nzg5IiwibGFzdCBuYW1lIjoiZGVmYXVsdF9sYXN0X25hbWUiLCJmaXJzdCBuYW1lIjoiZGVmYXVsdF9maXJzdF9uYW1lIiwiaWQiOjEsImV4cCI6MTU3MTc3NzI1NSwiZW1haWwiOiJkZWZhdWx0QHV3bS5lZHUifQ.QJmHfCsge-v-dfldQSWUjUTMLS9F-nr8YF5LBL89HUO_AT7pamoiNZ4LivYHjznT4cqf9r7XgH3WDjwOUH9bVw", ApiKeyVehicle.HEADER, "Authorization", "," /* scope separator */);
+    }
 
     @Bean
     public Docket swaggerSpringMvcPlugin() {
