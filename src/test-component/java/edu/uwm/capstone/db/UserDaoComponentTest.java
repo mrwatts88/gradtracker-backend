@@ -33,6 +33,8 @@ public class UserDaoComponentTest {
         assertNotNull(userDao.sql("readUser"));
         assertNotNull(userDao.sql("updateUser"));
         assertNotNull(userDao.sql("deleteUser"));
+        assertNotNull(userDao.sql("readUserByEmail"));
+        assertNotNull(userDao.sql("readAllUsers"));
     }
 
     /**
@@ -231,6 +233,16 @@ public class UserDaoComponentTest {
     public void deleteNonExistentUser() {
         Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
         userDao.delete(id);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void readAllUser(){
+        User createUser = TestDataUtility.userWithTestValues();
+        userDao.create(createUser);
+        assertNotNull(userDao.readAll());
     }
 
 }

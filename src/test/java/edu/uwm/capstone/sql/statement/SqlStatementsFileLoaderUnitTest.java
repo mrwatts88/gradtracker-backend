@@ -46,6 +46,8 @@ public class SqlStatementsFileLoaderUnitTest {
         assertNotNull(sqlStatementsFileLoader.getStatementResourceLocation());
         assertNotNull(sqlStatementsFileLoader.sql("createUser"));
         assertNotNull(sqlStatementsFileLoader.sql("readUser"));
+        assertNotNull(sqlStatementsFileLoader.sql("readAllUsers"));
+        assertNotNull(sqlStatementsFileLoader.sql("readUserByEmail"));
         assertNotNull(sqlStatementsFileLoader.sql("updateUser"));
         assertNotNull(sqlStatementsFileLoader.sql("deleteUser"));
     }
