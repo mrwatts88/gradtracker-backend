@@ -45,14 +45,7 @@ public class TestDataUtility {
     public static FormDefinition formdefsWithTestValues(){
         FormDefinition formDefinition = new FormDefinition();
         formDefinition.setName(randomAlphabetic(randomInt(1, 100)));
-        formDefinition.setId(randomLong());
         //TODO: check whether using array list is ok in the unit test
-        List<FieldDefinition> fieldDefinitions = new ArrayList<>();
-        FieldDefinition fielddef1 = new FieldDefinition();
-        FieldDefinition fielddef2 = new FieldDefinition();
-        fieldDefinitions.add(fielddef1);
-        fieldDefinitions.add(fielddef2);
-        formDefinition.setFieldDefs(fieldDefinitions);
         formDefinition.setCreatedDate(randomLocalDateTime());
         formDefinition.setUpdatedDate(randomLocalDateTime());
         return formDefinition;
