@@ -1,11 +1,14 @@
 package edu.uwm.capstone.util;
 
+import edu.uwm.capstone.model.FieldDefinition;
+import edu.uwm.capstone.model.FormDefinition;
 import edu.uwm.capstone.model.User;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -33,6 +36,26 @@ public class TestDataUtility {
         // intentionally left blank -- profile.setCreatedDate(randomLocalDateTime());
         // intentionally left blank -- profile.setUpdatedDate(randomLocalDateTime());
         return user;
+    }
+
+    /**
+     * Generate a {@link FormDefinition} object that is fully loaded with random values for testing purposes.
+     * @return {@link FormDefinition}
+     */
+    public static FormDefinition formdefsWithTestValues(){
+        FormDefinition formDefinition = new FormDefinition();
+        formDefinition.setName(randomAlphabetic(randomInt(1, 100)));
+        formDefinition.setId(randomLong());
+        //TODO: check whether using array list is ok in the unit test
+        List<FieldDefinition> fieldDefinitions = new ArrayList<>();
+        FieldDefinition fielddef1 = new FieldDefinition();
+        FieldDefinition fielddef2 = new FieldDefinition();
+        fieldDefinitions.add(fielddef1);
+        fieldDefinitions.add(fielddef2);
+        formDefinition.setFieldDefs(fieldDefinitions);
+        formDefinition.setCreatedDate(randomLocalDateTime());
+        formDefinition.setUpdatedDate(randomLocalDateTime());
+        return formDefinition;
     }
 
     /**
