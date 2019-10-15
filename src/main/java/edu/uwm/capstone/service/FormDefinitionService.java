@@ -19,8 +19,6 @@ public class FormDefinitionService {
     private final FormDefinitionDao formDefinitionDao;
     private final FieldDefinitionDao fieldDefinitionDao;
 
-//    private final FieldDefinitionService fieldDefinitionService; // not sure if we even need this
-
     @Autowired
     public FormDefinitionService(FormDefinitionDao formDefinitionDao, FieldDefinitionDao fieldDefinitionDao) {
         this.formDefinitionDao = formDefinitionDao;
