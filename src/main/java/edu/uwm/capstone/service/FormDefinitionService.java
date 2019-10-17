@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("formDefinitionService")
 public class FormDefinitionService {
@@ -30,21 +32,8 @@ public class FormDefinitionService {
      */
     public FormDefinition create(FormDefinition formDef) {
         LOG.trace("Creating form definition {}", formDef);
-
-        Assert.notNull(formDef.getName(),"Form definition name cannot be null");
-        Assert.isNull(formDef.getId(), "Form definition id should be null");
-        Assert.notEmpty(formDef.getFieldDefs(), "Form definition must have at least one field definition");
-
-        for (FieldDefinition fd : formDef) {
-            Assert.isNull(fd.getId(), "Field definition id should be null");
-            Assert.notNull(fd.getLabel(), "Field definition label cannot be null");
-            Assert.notNull(fd.getInputType(), "Field definition input type cannot be null");
-            Assert.notNull(fd.getDataType(), "Field definition data type cannot be null");
-        }
-
-        formDefinitionDao.create(formDef);
-
-        return formDef;
+        checkValidFormDefinition(formDef, true);
+        return formDefinitionDao.create(formDef);
     }
 
     /**
@@ -65,20 +54,32 @@ public class FormDefinitionService {
         return formDef;
     }
 
-//    /**
-//     * TODO finish javaDoc
-//     *
-//     * @param formDef
-//     * @return
-//     */
-//    public void update(FormDefinition formDef) {
-//        LOG.trace("Updating form {}", formDef);
-//
-//        if (formDefinitionDao.read(formDef.getId()) == null) {
-//            throw new ServiceException("Could not update form " + formDef.getId() + " - record not found.");
-//        }
-//        return formDefinitionDao.update(formDef);
-//    }
+    /**
+     * TODO finish javaDoc
+     *
+     * @param formDef
+     * @return
+     */
+    public void update(FormDefinition formDef) {
+        LOG.trace("Updating form {}", formDef);
+
+        checkValidFormDefinition(formDef, false);
+        FormDefinition formDefinitionInDb = formDefinitionDao.read(formDef.getId());
+
+        if (formDefinitionInDb == null) {
+            throw new EntityNotFoundException("Could not update form definition " + formDef.getId() + " - record not found.");
+        }
+
+        HashSet<Long> fieldDefIdsAssociatedWithOldFormDef = formDefinitionInDb.getFieldDefs().stream().map(FieldDefinition::getId).collect(Collectors.toCollection(HashSet::new));
+        for(FieldDefinition fd : formDef) {
+            if (fd.getId() != null) {
+                Assert.isTrue(fieldDefIdsAssociatedWithOldFormDef.contains(fd.getId()), "Could update form definition " + formDef.getId() +
+                        " - found a field definition with id = " + fd.getId() + " which is not associated with this form definition");
+            }
+        }
+
+        formDefinitionDao.update(formDef);
+    }
 
     /**
      * TODO finish javaDoc
@@ -89,12 +90,34 @@ public class FormDefinitionService {
     public void delete(Long formDefId) {
         LOG.trace("Deleting form definition {}", formDefId);
         if (formDefinitionDao.read(formDefId) == null) {
-            throw new EntityNotFoundException("Could not delete Form definition " + formDefId + " - record not found.");
+            throw new EntityNotFoundException("Could not delete form definition " + formDefId + " - record not found.");
         }
         formDefinitionDao.delete(formDefId);
     }
 
+    /**
+     * TODO finish javaDoc
+     *
+     * @return
+     */
     public List<FormDefinition> readAll() {
         return formDefinitionDao.readAll();
+    }
+
+    private void checkValidFormDefinition(FormDefinition formDef, boolean checkNullId) {
+        Assert.notNull(formDef,"Form definition cannot be null");
+        if (checkNullId)
+            Assert.isNull(formDef.getId(), "Form definition id should be null");
+        Assert.notNull(formDef.getName(),"Form definition name cannot be null");
+        Assert.notEmpty(formDef.getFieldDefs(), "Form definition must have at least one field definition");
+
+        for (FieldDefinition fd : formDef) {
+            Assert.notNull(fd, "Field definition should not be null");
+            if (checkNullId)
+                Assert.isNull(fd.getId(), "Field definition id should be null");
+            Assert.notNull(fd.getLabel(), "Field definition label cannot be null");
+            Assert.notNull(fd.getInputType(), "Field definition input type cannot be null");
+            Assert.notNull(fd.getDataType(), "Field definition data type cannot be null");
+        }
     }
 }

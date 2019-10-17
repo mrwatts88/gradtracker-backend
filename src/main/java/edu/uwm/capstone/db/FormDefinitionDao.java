@@ -14,7 +14,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
     private static final Logger LOG = LoggerFactory.getLogger(FormDefinitionDao.class);
@@ -42,7 +44,7 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
         Long id = keyHolder.getKey().longValue();
         formDef.setId(id);
         for (FieldDefinition fd : formDef) {
-            fd.setFormDefId(formDef.getId());
+            fd.setFormDefId(id);
             fieldDefinitionDao.create(fd);
         }
         return formDef;
@@ -71,22 +73,35 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
     }
 
     @Override
-    public void update(FormDefinition form) {
-//        if(form == null)
-//        {
-//            throw new DaoException("form cannot be null");
-//        }
-//        else if(form.getId() == null)
-//        {
-//            throw new DaoException("When creating a new form the id should not be null, it was null");
-//        }
-//
-//        LOG.trace("Updating profile {}", form);
-//        form.setUpdatedDate(LocalDateTime.now());
-//        int result = this.jdbcTemplate.update(sql("updateform"), new MapSqlParameterSource(rowMapper.mapObject(form)));
-//        if (result != 1) {
-//            throw new DaoException(String.format("Failed attempt to update form %s - affected %s rows", form.toString(), result));
-//        }
+    public void update(FormDefinition formDef) {
+        if (formDef == null) {
+            throw new DaoException("form definition cannot be null");
+        } else if (formDef.getId() == null) {
+            throw new DaoException("When updating a form definition the id should not be null");
+        }
+
+        LOG.trace("Updating form definition {}", formDef);
+        formDef.setUpdatedDate(LocalDateTime.now());
+        int result = this.jdbcTemplate.update(sql("updateFormDef"), new MapSqlParameterSource(rowMapper.mapObject(formDef)));
+        if (result != 1) {
+            throw new DaoException(String.format("Failed attempt to update form definition %s - affected %s rows", formDef.toString(), result));
+        }
+
+        HashSet<Long> fieldDefIdsAssociatedWithOldFormDef = fieldDefinitionDao.readFieldDefsByFormDefId(formDef.getId()).stream().map(FieldDefinition::getId).collect(Collectors.toCollection(HashSet::new));
+
+        Long fieldDefId;
+        for (FieldDefinition fd : formDef) {
+            fieldDefId = fd.getId();
+            if (fieldDefId == null) {                                              // create new field def if has null id
+                fd.setFormDefId(formDef.getId());
+                fieldDefinitionDao.create(fd);
+            } else if (fieldDefIdsAssociatedWithOldFormDef.contains(fieldDefId)) { // update field def if it's connected to formDef
+                fieldDefIdsAssociatedWithOldFormDef.remove(fieldDefId);
+                fieldDefinitionDao.update(fd);
+            }
+        }
+
+        fieldDefIdsAssociatedWithOldFormDef.forEach(fdId -> fieldDefinitionDao.delete(fdId)); // remove old field defs
     }
 
     @Override

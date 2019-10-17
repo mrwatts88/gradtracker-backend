@@ -20,18 +20,20 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
     @Override
     public FieldDefinition create(FieldDefinition fieldDef) {
         if (fieldDef == null) {
-            throw new DaoException("fieldDef cannot be null");
+            throw new DaoException("field definition cannot be null");
         } else if (fieldDef.getId() != null) {
-            throw new DaoException("When creating a new field def the id should be null, but was set to " + fieldDef.getId());
+            throw new DaoException("When creating a new field definition the id should be null, but was set to " + fieldDef.getId());
+        } else if (fieldDef.getFormDefId() == null) {
+            throw new DaoException("When creating a new field definition the form definition id should not be null");
         }
-        LOG.trace("Creating field definition {}", fieldDef);
 
+        LOG.trace("Creating field definition {}", fieldDef);
         fieldDef.setCreatedDate(LocalDateTime.now());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int result = this.jdbcTemplate.update(sql("createFieldDef"),
                 new MapSqlParameterSource(rowMapper.mapObject(fieldDef)), keyHolder, new String[]{BaseRowMapper.BaseColumnType.ID.name()});
         if (result != 1) {
-            throw new DaoException(String.format("Failed attempt to create field def %s - affected %s rows", fieldDef.toString(), result));
+            throw new DaoException(String.format("Failed attempt to create field definition %s - affected %s rows", fieldDef.toString(), result));
         }
 
         Long id = keyHolder.getKey().longValue();
@@ -43,7 +45,7 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
     public FieldDefinition read(Long id) {
         LOG.trace("Reading field definition {}", id);
         try {
-            return (FieldDefinition) this.jdbcTemplate.queryForObject(sql("readField"), new MapSqlParameterSource("id", id), rowMapper);
+            return (FieldDefinition) this.jdbcTemplate.queryForObject(sql("readFieldDef"), new MapSqlParameterSource("id", id), rowMapper);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -59,27 +61,24 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
     }
 
     @Override
-    public void update(FieldDefinition field) {
-//        if(field == null)
-//        {
-//            throw new DaoException("field cannot be null");
-//        }
-//        else if(field.getId() == null)
-//        {
-//            throw new DaoException("When creating a new field the id should not be null, it was null");
-//        }
-//
-//        LOG.trace("Updating profile {}", field);
-//        field.setUpdatedDate(LocalDateTime.now());
-//        int result = this.jdbcTemplate.update(sql("updatefield"), new MapSqlParameterSource(rowMapper.mapObject(field)));
-//        if (result != 1) {
-//            throw new DaoException(String.format("Failed attempt to update field %s - affected %s rows", field.toString(), result));
-//        }
+    public void update(FieldDefinition fieldDef) {
+        if (fieldDef == null) {
+            throw new DaoException("field definition cannot be null");
+        } else if (fieldDef.getId() == null) {
+            throw new DaoException("When updating a field definition, the id should not be null");
+        }
+
+        LOG.trace("Updating field definition {}", fieldDef);
+        fieldDef.setUpdatedDate(LocalDateTime.now());
+        int result = this.jdbcTemplate.update(sql("updateFieldDef"), new MapSqlParameterSource(rowMapper.mapObject(fieldDef)));
+        if (result != 1) {
+            throw new DaoException(String.format("Failed attempt to update field definition %s - affected %s rows", fieldDef.toString(), result));
+        }
     }
 
     @Override
     public void delete(Long id) {
-        LOG.trace("Deleting profile {}", id);
+        LOG.trace("Deleting field definition {}", id);
         int result = this.jdbcTemplate.update(sql("deleteFieldDef"), new MapSqlParameterSource("id", id));
         if (result != 1) {
             throw new DaoException(String.format("Failed attempt to delete field %s affected %s rows", id, result));
@@ -87,7 +86,7 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
     }
 
     public void deleteFieldDefsByFromDefId(Long id) {
-        LOG.trace("Deleting field definitions with form_def_id {}", id);
+        LOG.trace("Deleting field definitions with form definition id {}", id);
         int result = this.jdbcTemplate.update(sql("deleteFieldDefsByFormDefId"), new MapSqlParameterSource("id", id));
         if (result < 1) {
             throw new DaoException(String.format("Failed attempt to delete fields with form_def_id %s affected %s rows", id, result));

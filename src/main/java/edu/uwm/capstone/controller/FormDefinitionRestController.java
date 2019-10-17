@@ -37,7 +37,7 @@ public class FormDefinitionRestController {
      * @return {@link FormDefinition}
      * @throws IOException if error response cannot be created.
      */
-    @ApiOperation(value = "Create Form")
+    @ApiOperation(value = "Create FormDefinition")
     @PostMapping(value = FORM_DEF_PATH)
     public FormDefinition create(@RequestBody FormDefinition formDef, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
@@ -61,7 +61,7 @@ public class FormDefinitionRestController {
      * @return {@link FormDefinition} retrieved from the database
      * @throws IOException if error response cannot be created.
      */
-    @ApiOperation(value = "Read Form by ID")
+    @ApiOperation(value = "Read FormDefinition by ID")
     @GetMapping(value = FORM_DEF_PATH + "{formDefId}")
     public FormDefinition readById(@PathVariable Long formDefId, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
@@ -74,13 +74,13 @@ public class FormDefinitionRestController {
     }
 
     /**
-     * Get the {@link FormDefinition} by Id
+     * Gets all the {@link FormDefinition}s
      *
      * @param response  {@link HttpServletResponse}
      * @return {@link FormDefinition} retrieved from the database
      * @throws IOException if error response cannot be created.
      */
-    @ApiOperation(value = "Read All Forms")
+    @ApiOperation(value = "Read All FormDefinition")
     @GetMapping(value = FORM_DEF_PATH)
     public List<FormDefinition> readAll(@ApiIgnore HttpServletResponse response) throws IOException {
         try {
@@ -92,29 +92,31 @@ public class FormDefinitionRestController {
         }
     }
 
-//    /**
-//     * Updates the provided {@link User}
-//     *
-//     * @param user  {@link User}
-//     * @param response {@link HttpServletResponse}
-//     * @throws IOException if error response cannot be created.
-//     */
-//    @ApiOperation(value = "Update User")
-//    @PutMapping(value = FORM_DEF_PATH)
-//    public void update(@RequestBody User user, @ApiIgnore HttpServletResponse response) throws IOException {
-//        try {
-//            formDefinitionService.update(user);
-//        } catch (IllegalArgumentException e) {
-//            LOG.error(e.getMessage(), e);
-//            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
-//        } catch (UserNotFoundException e) {
-//            LOG.error(e.getMessage(), e);
-//            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-//        } catch (Exception e) {
-//            LOG.error(e.getMessage(), e);
-//            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-//        }
-//    }
+    /**
+     * Updates the provided {@link FormDefinition} by Id
+     *
+     * @param formDefId {@link FormDefinition#getId()}
+     * @param formDefinition  {@link FormDefinition}
+     * @param response {@link HttpServletResponse}
+     * @throws IOException if error response cannot be created.
+     */
+    @ApiOperation(value = "Update FormDefinition by ID")
+    @PutMapping(value = FORM_DEF_PATH + "{formDefId}")
+    public void update(@PathVariable Long formDefId, @RequestBody FormDefinition formDefinition, @ApiIgnore HttpServletResponse response) throws IOException {
+        try {
+            formDefinition.setId(formDefId);
+            formDefinitionService.update(formDefinition);
+        } catch (IllegalArgumentException e) {
+            LOG.error(e.getMessage(), e);
+            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            LOG.error(e.getMessage(), e);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
 
     /**
      * Delete the {@link FormDefinition} by Id

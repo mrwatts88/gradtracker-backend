@@ -29,10 +29,11 @@ DELETE FROM field_defs WHERE id = :id;
 --STATEMENT deleteFieldDefsByFormDefId
 DELETE FROM field_defs WHERE form_def_id = :id;
 
---STATEMENT updateField
+--STATEMENT updateFieldDef
 UPDATE field_defs SET
-  form_def_id = :form_def_id,
   label = :label,
+  field_index = :field_index,
+  input_type = :input_type,
   data_type = :data_type,
   updated_date = :updated_date
 WHERE
