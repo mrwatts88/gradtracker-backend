@@ -188,6 +188,46 @@ public class FormDefinitionServiceComponentTest {
     }
 
     /**
+     * Verify that {@link FormDefinitionService#update} is working correctly when field definitions are updated
+     * but not exist for form definition.
+     */
+    @Test(expected = RuntimeException.class)
+    public void updateButNotExistInFormDef() {
+        FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
+        formDefinitionService.create(createFormDef);
+        assertNotNull(createFormDef.getId());
+
+        FormDefinition verifyCreateFormDef = formDefinitionService.read(createFormDef.getId());
+        assertNotNull(verifyCreateFormDef);
+        assertEquals(createFormDef, verifyCreateFormDef);
+
+        FormDefinition updateFormDef = new FormDefinition();
+        updateFormDef.setId(verifyCreateFormDef.getId());
+        updateFormDef.getFieldDefs().get(0).setId((long) new Random().ints(0, 100).findAny().getAsInt());
+        formDefinitionService.update(updateFormDef);
+    }
+
+    /**
+     * Verify that {@link FormDefinitionService#update} is working correctly when field definitions are updated
+     * but without FieldDef.
+     */
+    @Test(expected = RuntimeException.class)
+    public void updateButWithoutFieldDef() {
+        FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
+        formDefinitionService.create(createFormDef);
+        assertNotNull(createFormDef.getId());
+
+        FormDefinition verifyCreateFormDef = formDefinitionService.read(createFormDef.getId());
+        assertNotNull(verifyCreateFormDef);
+        assertEquals(createFormDef, verifyCreateFormDef);
+
+        FormDefinition updateFormDef = TestDataUtility.formDefWithTestValues();
+        updateFormDef.setId(verifyCreateFormDef.getId());
+        updateFormDef.setFieldDefs(null);
+        formDefinitionService.update(updateFormDef);
+    }
+
+    /**
      * Verify that {@link FormDefinitionService#delete} is working correctly.
      */
     @Test
