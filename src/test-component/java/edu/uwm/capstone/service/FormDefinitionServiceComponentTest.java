@@ -1,6 +1,7 @@
 package edu.uwm.capstone.service;
 
 import edu.uwm.capstone.Application;
+import edu.uwm.capstone.model.FieldDefinition;
 import edu.uwm.capstone.model.FormDefinition;
 import edu.uwm.capstone.util.TestDataUtility;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -14,6 +15,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -217,7 +219,7 @@ public class FormDefinitionServiceComponentTest {
      * but not exist for form definition.
      */
     @Test(expected = RuntimeException.class)
-    public void updateButNotExistInFormDef() {
+    public void updateFormDefUnknownFieldDefId() {
         FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
         formDefinitionService.create(createFormDef);
         assertNotNull(createFormDef.getId());
@@ -228,8 +230,12 @@ public class FormDefinitionServiceComponentTest {
         formDefinitionToCleanup.add(createFormDef);
 
         FormDefinition updateFormDef = new FormDefinition();
-        updateFormDef.setId(verifyCreateFormDef.getId());
-        updateFormDef.getFieldDefs().get(0).setId((long) new Random().ints(0, 100).findAny().getAsInt());
+        updateFormDef.setName(TestDataUtility.randomAlphabetic(10));
+        List<FieldDefinition> fieldDefinitions = new ArrayList<>();
+        FieldDefinition fd = TestDataUtility.fieldDefWithTestValues();
+        fd.setId(TestDataUtility.randomLong());
+        fieldDefinitions.add(fd);
+        updateFormDef.setFieldDefs(fieldDefinitions);
         formDefinitionService.update(updateFormDef);
     }
 
@@ -238,7 +244,7 @@ public class FormDefinitionServiceComponentTest {
      * but without FieldDef.
      */
     @Test(expected = RuntimeException.class)
-    public void updateButWithoutFieldDef() {
+    public void updateFieldDefEmptyFieldDefs() {
         FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
         formDefinitionService.create(createFormDef);
         assertNotNull(createFormDef.getId());
@@ -250,7 +256,7 @@ public class FormDefinitionServiceComponentTest {
 
         FormDefinition updateFormDef = TestDataUtility.formDefWithTestValues();
         updateFormDef.setId(verifyCreateFormDef.getId());
-        updateFormDef.setFieldDefs(null);
+        updateFormDef.setFieldDefs(Collections.emptyList());
         formDefinitionService.update(updateFormDef);
     }
 

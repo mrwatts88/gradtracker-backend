@@ -165,7 +165,7 @@ public class FormDefinitionDaoComponentTest {
      * but all others are replaced by new field definitions.
      */
     @Test
-    public void updateButLeaveOneFieldDefTheSame() {
+    public void updateFormDefLeaveOneFieldDefTheSame() {
         FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
         formDefinitionDao.create(createFormDef);
         assertNotNull(createFormDef.getId());
@@ -193,7 +193,7 @@ public class FormDefinitionDaoComponentTest {
      * but not removed or added to the form definition.
      */
     @Test
-    public void updateButLeaveAllFieldDefIds() {
+    public void updateFormDefLeaveAllFieldDefIds() {
         FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
         formDefinitionDao.create(createFormDef);
         assertNotNull(createFormDef.getId());
