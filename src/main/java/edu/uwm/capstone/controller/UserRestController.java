@@ -74,7 +74,7 @@ public class UserRestController {
     }
 
     /**
-     * Get all the {@link User}s
+     * Gets all the {@link User}s
      *
      * @param response  {@link HttpServletResponse}
      * @return {@link User} retrieved from the database

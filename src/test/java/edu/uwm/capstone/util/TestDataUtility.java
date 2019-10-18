@@ -56,7 +56,11 @@ public class TestDataUtility {
         return formDefinition;
     }
 
-    private static FieldDefinition fieldDefWithTestValues() {
+    /**
+     * Generate a {@link FieldDefinition} object that is fully loaded with random values for testing purposes.
+     * @return {@link FieldDefinition}
+     */
+    public static FieldDefinition fieldDefWithTestValues() {
         FieldDefinition fieldDefinition = new FieldDefinition();
         fieldDefinition.setLabel(randomAlphabetic(randomInt(1, 50)));
         fieldDefinition.setInputType(randomAlphabetic(randomInt(1, 10))); // this may need to change

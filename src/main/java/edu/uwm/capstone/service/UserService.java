@@ -106,9 +106,9 @@ public class UserService {
         userDao.delete(userId);
     }
 
-    private void checkValidUser(User user, boolean checkId) {
+    private void checkValidUser(User user, boolean checkNullId) {
         Assert.notNull(user, "User must not be null");
-        if (checkId)
+        if (checkNullId)
             Assert.isNull(user.getId(), "User ID must be null");
         Assert.notNull(user.getEmail(),  "User email must not be null");
         Assert.notNull(user.getPassword(),  "User password must not be null");

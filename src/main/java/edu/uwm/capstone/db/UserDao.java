@@ -66,7 +66,7 @@ public class UserDao extends BaseDao<Long, User> {
     }
 
     /**
-     * TODO
+     * TODO finish javaDoc
      *
      * @return
      */
@@ -98,6 +98,12 @@ public class UserDao extends BaseDao<Long, User> {
      */
     @Override
     public void update(User user) {
+        if (user == null) {
+            throw new DaoException("Request to update a new user received null");
+        } else if (user.getId() == null) {
+            throw new DaoException("When updating a new user the id should not be null");
+        }
+
         LOG.trace("Updating user {}", user);
         user.setUpdatedDate(LocalDateTime.now());
         int result = this.jdbcTemplate.update(sql("updateUser"), new MapSqlParameterSource(rowMapper.mapObject(user)));

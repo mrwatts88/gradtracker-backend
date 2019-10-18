@@ -109,6 +109,7 @@ public class FormDefinitionService {
         if (checkNullId)
             Assert.isNull(formDef.getId(), "Form definition id should be null");
         Assert.notNull(formDef.getName(),"Form definition name cannot be null");
+        Assert.notNull(formDef.getFieldDefs(), "Form definition's field definitions cannot be null");
         Assert.notEmpty(formDef.getFieldDefs(), "Form definition must have at least one field definition");
 
         for (FieldDefinition fd : formDef) {
