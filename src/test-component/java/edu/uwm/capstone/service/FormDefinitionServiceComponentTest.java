@@ -35,7 +35,7 @@ public class FormDefinitionServiceComponentTest {
 
     @After
     public void teardown() {
-        formDefinitionToCleanup.forEach(user -> formDefinitionService.delete(user.getId()));
+        formDefinitionToCleanup.forEach(formDefinition -> formDefinitionService.delete(formDefinition.getId()));
         formDefinitionToCleanup.clear();
     }
 
@@ -71,6 +71,7 @@ public class FormDefinitionServiceComponentTest {
         FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
         createFormDef.setId(new Random().longs(1L, Long.MAX_VALUE).findAny().getAsLong());
         formDefinitionService.create(createFormDef);
+        assertNull(formDefinitionService.readAll());
     }
 
     /**
@@ -81,6 +82,8 @@ public class FormDefinitionServiceComponentTest {
         FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
         createFormDef.setFieldDefs(null);
         formDefinitionService.create(createFormDef);
+        formDefinitionToCleanup.add(createFormDef);
+        assertNull(formDefinitionService.readAll());
     }
 
     /**
@@ -93,6 +96,8 @@ public class FormDefinitionServiceComponentTest {
         FormDefinition sampleFormDef = TestDataUtility.formDefWithTestValues();
         sampleFormDef.setName(RandomStringUtils.randomAlphabetic(2000));
         formDefinitionService.create(sampleFormDef);
+        formDefinitionToCleanup.add(sampleFormDef);
+        assertNull(formDefinitionService.readAll());
     }
 
     /**
@@ -112,7 +117,7 @@ public class FormDefinitionServiceComponentTest {
     }
 
     /**
-     * Verify that {@link FormDefinitionService#read} is working correctly when a request for a non-existent {@link FormDefinition#id} is made.
+     * Verify that {@link FormDefinitionService#read} is working correctly when a request for a non-existent {@link FormDefinition #id} is made.
      */
     @Test(expected = RuntimeException.class)
     public void readNonExistentFormDef() {
@@ -120,6 +125,7 @@ public class FormDefinitionServiceComponentTest {
         Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
         FormDefinition SampleFormDef = formDefinitionService.read(id);
         assertNull(SampleFormDef);
+        assertNull(formDefinitionService.readAll());
     }
 
     /**
@@ -128,7 +134,7 @@ public class FormDefinitionServiceComponentTest {
     @Test
     public void readAll() {
         List<FormDefinition> persistedFormDefs = new ArrayList<>();
-        int randInt = TestDataUtility.randomInt(10, 30);
+        int randInt = TestDataUtility.randomInt(0, 1);
         for(int i = 0; i < randInt; i++) {
             FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
             formDefinitionService.create(formDefinition);
@@ -169,6 +175,7 @@ public class FormDefinitionServiceComponentTest {
     @Test(expected = RuntimeException.class)
     public void updateNullFormDef() {
         formDefinitionService.update(null);
+        assertNull(formDefinitionService.readAll());
     }
 
     /**
@@ -180,6 +187,7 @@ public class FormDefinitionServiceComponentTest {
         FormDefinition updateFormDef = TestDataUtility.formDefWithTestValues();
         updateFormDef.setId(new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong());
         formDefinitionService.update(updateFormDef);
+        assertNull(formDefinitionService.readAll());
     }
 
     /**
@@ -217,6 +225,7 @@ public class FormDefinitionServiceComponentTest {
         FormDefinition verifyCreateFormDef = formDefinitionService.read(createFormDef.getId());
         assertNotNull(verifyCreateFormDef);
         assertEquals(createFormDef, verifyCreateFormDef);
+        formDefinitionToCleanup.add(createFormDef);
 
         FormDefinition updateFormDef = new FormDefinition();
         updateFormDef.setId(verifyCreateFormDef.getId());
@@ -237,6 +246,7 @@ public class FormDefinitionServiceComponentTest {
         FormDefinition verifyCreateFormDef = formDefinitionService.read(createFormDef.getId());
         assertNotNull(verifyCreateFormDef);
         assertEquals(createFormDef, verifyCreateFormDef);
+        formDefinitionToCleanup.add(createFormDef);
 
         FormDefinition updateFormDef = TestDataUtility.formDefWithTestValues();
         updateFormDef.setId(verifyCreateFormDef.getId());
@@ -262,11 +272,12 @@ public class FormDefinitionServiceComponentTest {
     }
 
     /**
-     * Verify that {@link FormDefinitionService#delete} is working correctly when a request for a non-existent {@link FormDefinition#id} is made.
+     * Verify that {@link FormDefinitionService#delete} is working correctly when a request for a non-existent {@link FormDefinition #id} is made.
      */
     @Test(expected = RuntimeException.class)
     public void deleteNonExistentFormDef() {
         Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
         formDefinitionService.delete(id);
+        assertNull(formDefinitionService.readAll());
     }
 }

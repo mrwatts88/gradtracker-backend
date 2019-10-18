@@ -4,6 +4,7 @@ import edu.uwm.capstone.UnitTestConfig;
 import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.util.TestDataUtility;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +29,8 @@ public class UserDaoComponentTest {
     @Autowired
     UserDao userDao;
 
+    private List<User> usersToCleanup = new ArrayList<>();
+
     @Before
     public void setUp() {
         assertNotNull(userDao);
@@ -39,6 +42,12 @@ public class UserDaoComponentTest {
         assertNotNull(userDao.sql("readAllUsers"));
     }
 
+    @After
+    public void teardown() {
+        usersToCleanup.forEach(user -> userDao.delete(user.getId()));
+        usersToCleanup.clear();
+    }
+
     /**
      * Verify that {@link UserDao#create} is working correctly.
      */
@@ -47,6 +56,7 @@ public class UserDaoComponentTest {
         User createUser = TestDataUtility.userWithTestValues();
         userDao.create(createUser);
         assertNotNull(createUser.getId());
+        usersToCleanup.add(createUser);
     }
 
     /**
@@ -87,6 +97,7 @@ public class UserDaoComponentTest {
         User createUser = TestDataUtility.userWithTestValues();
         userDao.create(createUser);
         assertNotNull(createUser.getId());
+        usersToCleanup.add(createUser);
 
         User readUser = userDao.read(createUser.getId());
         assertNotNull(readUser);
@@ -95,7 +106,7 @@ public class UserDaoComponentTest {
     }
 
     /**
-     * Verify that {@link UserDao#read} is working correctly when a request for a non-existent {@link User#id} is made.
+     * Verify that {@link UserDao#read} is working correctly when a request for a non-existent {@link User #id} is made.
      */
     @Test
     public void readNonExistentUser() {
@@ -113,6 +124,7 @@ public class UserDaoComponentTest {
         User createUser = TestDataUtility.userWithTestValues();
         userDao.create(createUser);
         assertNotNull(createUser.getId());
+        usersToCleanup.add(createUser);
 
         User readUser = userDao.readByEmail(createUser.getEmail());
         assertNotNull(readUser);
@@ -121,7 +133,7 @@ public class UserDaoComponentTest {
     }
 
     /**
-     * Verify that {@link UserDao#read} is working correctly when a request for a non-existent {@link User#email} is made.
+     * Verify that {@link UserDao#read} is working correctly when a request for a non-existent {@link User #email} is made.
      */
     @Test
     public void readNonExistentUserByEmail() {
@@ -142,6 +154,7 @@ public class UserDaoComponentTest {
             User user = TestDataUtility.userWithTestValues();
             userDao.create(user);
             persistedUsers.add(user);
+            usersToCleanup.add(user);
         }
 
         assertEquals(persistedUsers, userDao.readAll());
@@ -155,6 +168,7 @@ public class UserDaoComponentTest {
         User createUser = TestDataUtility.userWithTestValues();
         userDao.create(createUser);
         assertNotNull(createUser.getId());
+        usersToCleanup.add(createUser);
 
         User verifyCreateUser = userDao.read(createUser.getId());
         assertNotNull(verifyCreateUser);
@@ -192,7 +206,7 @@ public class UserDaoComponentTest {
     }
 
     /**
-     * Verify that {@link UserDao#update} is working correctly when a request for a non-existent {@link User#id} is made.
+     * Verify that {@link UserDao#update} is working correctly when a request for a non-existent {@link User #id} is made.
      */
     @Test(expected = RuntimeException.class)
     public void updateNonExistentUser() {
@@ -217,11 +231,12 @@ public class UserDaoComponentTest {
         assertNotNull(verifyCreateUser);
         assertEquals(createUser.getId(), verifyCreateUser.getId());
         assertEquals(createUser, verifyCreateUser);
-
+        usersToCleanup.add(createUser);
         User updateUser = TestDataUtility.userWithTestValues();
         updateUser.setId(createUser.getId());
         updateUser.setFirstName(RandomStringUtils.randomAlphabetic(2000));
         userDao.update(updateUser);
+        usersToCleanup.add(updateUser);
     }
 
     /**
@@ -245,7 +260,7 @@ public class UserDaoComponentTest {
     }
 
     /**
-     * Verify that {@link UserDao#delete} is working correctly when a request for a non-existent {@link User#id} is made.
+     * Verify that {@link UserDao#delete} is working correctly when a request for a non-existent {@link User #id} is made.
      */
     @Test(expected = RuntimeException.class)
     public void deleteNonExistentUser() {
