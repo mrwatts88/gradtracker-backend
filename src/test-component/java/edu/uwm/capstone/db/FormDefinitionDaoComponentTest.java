@@ -34,21 +34,40 @@ public class FormDefinitionDaoComponentTest {
         assertNotNull(formDefinitionDao.sql("updateFormDef"));
     }
 
+    private void verifySameDefForm(FormDefinition form1, FormDefinition form2){
+        assertEquals(form1.getId(), form2.getId());
+        assertEquals(form1.getName(), form2.getName());
+        for(int i = 0; i<form1.getFieldDefs().size(); i++)
+        {
+            assertEquals(form1.getFieldDefs().indexOf(i), form2.getFieldDefs().indexOf(i));
+        }
+    }
+
+    private void verifyDifferentDefForm(FormDefinition form1, FormDefinition form2){
+        assertNotEquals(form1.getName(), form2.getName());
+        for(int i = 0; i<form1.getFieldDefs().size(); i++)
+        {
+            assertNotEquals(form2.getName() +" should not be: " +form1.getFieldDefs().indexOf(i) + " but it's: " + form2.getFieldDefs().indexOf(i),form1.getFieldDefs().indexOf(i), form2.getFieldDefs().indexOf(i));
+        }
+    }
+
     /**
      * Verify that {@link FormDefinitionDao #create} is working correctly.
      */
     @Test
     public void create() {
-        FormDefinition create_form_def = TestDataUtility.formDefWithTestValues();
-        formDefinitionDao.create(create_form_def);
-        assertNotNull(create_form_def.getId());
+        FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
+        formDefinitionDao.create(createFormDef);
+        FormDefinition verifyCreateFormDef = formDefinitionDao.read(createFormDef.getId());
+        assertNotNull(verifyCreateFormDef);
+        verifySameDefForm(createFormDef, verifyCreateFormDef);
     }
 
     /**
      * Verify that {@link FormDefinitionDao #create} is working correctly when a request for creating a null object is made.
      */
     @Test(expected = RuntimeException.class)
-    public void createNullformDefinition() {
+    public void createNullFormDefinition() {
         formDefinitionDao.create(null);
     }
 
@@ -92,7 +111,7 @@ public class FormDefinitionDaoComponentTest {
      * Verify that {@link FormDefinitionDao#read} is working correctly when a request for a non-existent {@link FormDefinition #id} is made.
      */
     @Test
-    public void readNonExistentformdef() {
+    public void readNonExistentFormDef() {
         Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
         FormDefinition formDefinition = formDefinitionDao.read(id);
         assertNull(formDefinition);
@@ -104,16 +123,32 @@ public class FormDefinitionDaoComponentTest {
      */
     @Test
     public void update() {
-        assertTrue(true);
+        FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
+        formDefinitionDao.create(createFormDef);
+        assertNotNull(createFormDef.getId());
+
+        FormDefinition verifyCreateFormDef = formDefinitionDao.read(createFormDef.getId());
+        assertNotNull(verifyCreateFormDef);
+        verifySameDefForm(createFormDef,verifyCreateFormDef);
+
+        FormDefinition updateFormDef = TestDataUtility.formDefWithTestValues();
+        updateFormDef.setId(createFormDef.getId());
+        formDefinitionDao.update(updateFormDef);
+
+        FormDefinition verifyUpdateFormDef = formDefinitionDao.read(updateFormDef.getId());
+        assertNotNull(verifyUpdateFormDef);
+        verifySameDefForm(updateFormDef, verifyUpdateFormDef);
+        //TODO: WHEN VERIFYING THOSE TWO FORM, IT'S SHOWING THAT THEY HAVE THE SAME FIELD VALUE? FIGURE OUT WHAT HAPPENS
+//        verifyDifferentDefForm(verifyCreateFormDef,verifyUpdateFormDef); //commented on purpose
     }
 
     /**
      * Verify that {@link FormDefinitionDao#update} is working correctly when a request for creating a null object is made.
      * TODO: CHECK OUT WHAT THE UPDATE ACTUALLY supposed to do and then implement the following update method unit test.
      */
-    @Test//(expected = RuntimeException.class)
-    public void updateNullformdef() {
-        assertTrue(true);
+    @Test(expected = RuntimeException.class)
+    public void updateNullFormDef() {
+        formDefinitionDao.update(null);
     }
 
     /**
@@ -121,9 +156,11 @@ public class FormDefinitionDaoComponentTest {
      *  TODO: CHECK OUT WHAT THE UPDATE ACTUALLY supposed to do and then implement the following update method unit test.
      */
 
-    @Test//(expected = RuntimeException.class)
-    public void updateNonExistentformdef() {
-        assertTrue(true);
+    @Test(expected = RuntimeException.class)
+    public void updateNonExistentFormDef() {
+        FormDefinition updateFormDef = TestDataUtility.formDefWithTestValues();
+        updateFormDef.setId(new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong());
+        formDefinitionDao.update(updateFormDef);
     }
 
     /**
@@ -131,9 +168,20 @@ public class FormDefinitionDaoComponentTest {
      * which exceeds the database configuration is made.
      * TODO: CHECK what the method is supposed to do in update.
      */
-    @Test//(expected = RuntimeException.class)
-    public void updateUserColumnTooLong() {
-       assertTrue(true);
+    @Test(expected = RuntimeException.class)
+    public void updateFormDefColumnTooLong() {
+        FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
+        formDefinitionDao.create(createFormDef);
+        assertNotNull(createFormDef.getId());
+
+        FormDefinition verifyCreateFormDef = formDefinitionDao.read(createFormDef.getId());
+        assertNotNull(verifyCreateFormDef);
+        verifySameDefForm(createFormDef,verifyCreateFormDef);
+
+        FormDefinition updateUser = TestDataUtility.formDefWithTestValues();
+        updateUser.setId(createFormDef.getId());
+        updateUser.setName(RandomStringUtils.randomAlphabetic(2000));
+        formDefinitionDao.update(updateUser);
     }
 
     /**
@@ -160,7 +208,7 @@ public class FormDefinitionDaoComponentTest {
      * Verify that {@link FormDefinitionDao#delete} is working correctly when a request for a non-existent {@link FormDefinition #id} is made.
      */
     @Test(expected = RuntimeException.class)
-    public void deleteNonExistentformdef() {
+    public void deleteNonExistentFormDef() {
         Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
         formDefinitionDao.delete(id);
     }
@@ -169,7 +217,7 @@ public class FormDefinitionDaoComponentTest {
      *
      */
     @Test
-    public void readAllformdef(){
+    public void readAllFormDef(){
         FormDefinition createUser = TestDataUtility.formDefWithTestValues();
         formDefinitionDao.create(createUser);
         assertNotNull(formDefinitionDao.readAll());
