@@ -18,7 +18,7 @@ public class SecurityConstants {
     /* default user information */
     static final String DEFAULT_USER_FIRST_NAME = "default_first_name";
     static final String DEFAULT_USER_LAST_NAME = "default_last_name";
-    static final String DEFAULT_USER_EMAIL = "default@uwm.edu";
+    public static final String DEFAULT_USER_EMAIL = "default@uwm.edu";
     static final String DEFAULT_USER_PANTHER_ID = "123456789";
     static final String DEFAULT_USER_PASSWORD = "password";  // TODO do not hard code this
 

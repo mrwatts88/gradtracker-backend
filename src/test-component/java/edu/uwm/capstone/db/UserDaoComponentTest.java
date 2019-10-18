@@ -12,6 +12,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.*;
@@ -104,7 +106,7 @@ public class UserDaoComponentTest {
     }
 
     /**
-     * Verify that {@link UserDao#readByEmail(String)} is working correctly.
+     * Verify that {@link UserDao#readByEmail} is working correctly.
      */
     @Test
     public void readByEmail() {
@@ -127,6 +129,22 @@ public class UserDaoComponentTest {
         String email = new Random().longs(10000L, Long.MAX_VALUE).findAny().toString();
         User user = userDao.readByEmail(email);
         assertNull(user);
+    }
+
+    /**
+     * Verify that {@link UserDao#readAll} is working correctly
+     */
+    @Test
+    public void readAllUsers(){
+        List<User> persistedUsers = new ArrayList<>();
+        int randInt = TestDataUtility.randomInt(10, 30);
+        for(int i = 0; i < randInt; i++) {
+            User user = TestDataUtility.userWithTestValues();
+            userDao.create(user);
+            persistedUsers.add(user);
+        }
+
+        assertEquals(persistedUsers, userDao.readAll());
     }
 
     /**
@@ -233,16 +251,6 @@ public class UserDaoComponentTest {
     public void deleteNonExistentUser() {
         Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
         userDao.delete(id);
-    }
-
-    /**
-     *
-     */
-    @Test
-    public void readAllUser(){
-        User createUser = TestDataUtility.userWithTestValues();
-        userDao.create(createUser);
-        assertNotNull(userDao.readAll());
     }
 
 }

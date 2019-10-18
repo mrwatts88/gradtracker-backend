@@ -65,6 +65,30 @@ public class UserService {
         return user;
     }
 
+    /**
+     * Retrieve a {@link User} object by its email.
+     *
+     * @param email
+     * @return {@link User}
+     */
+    public User readByEmail(String email) {
+        LOG.trace("Reading user by email {}", email);
+
+        // TODO make sure user has access to read
+
+        User user = userDao.readByEmail(email);
+
+        if (user == null) {
+            throw new EntityNotFoundException("User with email: " + email + " not found.");
+        }
+        return user;
+    }
+
+    /**
+     * Retrieves all the {@link User} objects
+     *
+     * @return List of {@link User}
+     */
     public List<User> readAll() {
         LOG.trace("Reading all users");
 

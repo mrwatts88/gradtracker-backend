@@ -24,10 +24,8 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static edu.uwm.capstone.security.SecurityConstants.AUTHENTICATE_URL;
-import static edu.uwm.capstone.security.SecurityConstants.DEFAULT_USER_CREDENTIALS;
-import static edu.uwm.capstone.util.TestDataUtility.randomLong;
-import static edu.uwm.capstone.util.TestDataUtility.userWithTestValues;
+import static edu.uwm.capstone.security.SecurityConstants.*;
+import static edu.uwm.capstone.util.TestDataUtility.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
@@ -262,6 +260,30 @@ public class UserRestControllerComponentTest {
                 .get(UserRestController.USER_PATH + userId)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("User with ID: " + userId + " not found."));
+    }
+
+    @Test
+    public void readAll() {
+        List<User> persistedUsers = new ArrayList<>();
+        persistedUsers.add(userDao.readByEmail(DEFAULT_USER_EMAIL)); // need default user in here
+        int randInt = randomInt(10, 30);
+        for(int i = 0; i < randInt; i++) {
+            User user = userWithTestValues();
+            userDao.create(user);
+            usersToCleanup.add(user);
+            persistedUsers.add(user);
+        }
+
+        // exercise endpoint
+        ExtractableResponse<Response> response = given()
+                .header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .when()
+                .get(UserRestController.USER_PATH)
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        assertEquals(persistedUsers, response.body().jsonPath().getList(".", User.class));
     }
 
     @Test

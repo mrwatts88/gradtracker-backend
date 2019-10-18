@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static edu.uwm.capstone.security.SecurityConstants.DEFAULT_USER_EMAIL;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
@@ -118,6 +119,37 @@ public class UserServiceComponentTest {
         assertNotNull(readUser);
         assertEquals(createUser.getId(), readUser.getId());
         assertEquals(createUser, readUser);
+    }
+
+    /**
+     * Verify that {@link UserService#read} is working correctly.
+     */
+    @Test
+    public void readByEmail() {
+        User createUser = TestDataUtility.userWithTestValues();
+        userService.create(createUser);
+        assertNotNull(createUser.getId());
+        usersToCleanup.add(createUser);
+
+        User readUser = userService.readByEmail(createUser.getEmail());
+        assertNotNull(readUser);
+        assertEquals(createUser.getId(), readUser.getId());
+        assertEquals(createUser, readUser);
+    }
+
+    @Test
+    public void readAll() {
+        List<User> persistedUsers = new ArrayList<>();
+        persistedUsers.add(userService.readByEmail(DEFAULT_USER_EMAIL)); // need default user in here
+        int randInt = TestDataUtility.randomInt(10, 30);
+        for(int i = 0; i < randInt; i++) {
+            User user = TestDataUtility.userWithTestValues();
+            userService.create(user);
+            usersToCleanup.add(user);
+            persistedUsers.add(user);
+        }
+
+        assertEquals(persistedUsers, userService.readAll());
     }
 
     /**
