@@ -127,29 +127,28 @@ public class FormDefinitionServiceComponentTest {
      */
     @Test
     public void update() {
-       assertTrue(true);
-        FormDefinition createUser = TestDataUtility.formDefWithTestValues();
-        formDefinitionService.create(createUser);
-        assertNotNull(createUser.getId());
-        FormDefinitionToCleanup.add(createUser);
+        FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
+        formDefinitionService.create(createFormDef);
+        assertNotNull(createFormDef.getId());
+        FormDefinitionToCleanup.add(createFormDef);
 
-        FormDefinition verifyCreateUser = formDefinitionService.read(createUser.getId());
-        assertNotNull(verifyCreateUser);
-        assertEquals(createUser, verifyCreateUser);
+        FormDefinition verifyFormDef = formDefinitionService.read(createFormDef.getId());
+        assertNotNull(verifyFormDef);
+        assertEquals(createFormDef, verifyFormDef);
 
-        FormDefinition updateUser = TestDataUtility.formDefWithTestValues();
-        updateUser.setId(createUser.getId());
-        formDefinitionService.update(updateUser);
+        FormDefinition updateFormDef = TestDataUtility.formDefWithTestValues();
+        updateFormDef.setId(createFormDef.getId());
+        formDefinitionService.update(updateFormDef);
 
-        FormDefinition verifyUpdateUser = formDefinitionService.read(updateUser.getId());
-        assertNotNull(verifyUpdateUser);
-        assertEquals(createUser.getId(), verifyUpdateUser.getId());
-        assertEquals(updateUser.getName(), verifyUpdateUser.getName());
+        FormDefinition verifyUpdateFormDef = formDefinitionService.read(updateFormDef.getId());
+        assertNotNull(verifyUpdateFormDef);
+        assertEquals(createFormDef.getId(), verifyUpdateFormDef.getId());
+        assertEquals(updateFormDef.getName(), verifyUpdateFormDef.getName());
         //assumed do not have to keep checking in depth of the field contents.
         //assumed index started at 0;
-        for(int i = 0; i<createUser.getFieldDefs().size(); i++)
+        for(int i = 0; i<createFormDef.getFieldDefs().size(); i++)
         {
-            assertEquals(createUser.getFieldDefs().indexOf(i), verifyCreateUser.getFieldDefs().indexOf(i));
+            assertEquals(createFormDef.getFieldDefs().indexOf(i), verifyFormDef.getFieldDefs().indexOf(i));
         }
     }
 
@@ -167,9 +166,9 @@ public class FormDefinitionServiceComponentTest {
     @Test(expected = RuntimeException.class)
     public void updateNonExistentFormDef() {
         // create a random user id that will not be in our local database
-        FormDefinition updateUser = TestDataUtility.formDefWithTestValues();
-        updateUser.setId(new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong());
-        formDefinitionService.update(updateUser);
+        FormDefinition updateFormDef = TestDataUtility.formDefWithTestValues();
+        updateFormDef.setId(new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong());
+        formDefinitionService.update(updateFormDef);
     }
 
     /**
