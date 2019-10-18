@@ -1,6 +1,7 @@
 package edu.uwm.capstone.service;
 
 import edu.uwm.capstone.Application;
+import edu.uwm.capstone.model.FieldDefinition;
 import edu.uwm.capstone.model.FormDefinition;
 import edu.uwm.capstone.util.TestDataUtility;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -127,6 +128,71 @@ public class FormDefinitionServiceComponentTest {
     @Test
     public void update() {
        assertTrue(true);
+        FormDefinition createUser = TestDataUtility.formDefWithTestValues();
+        formDefinitionService.create(createUser);
+        assertNotNull(createUser.getId());
+        FormDefinitionToCleanup.add(createUser);
+
+        FormDefinition verifyCreateUser = formDefinitionService.read(createUser.getId());
+        assertNotNull(verifyCreateUser);
+        assertEquals(createUser, verifyCreateUser);
+
+        FormDefinition updateUser = TestDataUtility.formDefWithTestValues();
+        updateUser.setId(createUser.getId());
+        formDefinitionService.update(updateUser);
+
+        FormDefinition verifyUpdateUser = formDefinitionService.read(updateUser.getId());
+        assertNotNull(verifyUpdateUser);
+        assertEquals(createUser.getId(), verifyUpdateUser.getId());
+        assertEquals(updateUser.getName(), verifyUpdateUser.getName());
+        //assumed do not have to keep checking in depth of the field contents.
+        //assumed index started at 0;
+        for(int i = 0; i<createUser.getFieldDefs().size(); i++)
+        {
+            assertEquals(createUser.getFieldDefs().indexOf(i), verifyCreateUser.getFieldDefs().indexOf(i));
+        }
+    }
+
+    /**
+     * Verify that {@link FormDefinitionService#update} is working correctly when a request for creating a null object is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void updateNullFormDef() {
+        formDefinitionService.update(null);
+    }
+
+    /**
+     * Verify that {@link FormDefinitionService#update} is working correctly when a request for a non-existent {@link FormDefinition #id} is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void updateNonExistentFormDef() {
+        // create a random user id that will not be in our local database
+        FormDefinition updateUser = TestDataUtility.formDefWithTestValues();
+        updateUser.setId(new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong());
+        formDefinitionService.update(updateUser);
+    }
+
+    /**
+     * Verify that {@link FormDefinitionService#update} is working correctly when a request for a {@link FormDefinition} that contains a value
+     * which exceeds the database configuration is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void updateFormDefColumnTooLong() {
+        // generate a test user value with a column that will exceed the database configuration
+        FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
+        formDefinitionService.create(createFormDef);
+        assertNotNull(createFormDef.getId());
+        FormDefinitionToCleanup.add(createFormDef);
+
+        FormDefinition verifyFormDef = formDefinitionService.read(createFormDef.getId());
+        assertNotNull(verifyFormDef);
+        assertEquals(createFormDef.getId(), verifyFormDef.getId());
+        assertEquals(createFormDef, verifyFormDef);
+
+        FormDefinition updateFormDef = TestDataUtility.formDefWithTestValues();
+        updateFormDef.setId(createFormDef.getId());
+        updateFormDef.setName(RandomStringUtils.randomAlphabetic(2000));
+        formDefinitionService.update(updateFormDef);
     }
 
     /**
