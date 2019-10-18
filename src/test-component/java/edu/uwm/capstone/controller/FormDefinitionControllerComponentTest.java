@@ -22,20 +22,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static edu.uwm.capstone.security.SecurityConstants.AUTHENTICATE_URL;
 import static edu.uwm.capstone.security.SecurityConstants.DEFAULT_USER_CREDENTIALS;
-import static edu.uwm.capstone.util.TestDataUtility.randomLong;
-import static edu.uwm.capstone.util.TestDataUtility.formDefWithTestValues;
-import static io.restassured.RestAssured.form;
+import static edu.uwm.capstone.util.TestDataUtility.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
 
 /**
  * This test class exercises the spring boot based {@link Application} running in memory to verify that
- * the REST endpoints provided by the {@link UserRestController} are working correctly.
+ * the REST endpoints provided by the {@link FormDefinitionRestController} are working correctly.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -90,7 +89,7 @@ public class FormDefinitionControllerComponentTest {
     }
 
     /**
-     * Verify that {@link FormDefinition #create} is working correctly.
+     * Verify that {@link FormDefinitionRestController#create} is working correctly.
      */
     @Test
     public void create() throws Exception {
@@ -116,7 +115,7 @@ public class FormDefinitionControllerComponentTest {
     }
 
     /**
-     * Verify that {@link FormDefinition #create} is working correctly when an incorrect id is passed in.
+     * Verify that {@link FormDefinitionRestController#create} is working correctly when an incorrect id is passed in.
      */
     @Test
     public void createPreconditionFailedId() throws Exception {
@@ -130,11 +129,161 @@ public class FormDefinitionControllerComponentTest {
                 .when()
                 .post(FormDefinitionRestController.FORM_DEF_PATH)
                 .then().log().ifValidationFails()
-                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("Form definition id should be null"));
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value())
+                .body("message", equalTo("Form definition id should be null"));
     }
 
     /**
-     * Verify that {@link FormDefinition #read} is working correctly when a request for a {@link FormDefinition #id} is made.
+     * Verify that {@link FormDefinitionRestController#create} is working correctly when a null name is passed in.
+     */
+    @Test
+    public void createPreconditionFailedName() throws Exception {
+        FormDefinition formDefinition = formDefWithTestValues();
+        formDefinition.setName(null);
+
+        // exercise endpoint
+        given().header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .body(mapper.writeValueAsString(formDefinition))
+                .when()
+                .post(FormDefinitionRestController.FORM_DEF_PATH)
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value())
+                .body("message", equalTo("Form definition name cannot be null"));
+    }
+
+    /**
+     * Verify that {@link FormDefinitionRestController#create} is working correctly
+     * when an empty list of field definitions is passed in.
+     */
+    @Test
+    public void createPreconditionFailedEmptyFieldDefinitions() throws Exception {
+        FormDefinition formDefinition = formDefWithTestValues();
+        formDefinition.setFieldDefs(Collections.emptyList());
+
+        // exercise endpoint
+        given().header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .body(mapper.writeValueAsString(formDefinition))
+                .when()
+                .post(FormDefinitionRestController.FORM_DEF_PATH)
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value())
+                .body("message", equalTo("Form definition must have at least one field definition"));
+    }
+
+    /**
+     * Verify that {@link FormDefinitionRestController#update} is working correctly.
+     */
+    @Test
+    public void update() throws Exception {
+        FormDefinition formDefinition = formDefWithTestValues();
+        formsToCleanup.add(formDefinitionDao.create(formDefinition));
+
+        FormDefinition formDefinitionToUpdate = formDefWithTestValues();
+
+        // exercise endpoint
+        given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .header(new Header("Authorization", authorizationToken))
+                .body(mapper.writeValueAsString(formDefinitionToUpdate))
+                .when()
+                .put(FormDefinitionRestController.FORM_DEF_PATH + formDefinition.getId())
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        FormDefinition verifyFormDefinition = formDefinitionDao.read(formDefinition.getId());
+        assertNotNull(verifyFormDefinition.getUpdatedDate());
+        assertNotEquals(formDefinition, verifyFormDefinition);
+    }
+
+    /**
+     * Verify that {@link FormDefinitionRestController#create} is working correctly when an incorrect id is passed in.
+     */
+    @Test
+    public void updateNotFound() throws Exception {
+        FormDefinition formDefinitionToUpdate = formDefWithTestValues();
+        formDefinitionToUpdate.setId(randomLong());
+
+        // exercise endpoint
+        given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .header(new Header("Authorization", authorizationToken))
+                .body(mapper.writeValueAsString(formDefinitionToUpdate))
+                .when()
+                .put(FormDefinitionRestController.FORM_DEF_PATH + formDefinitionToUpdate.getId())
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("Could not update form definition " + formDefinitionToUpdate.getId() + " - record not found."));
+    }
+
+    /**
+     * Verify that {@link FormDefinitionRestController#update} is working correctly when a null name is passed in.
+     */
+    @Test
+    public void updatePreconditionFailedName() throws Exception {
+        FormDefinition formDefinition = formDefWithTestValues();
+        formsToCleanup.add(formDefinitionDao.create(formDefinition));
+
+        FormDefinition formDefinitionToUpdate = formDefWithTestValues();
+        formDefinitionToUpdate.setName(null);
+
+        // exercise endpoint
+        given().header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .body(mapper.writeValueAsString(formDefinitionToUpdate))
+                .when()
+                .put(FormDefinitionRestController.FORM_DEF_PATH + formDefinition.getId())
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("Form definition name cannot be null"));
+    }
+
+    /**
+     * Verify that {@link FormDefinitionRestController#update} is working correctly
+     * when an empty list of {@link edu.uwm.capstone.model.FieldDefinition}s is passed in.
+     */
+    @Test
+    public void updatePreconditionFailedEmptyFieldDefinitions() throws Exception {
+        FormDefinition formDefinition = formDefWithTestValues();
+        formsToCleanup.add(formDefinitionDao.create(formDefinition));
+
+        FormDefinition formDefinitionToUpdate = formDefWithTestValues();
+        formDefinitionToUpdate.setFieldDefs(Collections.emptyList());
+
+        // exercise endpoint
+        given().header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .body(mapper.writeValueAsString(formDefinitionToUpdate))
+                .when()
+                .put(FormDefinitionRestController.FORM_DEF_PATH + formDefinition.getId())
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("Form definition must have at least one field definition"));
+    }
+
+    /**
+     * Verify that {@link FormDefinitionRestController#update} is working correctly
+     * when a field definition with an unknown id for a {@link FormDefinition} is passed in.
+     */
+    @Test
+    public void updatePreconditionFailedUnknownFieldDefinitionId() throws Exception {
+        FormDefinition formDefinition = formDefWithTestValues();
+        formsToCleanup.add(formDefinitionDao.create(formDefinition));
+
+        FormDefinition formDefinitionToUpdate = formDefWithTestValues();
+        Long randLong = randomLong();
+        formDefinitionToUpdate.getFieldDefs().get(1).setId(randLong);
+
+        // exercise endpoint
+        given().header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .body(mapper.writeValueAsString(formDefinitionToUpdate))
+                .when()
+                .put(FormDefinitionRestController.FORM_DEF_PATH + formDefinition.getId())
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("Could update form definition " + formDefinition.getId() +
+                " - found a field definition with id = " + randLong + " which is not associated with this form definition"));
+    }
+
+    /**
+     * Verify that {@link FormDefinitionRestController #read} is working correctly
+     * when a request for a {@link FormDefinition#id} is made.
      **/
     @Test
     public void readById() {
@@ -155,7 +304,8 @@ public class FormDefinitionControllerComponentTest {
     }
 
     /**
-     * Verify that {@link FormDefinition #read} is working correctly when a request for a non-existent {@link FormDefinition #id} is made.
+     * Verify that {@link FormDefinitionRestController#readById} is working correctly
+     * when a request for a non-existent {@link FormDefinition#id} is made.
      **/
     @Test
     public void readByIdNotFound() {
@@ -171,7 +321,33 @@ public class FormDefinitionControllerComponentTest {
     }
 
     /**
-     * Verify that {@link FormDefinition #delete} is working correctly when a request for a {@link FormDefinition #id} is made.
+     * Verify that {@link FormDefinitionRestController#readAll} is working correctly.
+     */
+    @Test
+    public void readAll() {
+        List<FormDefinition> persistedFormDefs = new ArrayList<>();
+        int randInt = randomInt(10, 30);
+        for(int i = 0; i < randInt; i++) {
+            FormDefinition formDefinition = formDefWithTestValues();
+            formsToCleanup.add(formDefinition);
+            persistedFormDefs.add(formDefinitionDao.create(formDefinition));
+        }
+
+        // exercise endpoint
+        ExtractableResponse<Response> response = given()
+                .header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .when()
+                .get(FormDefinitionRestController.FORM_DEF_PATH)
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        assertEquals(persistedFormDefs, response.body().jsonPath().getList(".", FormDefinition.class));
+    }
+
+    /**
+     * Verify that {@link FormDefinitionRestController#deleteById} is working correctly
+     * when a request for a {@link FormDefinition#id} is made.
      **/
     @Test
     public void deleteById() {
@@ -189,7 +365,8 @@ public class FormDefinitionControllerComponentTest {
     }
 
     /**
-     * Verify that {@link FormDefinition #delete} is working correctly when a request for a non-existent {@link FormDefinition #id} is made.
+     * Verify that {@link FormDefinitionRestController#deleteById} is working correctly
+     * when a request for a non-existent {@link FormDefinition#id} is made.
      **/
     @Test
     public void deleteByIdNotFound() {

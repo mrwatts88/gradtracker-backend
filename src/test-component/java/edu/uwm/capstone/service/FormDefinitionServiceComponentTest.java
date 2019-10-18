@@ -26,7 +26,7 @@ public class FormDefinitionServiceComponentTest {
     @Autowired
     private FormDefinitionService formDefinitionService;
 
-    private List<FormDefinition> FormDefinitionToCleanup = new ArrayList<>();
+    private List<FormDefinition> formDefinitionToCleanup = new ArrayList<>();
 
     @Before
     public void setUp() {
@@ -35,8 +35,8 @@ public class FormDefinitionServiceComponentTest {
 
     @After
     public void teardown() {
-        FormDefinitionToCleanup.forEach(user -> formDefinitionService.delete(user.getId()));
-        FormDefinitionToCleanup.clear();
+        formDefinitionToCleanup.forEach(user -> formDefinitionService.delete(user.getId()));
+        formDefinitionToCleanup.clear();
     }
 
     /**
@@ -50,7 +50,7 @@ public class FormDefinitionServiceComponentTest {
         assertNotNull(createFormDef.getId());
         assertNotNull(createFormDef.getCreatedDate());
         assertNotEquals(createFormDef.getId(), idBefore);
-        FormDefinitionToCleanup.add(createFormDef);
+        formDefinitionToCleanup.add(createFormDef);
         FormDefinition verifyFormDef = formDefinitionService.read(createFormDef.getId());
         assertEquals(createFormDef, verifyFormDef);
     }
@@ -74,7 +74,7 @@ public class FormDefinitionServiceComponentTest {
     }
 
     /**
-     * Verify that {@link FormDefinitionService#create} is working correctly when a request for a {@link FormDefinition} with a null fieldDef is made.
+     * Verify that {@link FormDefinitionService#create} is working correctly when a request for a {@link FormDefinition} with a null list of field definitions is made.
      */
     @Test(expected = RuntimeException.class)
     public void createNullFieldDef() {
@@ -103,7 +103,7 @@ public class FormDefinitionServiceComponentTest {
         FormDefinition sampleFormDef = TestDataUtility.formDefWithTestValues();
         formDefinitionService.create(sampleFormDef);
         assertNotNull(sampleFormDef.getId());
-        FormDefinitionToCleanup.add(sampleFormDef);
+        formDefinitionToCleanup.add(sampleFormDef);
 
         FormDefinition readFormDef = formDefinitionService.read(sampleFormDef.getId());
         assertNotNull(readFormDef);
@@ -112,7 +112,7 @@ public class FormDefinitionServiceComponentTest {
     }
 
     /**
-     * Verify that {@link FormDefinitionService#read} is working correctly when a request for a non-existent {@link FormDefinition #id} is made.
+     * Verify that {@link FormDefinitionService#read} is working correctly when a request for a non-existent {@link FormDefinition#id} is made.
      */
     @Test(expected = RuntimeException.class)
     public void readNonExistentFormDef() {
@@ -123,14 +123,31 @@ public class FormDefinitionServiceComponentTest {
     }
 
     /**
-     * Verify that {@link FormDefinitionService #update} is working correctly.
+     * Verify that all {@link FormDefinitionService#readAll} is working correctly,
+     */
+    @Test
+    public void readAll() {
+        List<FormDefinition> persistedFormDefs = new ArrayList<>();
+        int randInt = TestDataUtility.randomInt(10, 30);
+        for(int i = 0; i < randInt; i++) {
+            FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
+            formDefinitionService.create(formDefinition);
+            formDefinitionToCleanup.add(formDefinition);
+            persistedFormDefs.add(formDefinition);
+        }
+
+        assertEquals(persistedFormDefs, formDefinitionService.readAll());
+    }
+
+    /**
+     * Verify that {@link FormDefinitionService#update} is working correctly.
      */
     @Test
     public void update() {
         FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
         formDefinitionService.create(createFormDef);
         assertNotNull(createFormDef.getId());
-        FormDefinitionToCleanup.add(createFormDef);
+        formDefinitionToCleanup.add(createFormDef);
 
         FormDefinition verifyCreateFormDef = formDefinitionService.read(createFormDef.getId());
         assertNotNull(verifyCreateFormDef);
@@ -155,7 +172,7 @@ public class FormDefinitionServiceComponentTest {
     }
 
     /**
-     * Verify that {@link FormDefinitionService#update} is working correctly when a request for a non-existent {@link FormDefinition #id} is made.
+     * Verify that {@link FormDefinitionService#update} is working correctly when a request for a non-existent {@link FormDefinition#id} is made.
      */
     @Test(expected = RuntimeException.class)
     public void updateNonExistentFormDef() {
@@ -175,7 +192,7 @@ public class FormDefinitionServiceComponentTest {
         FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
         formDefinitionService.create(createFormDef);
         assertNotNull(createFormDef.getId());
-        FormDefinitionToCleanup.add(createFormDef);
+        formDefinitionToCleanup.add(createFormDef);
 
         FormDefinition verifyFormDef = formDefinitionService.read(createFormDef.getId());
         assertNotNull(verifyFormDef);
@@ -245,10 +262,10 @@ public class FormDefinitionServiceComponentTest {
     }
 
     /**
-     * Verify that {@link FormDefinitionService#delete} is working correctly when a request for a non-existent {@link FormDefinition #id} is made.
+     * Verify that {@link FormDefinitionService#delete} is working correctly when a request for a non-existent {@link FormDefinition#id} is made.
      */
     @Test(expected = RuntimeException.class)
-    public void deleteNonExistentUser() {
+    public void deleteNonExistentFormDef() {
         Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
         formDefinitionService.delete(id);
     }

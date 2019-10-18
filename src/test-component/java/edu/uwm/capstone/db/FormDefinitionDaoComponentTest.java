@@ -14,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.*;
@@ -38,7 +39,7 @@ public class FormDefinitionDaoComponentTest {
     }
 
     /**
-     * Verify that {@link FormDefinitionDao #create} is working correctly.
+     * Verify that {@link FormDefinitionDao#create} is working correctly.
      */
     @Test
     public void create() {
@@ -50,7 +51,7 @@ public class FormDefinitionDaoComponentTest {
     }
 
     /**
-     * Verify that {@link FormDefinitionDao #create} is working correctly when a request for creating a null object is made.
+     * Verify that {@link FormDefinitionDao#create} is working correctly when a request for creating a null object is made.
      */
     @Test(expected = RuntimeException.class)
     public void createNullFormDefinition() {
@@ -58,7 +59,7 @@ public class FormDefinitionDaoComponentTest {
     }
 
     /**
-     * Verify that {@link FormDefinitionDao #create} is working correctly when a request for a {@link FormDefinition} with a non-null id is made.
+     * Verify that {@link FormDefinitionDao#create} is working correctly when a request for a {@link FormDefinition} with a non-null id is made.
      */
     @Test(expected = RuntimeException.class)
     public void createNonNullFormDefId() {
@@ -94,13 +95,29 @@ public class FormDefinitionDaoComponentTest {
     }
 
     /**
-     * Verify that {@link FormDefinitionDao#read} is working correctly when a request for a non-existent {@link FormDefinition #id} is made.
+     * Verify that {@link FormDefinitionDao#read} is working correctly when a request for a non-existent {@link FormDefinition#id} is made.
      */
     @Test
     public void readNonExistentFormDef() {
         Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
         FormDefinition formDefinition = formDefinitionDao.read(id);
         assertNull(formDefinition);
+    }
+
+    /**
+     * Verify that all {@link FormDefinitionDao#readAll} is working correctly,
+     */
+    @Test
+    public void readAllFormDef() {
+        List<FormDefinition> persistedFormDefs = new ArrayList<>();
+        int randInt = TestDataUtility.randomInt(10, 30);
+        for(int i = 0; i < randInt; i++) {
+            FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
+            formDefinitionDao.create(formDefinition);
+            persistedFormDefs.add(formDefinition);
+        }
+
+        assertEquals(persistedFormDefs, formDefinitionDao.readAll());
     }
 
     /**
@@ -206,7 +223,7 @@ public class FormDefinitionDaoComponentTest {
     }
 
     /**
-     * Verify that {@link FormDefinitionDao#update} is working correctly when a request for a non-existent {@link FormDefinition #id} is made.
+     * Verify that {@link FormDefinitionDao#update} is working correctly when a request for a non-existent {@link FormDefinition#id} is made.
      */
 
     @Test(expected = RuntimeException.class)
@@ -257,21 +274,11 @@ public class FormDefinitionDaoComponentTest {
     }
 
     /**
-     * Verify that {@link FormDefinitionDao#delete} is working correctly when a request for a non-existent {@link FormDefinition #id} is made.
+     * Verify that {@link FormDefinitionDao#delete} is working correctly when a request for a non-existent {@link FormDefinition#id} is made.
      */
     @Test(expected = RuntimeException.class)
     public void deleteNonExistentFormDef() {
         Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
         formDefinitionDao.delete(id);
-    }
-
-    /**
-     * Verify that all {@link FormDefinitionDao#readAll} is working correctly
-     */
-    @Test
-    public void readAllFormDef() {
-        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
-        formDefinitionDao.create(formDefinition);
-        assertNotNull(formDefinitionDao.readAll());
     }
 }

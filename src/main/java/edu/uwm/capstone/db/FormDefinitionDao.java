@@ -66,9 +66,9 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
         LOG.trace("Reading all form definitions");
         List<FormDefinition> formDefinitions = this.jdbcTemplate.query(sql("readAllFormDefs"), rowMapper);
         // uncomment this to return form definitions with their field definitions
-//        for (FormDefinition fd : formDefinitions) {
-//            fd.setFieldDefs(fieldDefinitionDao.readFieldDefsByFormDefId(fd.getId()));
-//        }
+        for (FormDefinition fd : formDefinitions) {
+            fd.setFieldDefs(fieldDefinitionDao.readFieldDefsByFormDefId(fd.getId()));
+        }
         return formDefinitions;
     }
 
