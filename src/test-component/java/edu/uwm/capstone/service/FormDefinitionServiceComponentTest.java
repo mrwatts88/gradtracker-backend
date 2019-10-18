@@ -137,7 +137,7 @@ public class FormDefinitionServiceComponentTest {
     public void readAll() {
         List<FormDefinition> persistedFormDefs = new ArrayList<>();
         int randInt = TestDataUtility.randomInt(0, 1);
-        for(int i = 0; i < randInt; i++) {
+        for (int i = 0; i < randInt; i++) {
             FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
             formDefinitionService.create(formDefinition);
             formDefinitionToCleanup.add(formDefinition);

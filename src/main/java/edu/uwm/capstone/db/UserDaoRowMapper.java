@@ -26,7 +26,9 @@ public class UserDaoRowMapper extends BaseRowMapper<User> {
             columnName = name().toLowerCase();
         }
 
-        public String getColumnName() { return columnName; }
+        public String getColumnName() {
+            return columnName;
+        }
     }
 
     @Override

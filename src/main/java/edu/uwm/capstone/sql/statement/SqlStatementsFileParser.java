@@ -13,10 +13,10 @@ public class SqlStatementsFileParser {
 
     /**
      * Parse SQL statement file contents. Syntax:
-     *
+     * <p>
      * --STATEMENT statementName optional ignored text SQL Statement --STATEMENT statement2Name more optional ignored
      * text SQL Statement 2
-     *
+     * <p>
      * The parser loads SQL statements into a map, with the key given in --STATEMENT construct. There must be no
      * whitespace between the beginning of the line and --STATEMENT to be recognized. The text on the lines following
      * the --STATEMENT until the next --STATEMENT or end of file will be stored in the map value. The parser will throw

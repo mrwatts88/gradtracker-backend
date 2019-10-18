@@ -142,7 +142,7 @@ public class UserServiceComponentTest {
         List<User> persistedUsers = new ArrayList<>();
         persistedUsers.add(userService.readByEmail(DEFAULT_USER_EMAIL)); // need default user in here
         int randInt = TestDataUtility.randomInt(10, 30);
-        for(int i = 0; i < randInt; i++) {
+        for (int i = 0; i < randInt; i++) {
             User user = TestDataUtility.userWithTestValues();
             userService.create(user);
             usersToCleanup.add(user);

@@ -1,71 +1,71 @@
 stages:
-    - Pre-Build
-    - Build
-    - Post-Build
-    - Deploy
+  - Pre-Build
+  - Build
+  - Post-Build
+  - Deploy
 
 # region global_settings ######################################################
 variables:
-    MAVEN_CLI_OPTS: '-s .m2/settings.xml --batch-mode'
-    MAVEN_OPTS: '-Dmaven.repo.local=.m2/repository'
+  MAVEN_CLI_OPTS: '-s .m2/settings.xml --batch-mode'
+  MAVEN_OPTS: '-Dmaven.repo.local=.m2/repository'
 cache:
-    paths:
-        - .m2/repository/
-        - target/
+  paths:
+    - .m2/repository/
+    - target/
 # endregion global_settings ###################################################
 
 # region Pre-Build ############################################################
 Unit Tests:
-    stage: Pre-Build
-    image: $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
-    script:
-        - mvn $MAVEN_CLI_OPTS install
+  stage: Pre-Build
+  image: $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
+  script:
+    - mvn $MAVEN_CLI_OPTS install
 
 Component Tests:
-    stage: Pre-Build
-    image: $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
-    script:
-        - mvn $MAVEN_CLI_OPTS -P test-component test
-    when: on_success
+  stage: Pre-Build
+  image: $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
+  script:
+    - mvn $MAVEN_CLI_OPTS -P test-component test
+  when: on_success
 # endregion Pre-Build #########################################################
 
 # region Build ################################################################
 Build:
-    stage: Build
-    image: $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
-    script:
-        - docker login $DOCKER_REGISTRY --username $DOCKER_REPO_USER --password $DOCKER_REPO_PASS
-        - docker build
-          --build-arg DOCKER_REGISTRY
-          -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA
-          -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:latest .
-        - docker push $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA
-        - docker push $DOCKER_REGISTRY/$CI_PROJECT_PATH:latest
-    only:
-        - master
-    when: on_success
-    after_script:
-        - 'echo "Image SHA Tag : $CI_COMMIT_SHA"'
+  stage: Build
+  image: $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
+  script:
+    - docker login $DOCKER_REGISTRY --username $DOCKER_REPO_USER --password $DOCKER_REPO_PASS
+    - docker build
+      --build-arg DOCKER_REGISTRY
+      -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA
+      -t $DOCKER_REGISTRY/$CI_PROJECT_PATH:latest .
+    - docker push $DOCKER_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_SHA
+    - docker push $DOCKER_REGISTRY/$CI_PROJECT_PATH:latest
+  only:
+    - master
+  when: on_success
+  after_script:
+    - 'echo "Image SHA Tag : $CI_COMMIT_SHA"'
 # endregion Build #############################################################
 
 # region Post-Build ###########################################################
 SonarQube Analyze:
-    stage: Post-Build
-    image: $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
-    script:
-        - export SONAR_PROJECT_KEY="$(echo $CI_PROJECT_PATH | tr '/' ':')"
-        - mvn verify sonar:sonar
-    only:
-        - master
-    when: on_success
+  stage: Post-Build
+  image: $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
+  script:
+    - export SONAR_PROJECT_KEY="$(echo $CI_PROJECT_PATH | tr '/' ':')"
+    - mvn verify sonar:sonar
+  only:
+    - master
+  when: on_success
 # endregion Post-Build ########################################################
 
 # region Deploy ###############################################################
 Deploy:
-    stage: Deploy
-    image: $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
-    script:
-        - bash deploy/deploy.sh
-    only:
-        - master
+  stage: Deploy
+  image: $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
+  script:
+    - bash deploy/deploy.sh
+  only:
+    - master
 # endregion Deploy ############################################################

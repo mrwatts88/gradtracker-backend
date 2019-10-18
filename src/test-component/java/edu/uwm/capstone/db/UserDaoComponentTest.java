@@ -147,10 +147,10 @@ public class UserDaoComponentTest {
      * Verify that {@link UserDao#readAll} is working correctly
      */
     @Test
-    public void readAllUsers(){
+    public void readAllUsers() {
         List<User> persistedUsers = new ArrayList<>();
         int randInt = TestDataUtility.randomInt(10, 30);
-        for(int i = 0; i < randInt; i++) {
+        for (int i = 0; i < randInt; i++) {
             User user = TestDataUtility.userWithTestValues();
             userDao.create(user);
             persistedUsers.add(user);

@@ -35,7 +35,7 @@ public class DaoExceptionUnitTest {
         String fileName = RandomStringUtils.randomAlphanumeric(26);
         int lineNumber = new Random().ints(10, 1000).findAny().getAsInt();
         StackTraceElement stackTraceElement = new StackTraceElement(declaringClass, methodName, fileName, lineNumber);
-        StackTraceElement[] stackTraceElements = { stackTraceElement };
+        StackTraceElement[] stackTraceElements = {stackTraceElement};
 
         String throwableMessage = RandomStringUtils.randomAlphanumeric(20);
         Throwable throwable = new Throwable(throwableMessage);
@@ -64,7 +64,7 @@ public class DaoExceptionUnitTest {
         String fileName = RandomStringUtils.randomAlphanumeric(26);
         int lineNumber = new Random().ints(10, 1000).findAny().getAsInt();
         StackTraceElement stackTraceElement = new StackTraceElement(declaringClass, methodName, fileName, lineNumber);
-        StackTraceElement[] stackTraceElements = { stackTraceElement };
+        StackTraceElement[] stackTraceElements = {stackTraceElement};
 
         String throwableMessage = RandomStringUtils.randomAlphanumeric(20);
         Throwable throwable = new Throwable(throwableMessage);

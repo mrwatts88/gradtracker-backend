@@ -23,6 +23,7 @@ public class TestDataUtility {
 
     /**
      * Generate a {@link User} object that is fully loaded with random values for testing purposes.
+     *
      * @return {@link User}
      */
     public static User userWithTestValues() {
@@ -40,14 +41,15 @@ public class TestDataUtility {
 
     /**
      * Generate a {@link FormDefinition} object that is fully loaded with random values for testing purposes.
+     *
      * @return {@link FormDefinition}
      */
-    public static FormDefinition formDefWithTestValues(){
+    public static FormDefinition formDefWithTestValues() {
         FormDefinition formDefinition = new FormDefinition();
         formDefinition.setName(randomAlphabetic(randomInt(1, 100)));
         ArrayList<FieldDefinition> fieldDefinitions = new ArrayList<>();
         int j = randomInt(5, 20);
-        for(int i = 0; i < j; i++) {
+        for (int i = 0; i < j; i++) {
             fieldDefinitions.add(fieldDefWithTestValues());
         }
         formDefinition.setFieldDefs(fieldDefinitions);
@@ -58,6 +60,7 @@ public class TestDataUtility {
 
     /**
      * Generate a {@link FieldDefinition} object that is fully loaded with random values for testing purposes.
+     *
      * @return {@link FieldDefinition}
      */
     public static FieldDefinition fieldDefWithTestValues() {
@@ -71,6 +74,7 @@ public class TestDataUtility {
 
     /**
      * Generate a random {@link Long} using a minimum value of 1L and a maximum value of {@link Long#MAX_VALUE}.
+     *
      * @return random {@link Long}
      */
     public static Long randomLong() {
@@ -79,6 +83,7 @@ public class TestDataUtility {
 
     /**
      * Generate a random {@link Long} using the provided minimum and maximum values.
+     *
      * @param min {@link Long} minimum value
      * @param max {@link Long} maximum value
      * @return random {@link Long}
@@ -89,6 +94,7 @@ public class TestDataUtility {
 
     /**
      * Generate a random {@link Integer} using a minimum value of 1 and a maximum value of {@link Integer#MAX_VALUE}.
+     *
      * @return random {@link Integer}
      */
     public static int randomInt() {
@@ -97,6 +103,7 @@ public class TestDataUtility {
 
     /**
      * Generate a random {@link int} using the provided minimum and maximum values.
+     *
      * @param min {@link int} minimum value
      * @param max {@link int} maximum value
      * @return random {@link int}
@@ -107,6 +114,7 @@ public class TestDataUtility {
 
     /**
      * Generate a {@link String} that contains the provided number of random alphabetic characters.
+     *
      * @param characterCount Number of characters
      * @return random {@link String} of alphabetic characters
      */
@@ -116,6 +124,7 @@ public class TestDataUtility {
 
     /**
      * Generate a {@link String} that contains the provided number of random alphanumeric characters.
+     *
      * @param characterCount Number of characters
      * @return random {@link String} of alphanumeric characters
      */

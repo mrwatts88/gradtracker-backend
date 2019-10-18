@@ -26,7 +26,7 @@ public class UserDetailsImpl implements UserDetails {
     /**
      * Constructs a {@link UserDetails} from a {@link User} with authorities.
      *
-     * @param user the {@link User}
+     * @param user        the {@link User}
      * @param authorities the list of {@link GrantedAuthority}s
      */
     UserDetailsImpl(User user, Collection<? extends GrantedAuthority> authorities) {

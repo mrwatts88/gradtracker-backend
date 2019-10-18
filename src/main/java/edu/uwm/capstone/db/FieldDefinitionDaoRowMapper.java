@@ -26,7 +26,9 @@ public class FieldDefinitionDaoRowMapper extends BaseRowMapper<FieldDefinition> 
             columnName = name().toLowerCase();
         }
 
-        public String getColumnName() { return columnName; }
+        public String getColumnName() {
+            return columnName;
+        }
     }
 
     @Override

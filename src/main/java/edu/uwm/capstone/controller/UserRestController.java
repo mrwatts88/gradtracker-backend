@@ -32,7 +32,7 @@ public class UserRestController {
     /**
      * Creates the provided {@link User}
      *
-     * @param user  {@link User}
+     * @param user     {@link User}
      * @param response {@link HttpServletResponse}
      * @return {@link User}
      * @throws IOException if error response cannot be created.
@@ -56,8 +56,8 @@ public class UserRestController {
     /**
      * Get the {@link User} by Id
      *
-     * @param userId {@link User#getId()}
-     * @param response  {@link HttpServletResponse}
+     * @param userId   {@link User#getId()}
+     * @param response {@link HttpServletResponse}
      * @return {@link User} retrieved from the database
      * @throws IOException if error response cannot be created.
      */
@@ -76,7 +76,7 @@ public class UserRestController {
     /**
      * Gets all the {@link User}s
      *
-     * @param response  {@link HttpServletResponse}
+     * @param response {@link HttpServletResponse}
      * @return {@link User} retrieved from the database
      * @throws IOException if error response cannot be created.
      */
@@ -95,8 +95,8 @@ public class UserRestController {
     /**
      * Updates the provided {@link User} by Id
      *
-     * @param userId {@link User#getId()}
-     * @param user  {@link User}
+     * @param userId   {@link User#getId()}
+     * @param user     {@link User}
      * @param response {@link HttpServletResponse}
      * @throws IOException if error response cannot be created.
      */
@@ -121,8 +121,8 @@ public class UserRestController {
     /**
      * Delete the {@link User} by Id
      *
-     * @param userId {@link User#getId()}
-     * @param response  {@link HttpServletResponse}
+     * @param userId   {@link User#getId()}
+     * @param response {@link HttpServletResponse}
      * @throws IOException if error response cannot be created.
      */
     @ApiOperation(value = "Delete User by ID")

@@ -134,11 +134,11 @@ public class UserService {
         Assert.notNull(user, "User must not be null");
         if (checkNullId)
             Assert.isNull(user.getId(), "User ID must be null");
-        Assert.notNull(user.getEmail(),  "User email must not be null");
-        Assert.notNull(user.getPassword(),  "User password must not be null");
-        Assert.notNull(user.getFirstName(),  "User first name must not be null");
-        Assert.notNull(user.getFirstName(),  "User last name must not be null");
-        Assert.notNull(user.getFirstName(),  "User panther id must not be null");
+        Assert.notNull(user.getEmail(), "User email must not be null");
+        Assert.notNull(user.getPassword(), "User password must not be null");
+        Assert.notNull(user.getFirstName(), "User first name must not be null");
+        Assert.notNull(user.getFirstName(), "User last name must not be null");
+        Assert.notNull(user.getFirstName(), "User panther id must not be null");
     }
 
 

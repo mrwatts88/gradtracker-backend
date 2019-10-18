@@ -81,7 +81,7 @@ public class UserDao extends BaseDao<Long, User> {
      * @param email
      * @return {@link User}
      */
-    public User readByEmail(String email){
+    public User readByEmail(String email) {
         LOG.trace("Reading user with email {}", email);
         try {
             return (User) this.jdbcTemplate.queryForObject(sql("readUserByEmail"), new MapSqlParameterSource("email", email), rowMapper);

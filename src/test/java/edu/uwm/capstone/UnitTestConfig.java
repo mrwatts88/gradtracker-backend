@@ -13,7 +13,7 @@ import springfox.documentation.spring.web.plugins.WebMvcRequestHandlerProvider;
 @Configuration
 @ConfigurationProperties(prefix = "service")
 @EnableAutoConfiguration
-@PropertySources({ @PropertySource("classpath:application.properties"), @PropertySource("classpath:test.properties") })
+@PropertySources({@PropertySource("classpath:application.properties"), @PropertySource("classpath:test.properties")})
 public class UnitTestConfig extends ApplicationConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UnitTestConfig.class);
@@ -45,7 +45,7 @@ public class UnitTestConfig extends ApplicationConfig {
     @Bean
     @Primary
     @Override
-    public Flyway flyway( DataSource dataSource) {
+    public Flyway flyway(DataSource dataSource) {
         LOGGER.info("Running database migration on {}", dbDriverUrl);
         Flyway flyway = new Flyway(Flyway.configure()
                 .locations(dbMigrationLocation.split("\\s*,\\s*"))

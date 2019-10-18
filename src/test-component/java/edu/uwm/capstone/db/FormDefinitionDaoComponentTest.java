@@ -43,7 +43,6 @@ public class FormDefinitionDaoComponentTest {
     }
 
 
-
     @After
     public void teardown() {
         formDefToCleanup.forEach(formDef -> formDefinitionDao.delete(formDef.getId()));
@@ -124,7 +123,7 @@ public class FormDefinitionDaoComponentTest {
     public void readAllFormDef() {
         List<FormDefinition> persistedFormDefs = new ArrayList<>();
         int randInt = TestDataUtility.randomInt(10, 30);
-        for(int i = 0; i < randInt; i++) {
+        for (int i = 0; i < randInt; i++) {
             FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
             formDefinitionDao.create(formDefinition);
             persistedFormDefs.add(formDefinition);
@@ -224,7 +223,7 @@ public class FormDefinitionDaoComponentTest {
         assertEquals(verifyCreateFormDef.getName() + "updated", verifyUpdateFormDef.getName());
 
         FieldDefinition createdFieldDef, updatedFieldDef;
-        for(int i = 0; i < verifyCreateFormDef.getFieldDefs().size(); i++) {
+        for (int i = 0; i < verifyCreateFormDef.getFieldDefs().size(); i++) {
             createdFieldDef = verifyCreateFormDef.getFieldDefs().get(i);
             updatedFieldDef = verifyUpdateFormDef.getFieldDefs().get(i);
             assertEquals(createdFieldDef.getId(), updatedFieldDef.getId());

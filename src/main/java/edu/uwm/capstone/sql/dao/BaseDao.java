@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 
-public abstract class BaseDao<K,V> {
+public abstract class BaseDao<K, V> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseDao.class);
 

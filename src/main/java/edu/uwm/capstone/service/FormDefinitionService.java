@@ -71,7 +71,7 @@ public class FormDefinitionService {
         }
 
         HashSet<Long> fieldDefIdsAssociatedWithOldFormDef = formDefinitionInDb.getFieldDefs().stream().map(FieldDefinition::getId).collect(Collectors.toCollection(HashSet::new));
-        for(FieldDefinition fd : formDef) {
+        for (FieldDefinition fd : formDef) {
             if (fd.getId() != null) {
                 Assert.isTrue(fieldDefIdsAssociatedWithOldFormDef.contains(fd.getId()), "Could update form definition " + formDef.getId() +
                         " - found a field definition with id = " + fd.getId() + " which is not associated with this form definition");
@@ -105,10 +105,10 @@ public class FormDefinitionService {
     }
 
     private void checkValidFormDefinition(FormDefinition formDef, boolean checkNullId) {
-        Assert.notNull(formDef,"Form definition cannot be null");
+        Assert.notNull(formDef, "Form definition cannot be null");
         if (checkNullId)
             Assert.isNull(formDef.getId(), "Form definition id should be null");
-        Assert.notNull(formDef.getName(),"Form definition name cannot be null");
+        Assert.notNull(formDef.getName(), "Form definition name cannot be null");
         Assert.notNull(formDef.getFieldDefs(), "Form definition's field definitions cannot be null");
         Assert.notEmpty(formDef.getFieldDefs(), "Form definition must have at least one field definition");
 

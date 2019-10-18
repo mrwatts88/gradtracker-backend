@@ -327,7 +327,7 @@ public class FormDefinitionControllerComponentTest {
     public void readAll() {
         List<FormDefinition> persistedFormDefs = new ArrayList<>();
         int randInt = randomInt(10, 30);
-        for(int i = 0; i < randInt; i++) {
+        for (int i = 0; i < randInt; i++) {
             FormDefinition formDefinition = formDefWithTestValues();
             formsToCleanup.add(formDefinition);
             persistedFormDefs.add(formDefinitionDao.create(formDefinition));

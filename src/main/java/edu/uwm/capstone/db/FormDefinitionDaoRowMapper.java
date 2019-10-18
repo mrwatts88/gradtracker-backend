@@ -1,4 +1,5 @@
 package edu.uwm.capstone.db;
+
 import edu.uwm.capstone.model.FormDefinition;
 import edu.uwm.capstone.sql.dao.BaseRowMapper;
 
@@ -7,7 +8,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static edu.uwm.capstone.db.FormDefinitionDaoRowMapper.FormDefColumnType.*;
+import static edu.uwm.capstone.db.FormDefinitionDaoRowMapper.FormDefColumnType.NAME;
 import static edu.uwm.capstone.sql.dao.BaseRowMapper.BaseColumnType.*;
 
 public class FormDefinitionDaoRowMapper extends BaseRowMapper<FormDefinition> {
@@ -22,7 +23,9 @@ public class FormDefinitionDaoRowMapper extends BaseRowMapper<FormDefinition> {
             columnName = name().toLowerCase();
         }
 
-        public String getColumnName() { return columnName; }
+        public String getColumnName() {
+            return columnName;
+        }
     }
 
     @Override

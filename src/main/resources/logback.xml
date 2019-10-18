@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
@@ -12,20 +12,20 @@
     </appender>
 
     <logger name="ch.qos.logback" level="OFF" additivity="false">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <logger name="edu.uwm.capstone" level="INFO" additivity="false">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <root level="ERROR">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT"/>
     </root>
 
-    <Logger name="org.flywaydb.core" level="ERROR" />
-    <Logger name="springfox" level="ERROR" />
-    <Logger name="org.apache" level="OFF" />
-    <Logger name="httpclient" level="ERROR" />
+    <Logger name="org.flywaydb.core" level="ERROR"/>
+    <Logger name="springfox" level="ERROR"/>
+    <Logger name="org.apache" level="OFF"/>
+    <Logger name="httpclient" level="ERROR"/>
 
 </configuration>

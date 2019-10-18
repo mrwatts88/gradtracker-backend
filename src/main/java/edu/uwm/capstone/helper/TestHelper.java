@@ -14,7 +14,8 @@ public class TestHelper {
 
     private static final Random random = new SecureRandom();
 
-    private TestHelper() { }
+    private TestHelper() {
+    }
 
     /**
      * Create a random {@link Long}.
