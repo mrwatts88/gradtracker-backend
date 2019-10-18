@@ -30,3 +30,26 @@ CREATE TABLE field_defs(
     PRIMARY KEY (id),
     FOREIGN KEY (form_def_id) REFERENCES form_defs(id)
 );
+
+CREATE TABLE forms(
+    id BIGINT(20) AUTO_INCREMENT,
+    form_def_id BIGINT(20) NOT NULL,
+    user_id BIGINT(20) NOT NULL,
+    approved BOOLEAN DEFAULT FALSE,
+    created_date BIGINT(25)   NOT NULL,
+    updated_date BIGINT(25) DEFAULT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (form_def_id) REFERENCES form_defs(id)
+);
+
+CREATE TABLE fields(
+    id BIGINT(20) AUTO_INCREMENT,
+    field_def_id BIGINT(20) NOT NULL,
+    form_id BIGINT(20) NOT NULL,
+    data    VARCHAR(1024) NOT NULL,
+    created_date BIGINT(25)   NOT NULL,
+    updated_date BIGINT(25) DEFAULT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (field_def_id) REFERENCES field_defs(id),
+    FOREIGN KEY (form_id) REFERENCES forms(id)
+);
