@@ -1,8 +1,6 @@
 package edu.uwm.capstone.util;
 
-import edu.uwm.capstone.model.FieldDefinition;
-import edu.uwm.capstone.model.FormDefinition;
-import edu.uwm.capstone.model.User;
+import edu.uwm.capstone.model.*;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.LocalDateTime;
@@ -70,6 +68,38 @@ public class TestDataUtility {
         fieldDefinition.setDataType(randomAlphabetic(randomInt(1, 10)));  // this may need to change
         fieldDefinition.setFieldIndex(randomInt());
         return fieldDefinition;
+    }
+
+    /**
+     * Generate a {@link Form} object that is fully loaded with random values for testing purposes.
+     *
+     * @return {@link Form}
+     */
+    public static Form formWithTestValues() {
+        Form form = new Form();
+        ArrayList<Field> fields = new ArrayList<>();
+        int j = randomInt(5, 20);
+        for (int i = 0; i < j; i++) {
+            fields.add(fieldWithTestValues());
+        }
+        form.setFields(fields);
+        // intentionally left blank -- formDefinition.setCreatedDate(randomLocalDateTime());
+        // intentionally left blank -- formDefinition.setUpdatedDate(randomLocalDateTime());
+        return form;
+    }
+
+    /**
+     * Generate a {@link Field} object that is fully loaded with random values for testing purposes.
+     *
+     * @return {@link Field}
+     */
+    public static Field fieldWithTestValues() {
+        Field field = new Field();
+        field.setData(randomAlphabetic(randomInt(1, 50)));
+        field.setFieldDefId(randomLong()); // this may need to change
+        field.setFormId(randomLong());  // this may need to change
+        field.setFieldIndex(randomInt());
+        return field;
     }
 
     /**

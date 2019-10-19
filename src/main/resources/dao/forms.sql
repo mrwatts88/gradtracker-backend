@@ -1,12 +1,12 @@
 --STATEMENT createForm
 INSERT INTO forms (
-  form_id,
+  id,
   form_def_id,
   user_id,
   approved,
   created_date
 ) VALUES (
-  :form_id,
+  :id,
   :form_def_id,
   :user_id,
   :approved,
@@ -14,13 +14,13 @@ INSERT INTO forms (
 );
 
 --STATEMENT readForm
-SELECT * FROM forms WHERE form_id = :form_id;
+SELECT * FROM forms WHERE id = :id;
 
 --STATEMENT readAllForm
 SELECT * FROM forms;
 
 --STATEMENT deleteForm
-DELETE FROM forms WHERE form_id = :form_id;
+DELETE FROM forms WHERE id = :id;
 
 --STATEMENT updateForm
 UPDATE forms SET
@@ -29,4 +29,4 @@ UPDATE forms SET
   approved = :approved,
   updated_date = :updated_date
 WHERE
-  form_id = :form_id;
+  id = :id;

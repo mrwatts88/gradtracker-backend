@@ -119,6 +119,24 @@ public class ApplicationConfig {
     }
 
     @Bean
+    public FormDao formDao() {
+        FormDao formDao = new FormDao();
+        formDao.setDataSource(dataSource());
+        formDao.setSqlStatementsFileLoader(sqlStatementsFileLoader());
+        formDao.setRowMapper(formDaoRowMapper());
+        return formDao;
+    }
+
+    @Bean
+    public FieldDao fieldDao() {
+        FieldDao fieldDao = new FieldDao();
+        fieldDao.setDataSource(dataSource());
+        fieldDao.setSqlStatementsFileLoader(sqlStatementsFileLoader());
+        fieldDao.setRowMapper(fieldDaoRowMapper());
+        return fieldDao;
+    }
+
+    @Bean
     public UserDaoRowMapper userDaoRowMapper() {
         return new UserDaoRowMapper();
     }
@@ -127,6 +145,12 @@ public class ApplicationConfig {
     public FormDefinitionDaoRowMapper formDefinitionDaoRowMapper() {
         return new FormDefinitionDaoRowMapper();
     }
+
+    @Bean
+    public FormDaoRowMapper formDaoRowMapper() {return new FormDaoRowMapper();}
+
+    @Bean
+    public FieldDaoRowMapper fieldDaoRowMapper() {return new FieldDaoRowMapper();}
 
     @Bean
     public FieldDefinitionDaoRowMapper fieldDefinitionDaoRowMapper() {

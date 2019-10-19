@@ -1,12 +1,12 @@
 --STATEMENT createField
 INSERT INTO fields (
-  field_id,
+  id,
   field_def_id,
   form_id,
   data,
   created_date
 ) VALUES (
-  :field_id,
+  :id,
   :field_def_id,
   :form_id,
   :data,
@@ -14,13 +14,13 @@ INSERT INTO fields (
 );
 
 --STATEMENT readField
-SELECT * FROM fields WHERE field_id = :field_id;
+SELECT * FROM fields WHERE id = :id;
 
 --STATEMENT readFieldsByFormId
 SELECT * FROM fields WHERE form_id = :form_id;
 
 --STATEMENT deleteField
-DELETE FROM fields WHERE field_id = :field_id;
+DELETE FROM fields WHERE id = :id;
 
 --STATEMENT deleteFieldsByFormId
 DELETE FROM fields WHERE form_id = :form_id;
@@ -32,4 +32,4 @@ UPDATE fields SET
   data = :data,
   updated_date = :updated_date
 WHERE
-  field_id = :field_id;
+  id = :id;
