@@ -31,9 +31,9 @@ public class FormDaoRowMapper extends BaseRowMapper<Form> {
     public Map<String, Object> mapObject(Form object) {
         Map<String, Object> map = new HashMap<>();
         map.put(ID.getColumnName(), object.getId());
-        map.put(USER_ID.getColumnName(), object.getFormDefId());
-        map.put(APPROVED.getColumnName(), object.getApproved());
         map.put(FORM_DEF_ID.getColumnName(), object.getFormDefId());
+        map.put(USER_ID.getColumnName(), object.getUserId());
+        map.put(APPROVED.getColumnName(), object.getApproved());
         map.put(CREATED_DATE.getColumnName(), javaTimeFromDate(object.getCreatedDate()));
         map.put(UPDATED_DATE.getColumnName(), javaTimeFromDate(object.getUpdatedDate()));
         return map;
@@ -43,11 +43,11 @@ public class FormDaoRowMapper extends BaseRowMapper<Form> {
     public Form mapRow(ResultSet rs, int rowNum) throws SQLException {
         Form folder = new Form();
         folder.setId(rs.getLong(ID.getColumnName()));
+        folder.setFormDefId(rs.getLong(FORM_DEF_ID.getColumnName()));
         folder.setUserId(rs.getLong(USER_ID.getColumnName()));
         folder.setApproved(rs.getBoolean(APPROVED.getColumnName()));
         folder.setCreatedDate(dateFromJavaTime(rs.getObject(CREATED_DATE.getColumnName())));
         folder.setUpdatedDate(dateFromJavaTime(rs.getObject(UPDATED_DATE.getColumnName())));
-        folder.setFormDefId(rs.getLong(FORM_DEF_ID.getColumnName()));
         return folder;
     }
 }
