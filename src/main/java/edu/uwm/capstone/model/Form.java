@@ -17,7 +17,6 @@ public class Form extends BaseEntity implements Iterable<Field>  {
     private Long formDefId;
     private Long userId;
     private Boolean approved;
-    private String name;
     private List<Field> fields;
 
     @Override

@@ -77,6 +77,9 @@ public class TestDataUtility {
      */
     public static Form formWithTestValues() {
         Form form = new Form();
+        form.setApproved(randomBoolean());
+        form.setUserId(randomLong());
+        form.setFormDefId(randomLong());
         ArrayList<Field> fields = new ArrayList<>();
         int j = randomInt(5, 20);
         for (int i = 0; i < j; i++) {
@@ -100,6 +103,21 @@ public class TestDataUtility {
         field.setFormId(randomLong());  // this may need to change
         field.setFieldIndex(randomInt());
         return field;
+    }
+
+    /**
+     * Generate a random {@link Boolean} using randomInt.
+     *
+     * @return random {@link Boolean}
+     */
+
+    public static Boolean randomBoolean() {
+        int tmp = randomInt(0, 1);
+        if (tmp == 0)
+        {
+            return true;
+        }
+        return false;
     }
 
     /**

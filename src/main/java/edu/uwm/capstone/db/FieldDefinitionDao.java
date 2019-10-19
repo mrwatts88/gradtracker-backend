@@ -45,7 +45,8 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
     public FieldDefinition read(Long id) {
         LOG.trace("Reading field definition {}", id);
         try {
-            return (FieldDefinition) this.jdbcTemplate.queryForObject(sql("readFieldDef"), new MapSqlParameterSource("id", id), rowMapper);
+            return (FieldDefinition) this.jdbcTemplate.queryForObject(sql("readFieldDef"),
+                    new MapSqlParameterSource("id", id), rowMapper);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }

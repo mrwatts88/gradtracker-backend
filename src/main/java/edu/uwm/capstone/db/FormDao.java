@@ -35,7 +35,8 @@ public class FormDao extends BaseDao<Long, Form>{
         form.setCreatedDate(LocalDateTime.now());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int result = this.jdbcTemplate.update(sql("createForm"),
-                new MapSqlParameterSource(rowMapper.mapObject(form)), keyHolder, new String[]{BaseRowMapper.BaseColumnType.ID.name()});
+                new MapSqlParameterSource(rowMapper.mapObject(form)), keyHolder,
+                new String[]{BaseRowMapper.BaseColumnType.ID.name()});
         if (result != 1) {
             throw new DaoException(String.format("Failed attempt to create form %s - affected %s rows", form.toString(), result));
         }
