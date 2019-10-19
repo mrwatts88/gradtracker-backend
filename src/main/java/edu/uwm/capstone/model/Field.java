@@ -15,5 +15,4 @@ public class Field extends BaseEntity{
     private Long fieldDefId;
     private String data;
     private int fieldIndex;
-    private String dataType;
 }

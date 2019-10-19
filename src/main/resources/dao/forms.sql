@@ -21,3 +21,12 @@ SELECT * FROM forms;
 
 --STATEMENT deleteForm
 DELETE FROM forms WHERE form_id = :form_id;
+
+--STATEMENT updateForm
+UPDATE forms SET
+  form_def_id = :form_def_id,
+  user_id = :user_id,
+  approved = :approved,
+  updated_date = :updated_date
+WHERE
+  form_id = :form_id;
