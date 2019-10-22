@@ -26,14 +26,11 @@ public class TestDataUtility {
      */
     public static User userWithTestValues() {
         User user = new User();
-        // intentionally left blank -- profile.setId();
         user.setFirstName(randomAlphabetic(randomInt(1, 100)));
         user.setLastName(randomAlphabetic(randomInt(1, 100)));
         user.setPassword(randomAlphabetic(randomInt(10, 100)));
         user.setPantherId(randomAlphabetic(randomInt(9, 10)));
         user.setEmail(randomAlphabetic(randomInt(1, 50)) + "@" + randomAlphabetic(randomInt(1, 50)));
-        // intentionally left blank -- profile.setCreatedDate(randomLocalDateTime());
-        // intentionally left blank -- profile.setUpdatedDate(randomLocalDateTime());
         return user;
     }
 
@@ -51,8 +48,6 @@ public class TestDataUtility {
             fieldDefinitions.add(fieldDefWithTestValues());
         }
         formDefinition.setFieldDefs(fieldDefinitions);
-        // intentionally left blank -- formDefinition.setCreatedDate(randomLocalDateTime());
-        // intentionally left blank -- formDefinition.setUpdatedDate(randomLocalDateTime());
         return formDefinition;
     }
 
@@ -71,53 +66,44 @@ public class TestDataUtility {
     }
 
     /**
-     * Generate a {@link Form} object that is fully loaded with random values for testing purposes.
+     * Generate a {@link Form} object that is fully loaded with random values for testing purposes,
+     * given a persisted {@link FormDefinition}.
      *
      * @return {@link Form}
      */
-    public static Form formWithTestValues() {
+    public static Form formWithTestValues(FormDefinition formDefinition) {
         Form form = new Form();
         form.setApproved(randomBoolean());
         form.setUserId(randomLong());
-        form.setFormDefId(randomLong());
+        form.setFormDefId(formDefinition.getId());
         ArrayList<Field> fields = new ArrayList<>();
-        int j = randomInt(5, 20);
-        for (int i = 0; i < j; i++) {
-            fields.add(fieldWithTestValues());
+        for (FieldDefinition fd : formDefinition.getFieldDefs()) {
+            fields.add(fieldWithTestValues(fd));
         }
         form.setFields(fields);
-        // intentionally left blank -- formDefinition.setCreatedDate(randomLocalDateTime());
-        // intentionally left blank -- formDefinition.setUpdatedDate(randomLocalDateTime());
         return form;
     }
 
     /**
-     * Generate a {@link Field} object that is fully loaded with random values for testing purposes.
+     * Generate a {@link Field} object that is fully loaded with random values for testing purposes,
+     * given a persisted {@link FieldDefinition}.
      *
      * @return {@link Field}
      */
-    public static Field fieldWithTestValues() {
+    public static Field fieldWithTestValues(FieldDefinition fieldDefinition) {
         Field field = new Field();
-        field.setData(randomAlphabetic(randomInt(1, 50)));
-        field.setFieldDefId(randomLong()); // this may need to change
-        field.setFormId(randomLong());  // this may need to change
-        field.setFieldIndex(randomInt());
+        field.setData(randomAlphabetic(randomInt(10, 200)));
+        field.setFieldDefId(fieldDefinition.getId());
         return field;
     }
 
     /**
-     * Generate a random {@link Boolean} using randomInt.
+     * Generate a random {@link Boolean}.
      *
      * @return random {@link Boolean}
      */
-
     public static Boolean randomBoolean() {
-        int tmp = randomInt(0, 1);
-        if (tmp == 0)
-        {
-            return true;
-        }
-        return false;
+        return new Random().nextBoolean();
     }
 
     /**

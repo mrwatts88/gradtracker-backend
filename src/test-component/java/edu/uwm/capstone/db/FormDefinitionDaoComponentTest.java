@@ -29,8 +29,7 @@ public class FormDefinitionDaoComponentTest {
     @Autowired
     FormDefinitionDao formDefinitionDao;
 
-
-    private List<FormDefinition> formDefToCleanup = new ArrayList<>();
+    private List<FormDefinition> formDefsToCleanup = new ArrayList<>();
 
     @Before
     public void setUp() {
@@ -42,11 +41,10 @@ public class FormDefinitionDaoComponentTest {
         assertNotNull(formDefinitionDao.sql("updateFormDef"));
     }
 
-
     @After
     public void teardown() {
-        formDefToCleanup.forEach(formDef -> formDefinitionDao.delete(formDef.getId()));
-        formDefToCleanup.clear();
+        formDefsToCleanup.forEach(formDef -> formDefinitionDao.delete(formDef.getId()));
+        formDefsToCleanup.clear();
     }
 
     /**
@@ -59,7 +57,7 @@ public class FormDefinitionDaoComponentTest {
         FormDefinition verifyCreateFormDef = formDefinitionDao.read(createFormDef.getId());
         assertNotNull(verifyCreateFormDef);
         assertEquals(createFormDef, verifyCreateFormDef);
-        formDefToCleanup.add(createFormDef);
+        formDefsToCleanup.add(createFormDef);
     }
 
     /**
@@ -99,7 +97,7 @@ public class FormDefinitionDaoComponentTest {
         FormDefinition create_form_def = TestDataUtility.formDefWithTestValues();
         formDefinitionDao.create(create_form_def);
         assertNotNull(create_form_def.getId());
-        formDefToCleanup.add(create_form_def);
+        formDefsToCleanup.add(create_form_def);
         FormDefinition read_form_def = formDefinitionDao.read(create_form_def.getId());
         assertNotNull(read_form_def);
         assertEquals(create_form_def.getId(), read_form_def.getId());
@@ -127,7 +125,7 @@ public class FormDefinitionDaoComponentTest {
             FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
             formDefinitionDao.create(formDefinition);
             persistedFormDefs.add(formDefinition);
-            formDefToCleanup.add(formDefinition);
+            formDefsToCleanup.add(formDefinition);
         }
 
         assertEquals(persistedFormDefs, formDefinitionDao.readAll());
@@ -141,7 +139,7 @@ public class FormDefinitionDaoComponentTest {
         FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
         formDefinitionDao.create(createFormDef);
         assertNotNull(createFormDef.getId());
-        formDefToCleanup.add(createFormDef);
+        formDefsToCleanup.add(createFormDef);
 
         FormDefinition verifyCreateFormDef = formDefinitionDao.read(createFormDef.getId());
         assertNotNull(verifyCreateFormDef);
@@ -172,7 +170,7 @@ public class FormDefinitionDaoComponentTest {
         FormDefinition verifyCreateFormDef = formDefinitionDao.read(createFormDef.getId());
         assertNotNull(verifyCreateFormDef);
         assertEquals(createFormDef, verifyCreateFormDef);
-        formDefToCleanup.add(createFormDef);
+        formDefsToCleanup.add(createFormDef);
 
         FormDefinition updateFormDef = TestDataUtility.formDefWithTestValues();
         updateFormDef.setId(createFormDef.getId());
@@ -200,7 +198,7 @@ public class FormDefinitionDaoComponentTest {
         FormDefinition verifyCreateFormDef = formDefinitionDao.read(createFormDef.getId());
         assertNotNull(verifyCreateFormDef);
         assertEquals(createFormDef, verifyCreateFormDef);
-        formDefToCleanup.add(createFormDef);
+        formDefsToCleanup.add(createFormDef);
 
 
         FormDefinition updateFormDef = new FormDefinition();
@@ -263,7 +261,7 @@ public class FormDefinitionDaoComponentTest {
         FormDefinition verifyCreateFormDef = formDefinitionDao.read(createFormDef.getId());
         assertNotNull(verifyCreateFormDef);
         assertEquals(createFormDef, verifyCreateFormDef);
-        formDefToCleanup.add(createFormDef);
+        formDefsToCleanup.add(createFormDef);
 
         FormDefinition updateUser = TestDataUtility.formDefWithTestValues();
         updateUser.setId(createFormDef.getId());

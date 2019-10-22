@@ -56,10 +56,10 @@ public class UserDaoRowMapperComponentTest {
     public void mapObject() {
         // generate a user object with test values
         User user = TestDataUtility.userWithTestValues();
+        assertNotNull(user);
         user.setId(TestDataUtility.randomLong());
         user.setCreatedDate(randomLocalDateTime());
         user.setUpdatedDate(randomLocalDateTime());
-        assertNotNull(user);
 
         Map<String, Object> mapObject = userDaoRowMapper.mapObject(user);
         assertNotNull(mapObject);
@@ -81,10 +81,10 @@ public class UserDaoRowMapperComponentTest {
     public void mapRow() throws SQLException {
         // generate a user object with test values
         User user = TestDataUtility.userWithTestValues();
+        assertNotNull(user);
         user.setId(TestDataUtility.randomLong());
         user.setCreatedDate(randomLocalDateTime());
         user.setUpdatedDate(randomLocalDateTime());
-        assertNotNull(user);
 
         // define the behavior of the resultSet that is being mocked
         when(resultSet.getLong(BaseRowMapper.BaseColumnType.ID.getColumnName())).thenReturn(user.getId());
@@ -109,5 +109,4 @@ public class UserDaoRowMapperComponentTest {
         assertEquals(user.getCreatedDate(), verifyUser.getCreatedDate());
         assertEquals(user.getUpdatedDate(), verifyUser.getUpdatedDate());
     }
-
 }

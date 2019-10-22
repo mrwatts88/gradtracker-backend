@@ -55,7 +55,7 @@ public class FormDao extends BaseDao<Long, Form>{
         LOG.trace("Reading form {}", id);
         try {
             Form form = (Form) this.jdbcTemplate.queryForObject(sql("readForm"), new MapSqlParameterSource("id", id), rowMapper);
-            form.setFields(fieldDao.readFieldByFormId(id));
+            form.setFields(fieldDao.readFieldsByFormId(id));
             return form;
         } catch (EmptyResultDataAccessException | NullPointerException e) {
             return null;
@@ -67,7 +67,17 @@ public class FormDao extends BaseDao<Long, Form>{
         List<Form> forms = this.jdbcTemplate.query(sql("readAllForms"), rowMapper);
         // uncomment this to return forms with their fields
         for (Form fd : forms) {
-            fd.setFields(fieldDao.readFieldByFormId(fd.getId()));
+            fd.setFields(fieldDao.readFieldsByFormId(fd.getId()));
+        }
+        return forms;
+    }
+
+    public List<Form> readAllByUserId(Long userId) {
+        LOG.trace("Reading all forms by user id {}", userId);
+        List<Form> forms = this.jdbcTemplate.query(sql("readAllFormsByUserId"), new MapSqlParameterSource("user_id", userId), rowMapper);
+        // uncomment this to return forms with their fields
+        for (Form fd : forms) {
+            fd.setFields(fieldDao.readFieldsByFormId(fd.getId()));
         }
         return forms;
     }
@@ -87,27 +97,31 @@ public class FormDao extends BaseDao<Long, Form>{
             throw new DaoException(String.format("Failed attempt to update form %s - affected %s rows", form.toString(), result));
         }
 
-        HashSet<Long> fieldIdsAssociatedWithOldForm = fieldDao.readFieldByFormId(form.getId()).stream().map(Field::getId).collect(Collectors.toCollection(HashSet::new));
+        HashSet<Long> fieldIdsAssociatedWithOldForm = fieldDao.readFieldsByFormId(form.getId()).stream().map(Field::getId).collect(Collectors.toCollection(HashSet::new));
 
         Long fieldId;
-        for (Field fd : form) {
-            fieldId = fd.getId();
+        for (Field f : form) {
+            fieldId = f.getId();
             if (fieldId == null) {                                              // create new field if has null id
-                fd.setFormId(form.getId());
-                fieldDao.create(fd);
-            } else if (fieldIdsAssociatedWithOldForm.contains(fieldId)) { // update field if it's connected to form
+                f.setFormId(form.getId());
+                fieldDao.create(f);
+            } else if (fieldIdsAssociatedWithOldForm.contains(fieldId)) {       // update field if it's connected to form
                 fieldIdsAssociatedWithOldForm.remove(fieldId);
-                fieldDao.update(fd);
+                fieldDao.update(f);
             }
         }
 
-//        fieldIdsAssociatedWithOldForm.forEach(fdId -> fieldDao.delete(fdId));
-        // can't delete since it's not available currently remove old fields
+        fieldIdsAssociatedWithOldForm.forEach(fId -> fieldDao.delete(fId));
     }
 
-    //TODO: FIGURE OUT IF THE SUBMITTED FORMS NEEDS THE DELETE METHOD
     @Override
     public void delete(Long id) {
+        LOG.trace("Deleting form {}", id);
+        fieldDao.deleteFieldsByFromId(id);
+        int result = this.jdbcTemplate.update(sql("deleteForm"), new MapSqlParameterSource("id", id));
 
+        if (result != 1) {
+            throw new DaoException(String.format("Failed attempt to delete form %s affected %s rows", id, result));
+        }
     }
 }

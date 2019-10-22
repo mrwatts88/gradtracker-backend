@@ -87,6 +87,7 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
             throw new DaoException(String.format("Failed attempt to update form definition %s - affected %s rows", formDef.toString(), result));
         }
 
+        // TODO we may want to create an sql query to select all field def ids
         HashSet<Long> fieldDefIdsAssociatedWithOldFormDef = fieldDefinitionDao.readFieldDefsByFormDefId(formDef.getId()).stream().map(FieldDefinition::getId).collect(Collectors.toCollection(HashSet::new));
 
         Long fieldDefId;
@@ -111,7 +112,7 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
         int result = this.jdbcTemplate.update(sql("deleteFormDef"), new MapSqlParameterSource("id", id));
 
         if (result != 1) {
-            throw new DaoException(String.format("Failed attempt to delete form %s affected %s rows", id, result));
+            throw new DaoException(String.format("Failed attempt to delete form definition %s affected %s rows", id, result));
         }
     }
 }

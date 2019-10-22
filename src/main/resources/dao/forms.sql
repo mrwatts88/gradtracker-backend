@@ -19,6 +19,9 @@ SELECT * FROM forms WHERE id = :id;
 --STATEMENT readAllForm
 SELECT * FROM forms;
 
+--STATEMENT readAllFormsByUserId
+SELECT * FROM forms WHERE user_id = :user_id;
+
 --STATEMENT deleteForm
 DELETE FROM forms WHERE id = :id;
 

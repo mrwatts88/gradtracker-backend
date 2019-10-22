@@ -14,8 +14,7 @@ public class FieldDaoRowMapper extends BaseRowMapper<Field> {
     public enum FieldColumnType {
         FORM_ID(),
         FIELD_DEF_ID(),
-        DATA(),
-        FIELD_INDEX();
+        DATA();
 
         private String columnName;
 
@@ -34,7 +33,6 @@ public class FieldDaoRowMapper extends BaseRowMapper<Field> {
         map.put(ID.getColumnName(), object.getId());
         map.put(FORM_ID.getColumnName(), object.getFormId());
         map.put(DATA.getColumnName(), object.getData());
-        map.put(FIELD_INDEX.getColumnName(), object.getFieldIndex());
         map.put(FIELD_DEF_ID.getColumnName(), object.getFieldDefId());
         map.put(CREATED_DATE.getColumnName(), javaTimeFromDate(object.getCreatedDate()));
         map.put(UPDATED_DATE.getColumnName(), javaTimeFromDate(object.getUpdatedDate()));
@@ -47,7 +45,6 @@ public class FieldDaoRowMapper extends BaseRowMapper<Field> {
         folder.setId(rs.getLong(ID.getColumnName()));
         folder.setFormId(rs.getLong(FORM_ID.getColumnName()));
         folder.setData(rs.getString(DATA.getColumnName()));
-        folder.setFieldIndex(rs.getInt(FIELD_INDEX.getColumnName()));
         folder.setFieldDefId(rs.getLong(FIELD_DEF_ID.getColumnName()));
         folder.setCreatedDate(dateFromJavaTime(rs.getObject(CREATED_DATE.getColumnName())));
         folder.setUpdatedDate(dateFromJavaTime(rs.getObject(UPDATED_DATE.getColumnName())));

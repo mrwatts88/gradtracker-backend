@@ -20,9 +20,9 @@ public class FieldDao extends BaseDao<Long, Field>{
         if (field == null) {
             throw new DaoException("field cannot be null");
         } else if (field.getId() != null) {
-            throw new DaoException("When creating a new field the id should be null, but was set to " + field.getId());
+            throw new DaoException("When creating a new field, the id should be null, but was set to " + field.getId());
         } else if (field.getFormId() == null) {
-            throw new DaoException("When creating a new field the form id should not be null");
+            throw new DaoException("When creating a new field, the form id should not be null");
         }
 
         LOG.trace("Creating field {}", field);
@@ -49,10 +49,10 @@ public class FieldDao extends BaseDao<Long, Field>{
         }
     }
 
-    public List<Field> readFieldByFormId(Long id) {
+    public List<Field> readFieldsByFormId(Long id) {
         LOG.trace("Reading field with form_id {}", id);
         try {
-            return this.jdbcTemplate.query(sql("readFieldByFormId"), new MapSqlParameterSource("id", id), rowMapper);
+            return this.jdbcTemplate.query(sql("readFieldsByFormId"), new MapSqlParameterSource("form_id", id), rowMapper);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -64,6 +64,8 @@ public class FieldDao extends BaseDao<Long, Field>{
             throw new DaoException("field cannot be null");
         } else if (field.getId() == null) {
             throw new DaoException("When updating a field, the id should not be null");
+        }  else if (field.getFormId() == null) {
+            throw new DaoException("When updating a field, the form id should not be null");
         }
 
         LOG.trace("Updating field {}", field);
@@ -74,15 +76,20 @@ public class FieldDao extends BaseDao<Long, Field>{
         }
     }
 
-    //TODO: DETERMINE IF THE FIELD SUPPOSED TO HAVE A DELETE METHOD. (CREATE AN NEW BASE_ENTITY MIGHT BE NEEDED)
-
     @Override
     public void delete(Long id) {
-        //this part is commented on purpose, we suppose the field should not have a delete method as we could not delete the field submited
-//        LOG.trace("Deleting field {}", id);
-//        int result = this.jdbcTemplate.update(sql("deleteField"), new MapSqlParameterSource("id", id));
-//        if (result != 1) {
-//            throw new DaoException(String.format("Failed attempt to delete field %s affected %s rows", id, result));
-//        }
+        LOG.trace("Deleting field {}", id);
+        int result = this.jdbcTemplate.update(sql("deleteField"), new MapSqlParameterSource("id", id));
+        if (result != 1) {
+            throw new DaoException(String.format("Failed attempt to delete field %s affected %s rows", id, result));
+        }
+    }
+
+    public void deleteFieldsByFromId(Long id) {
+        LOG.trace("Deleting fields with form id {}", id);
+        int result = this.jdbcTemplate.update(sql("deleteFieldsByFormId"), new MapSqlParameterSource("form_id", id));
+        if (result < 1) {
+            throw new DaoException(String.format("Failed attempt to delete fields with form id %s affected %s rows", id, result));
+        }
     }
 }

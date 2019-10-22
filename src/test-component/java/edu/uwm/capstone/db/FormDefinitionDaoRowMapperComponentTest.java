@@ -54,21 +54,19 @@ public class FormDefinitionDaoRowMapperComponentTest {
     @Test
     public void mapObject() {
         // generate a FormDefinition object with test values
-        FormDefinition sample_form_def = TestDataUtility.formDefWithTestValues();
-        sample_form_def.setId(TestDataUtility.randomLong());
-        sample_form_def.setCreatedDate(randomLocalDateTime());
-        sample_form_def.setUpdatedDate(randomLocalDateTime());
-        assertNotNull(sample_form_def);
+        FormDefinition sampleFormDef = TestDataUtility.formDefWithTestValues();
+        assertNotNull(sampleFormDef);
+        sampleFormDef.setId(TestDataUtility.randomLong());
+        sampleFormDef.setCreatedDate(randomLocalDateTime());
+        sampleFormDef.setUpdatedDate(randomLocalDateTime());
 
-        Map<String, Object> mapObject = formDefinitionDaoRowMapper.mapObject(sample_form_def);
+        Map<String, Object> mapObject = formDefinitionDaoRowMapper.mapObject(sampleFormDef);
         assertNotNull(mapObject);
 
-        assertEquals(sample_form_def.getId(), mapObject.get(BaseRowMapper.BaseColumnType.ID.getColumnName()));
-        assertEquals(sample_form_def.getName(), mapObject.get(FormDefinitionDaoRowMapper.FormDefColumnType.NAME.getColumnName()));
-        //TODO: FIGURE OUT THE WAY TO GET THE FIELDS IN THE FORMS AND TEST IT HERE.
-
-        assertEquals(sample_form_def.getCreatedDate(), dateFromJavaTime(mapObject.get(BaseRowMapper.BaseColumnType.CREATED_DATE.getColumnName())));
-        assertEquals(sample_form_def.getUpdatedDate(), dateFromJavaTime(mapObject.get(BaseRowMapper.BaseColumnType.UPDATED_DATE.getColumnName())));
+        assertEquals(sampleFormDef.getId(), mapObject.get(BaseRowMapper.BaseColumnType.ID.getColumnName()));
+        assertEquals(sampleFormDef.getName(), mapObject.get(FormDefinitionDaoRowMapper.FormDefColumnType.NAME.getColumnName()));
+        assertEquals(sampleFormDef.getCreatedDate(), dateFromJavaTime(mapObject.get(BaseRowMapper.BaseColumnType.CREATED_DATE.getColumnName())));
+        assertEquals(sampleFormDef.getUpdatedDate(), dateFromJavaTime(mapObject.get(BaseRowMapper.BaseColumnType.UPDATED_DATE.getColumnName())));
     }
 
     /**
@@ -77,26 +75,25 @@ public class FormDefinitionDaoRowMapperComponentTest {
     @Test
     public void mapRow() throws SQLException {
         // generate a FormDefinition object with test values
-        FormDefinition sample_form_def = TestDataUtility.formDefWithTestValues();
-        sample_form_def.setId(TestDataUtility.randomLong());
-        sample_form_def.setCreatedDate(randomLocalDateTime());
-        sample_form_def.setUpdatedDate(randomLocalDateTime());
-        assertNotNull(sample_form_def);
+        FormDefinition sampleFormDef = TestDataUtility.formDefWithTestValues();
+        assertNotNull(sampleFormDef);
+        sampleFormDef.setId(TestDataUtility.randomLong());
+        sampleFormDef.setCreatedDate(randomLocalDateTime());
+        sampleFormDef.setUpdatedDate(randomLocalDateTime());
 
         // define the behavior of the resultSet that is being mocked
-        when(resultSet.getLong(BaseRowMapper.BaseColumnType.ID.getColumnName())).thenReturn(sample_form_def.getId());
-        when(resultSet.getString(FormDefinitionDaoRowMapper.FormDefColumnType.NAME.getColumnName())).thenReturn(sample_form_def.getName());
-        when(resultSet.getObject(BaseRowMapper.BaseColumnType.CREATED_DATE.getColumnName())).thenReturn(javaTimeFromDate(sample_form_def.getCreatedDate()));
-        when(resultSet.getObject(BaseRowMapper.BaseColumnType.UPDATED_DATE.getColumnName())).thenReturn(javaTimeFromDate(sample_form_def.getUpdatedDate()));
+        when(resultSet.getLong(BaseRowMapper.BaseColumnType.ID.getColumnName())).thenReturn(sampleFormDef.getId());
+        when(resultSet.getString(FormDefinitionDaoRowMapper.FormDefColumnType.NAME.getColumnName())).thenReturn(sampleFormDef.getName());
+        when(resultSet.getObject(BaseRowMapper.BaseColumnType.CREATED_DATE.getColumnName())).thenReturn(javaTimeFromDate(sampleFormDef.getCreatedDate()));
+        when(resultSet.getObject(BaseRowMapper.BaseColumnType.UPDATED_DATE.getColumnName())).thenReturn(javaTimeFromDate(sampleFormDef.getUpdatedDate()));
 
         // exercise the mapRow functionality and verify the expected results
-        FormDefinition verifyUser = formDefinitionDaoRowMapper.mapRow(resultSet, 0);
-        assertNotNull(verifyUser);
+        FormDefinition verifyFormDef = formDefinitionDaoRowMapper.mapRow(resultSet, 0);
+        assertNotNull(verifyFormDef);
 
-        assertEquals(sample_form_def.getId(), verifyUser.getId());
-        assertEquals(sample_form_def.getName(), verifyUser.getName());
-        //TODO: FIGURE OUT THE WAY TO GET THE FIELDS IN THE FORMS AND TEST IT HERE.
-        assertEquals(sample_form_def.getCreatedDate(), verifyUser.getCreatedDate());
-        assertEquals(sample_form_def.getUpdatedDate(), verifyUser.getUpdatedDate());
+        assertEquals(sampleFormDef.getId(), verifyFormDef.getId());
+        assertEquals(sampleFormDef.getName(), verifyFormDef.getName());
+        assertEquals(sampleFormDef.getCreatedDate(), verifyFormDef.getCreatedDate());
+        assertEquals(sampleFormDef.getUpdatedDate(), verifyFormDef.getUpdatedDate());
     }
 }

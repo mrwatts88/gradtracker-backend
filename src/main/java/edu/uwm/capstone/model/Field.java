@@ -14,5 +14,4 @@ public class Field extends BaseEntity{
     private Long formId;
     private Long fieldDefId;
     private String data;
-    private int fieldIndex;
 }
