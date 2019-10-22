@@ -24,6 +24,12 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
     @Autowired
     private FieldDefinitionDao fieldDefinitionDao;
 
+    /**
+     * Given an instantiated {@link FormDefinition}, sets the create date and inserts a new record in the database.
+     *
+     * @param formDef
+     * @return
+     */
     @Override
     public FormDefinition create(FormDefinition formDef) {
         if (formDef == null) {
@@ -50,6 +56,12 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
         return formDef;
     }
 
+    /**
+     * Returns a {@link FormDefinition} with the given ID from database.
+     *
+     * @param id
+     * @return
+     */
     @Override
     public FormDefinition read(Long id) {
         LOG.trace("Reading form definition {}", id);
@@ -62,6 +74,11 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
         }
     }
 
+    /**
+     * Returns all {@link FormDefinition} objects from the database.
+     *
+     * @return List of FormDefinitions
+     */
     public List<FormDefinition> readAll() {
         LOG.trace("Reading all form definitions");
         List<FormDefinition> formDefinitions = this.jdbcTemplate.query(sql("readAllFormDefs"), rowMapper);
@@ -72,6 +89,11 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
         return formDefinitions;
     }
 
+    /**
+     * Given a {@link FormDefinition} formDef, updates the corresponding form definition record in the database.
+     *
+     * @param formDef
+     */
     @Override
     public void update(FormDefinition formDef) {
         if (formDef == null) {
@@ -105,6 +127,11 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
         fieldDefIdsAssociatedWithOldFormDef.forEach(fdId -> fieldDefinitionDao.delete(fdId)); // remove old field defs
     }
 
+    /**
+     * Deletes the {@link FormDefinition} record in the database with the given ID.
+     *
+     * @param id
+     */
     @Override
     public void delete(Long id) {
         LOG.trace("Deleting form definition {}", id);

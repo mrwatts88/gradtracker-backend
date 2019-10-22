@@ -66,7 +66,7 @@ public class UserDao extends BaseDao<Long, User> {
     }
 
     /**
-     * TODO finish javaDoc
+     * Returns a list of all {@link User} objects from the database.
      *
      * @return
      */

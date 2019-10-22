@@ -17,6 +17,12 @@ import java.util.List;
 public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
     private static final Logger LOG = LoggerFactory.getLogger(FieldDefinitionDao.class);
 
+    /**
+     * Given an instantiated {@link FieldDefinition} object, creates a field definition.
+     *
+     * @param fieldDef
+     * @return
+     */
     @Override
     public FieldDefinition create(FieldDefinition fieldDef) {
         if (fieldDef == null) {
@@ -41,6 +47,12 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
         return fieldDef;
     }
 
+    /**
+     * Reads a {@link FieldDefinition} object with the corresponding ID.
+     *
+     * @param id
+     * @return
+     */
     @Override
     public FieldDefinition read(Long id) {
         LOG.trace("Reading field definition {}", id);
@@ -52,6 +64,12 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
         }
     }
 
+    /**
+     * Reads all {@link FieldDefinition} objects with the given {@link edu.uwm.capstone.model.FormDefinition} ID.
+     *
+     * @param id
+     * @return
+     */
     public List<FieldDefinition> readFieldDefsByFormDefId(Long id) {
         LOG.trace("Reading field definitions with form_def_id {}", id);
         try {
@@ -61,6 +79,11 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
         }
     }
 
+    /**
+     * Updates the given {@link FieldDefinition} object.
+     *
+     * @param fieldDef
+     */
     @Override
     public void update(FieldDefinition fieldDef) {
         if (fieldDef == null) {
@@ -77,6 +100,11 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
         }
     }
 
+    /**
+     * Deletes the {@link FieldDefinition} with the given ID.
+     *
+     * @param id
+     */
     @Override
     public void delete(Long id) {
         LOG.trace("Deleting field definition {}", id);
@@ -86,6 +114,11 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
         }
     }
 
+    /**
+     * Deletes all {@link FieldDefinition} objects with the given {@link edu.uwm.capstone.model.FormDefinition} ID.
+     *
+     * @param id
+     */
     public void deleteFieldDefsByFromDefId(Long id) {
         LOG.trace("Deleting field definitions with form definition id {}", id);
         int result = this.jdbcTemplate.update(sql("deleteFieldDefsByFormDefId"), new MapSqlParameterSource("id", id));

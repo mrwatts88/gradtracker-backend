@@ -25,10 +25,10 @@ public class FormDefinitionService {
     }
 
     /**
-     * TODO finish javaDoc
+     * Given a {@link FormDefinition} formDef, returns a fully instantiated FormDefinition
      *
      * @param formDef
-     * @return
+     * @return FormDefinition
      */
     public FormDefinition create(FormDefinition formDef) {
         LOG.trace("Creating form definition {}", formDef);
@@ -37,10 +37,10 @@ public class FormDefinitionService {
     }
 
     /**
-     * TODO finish javaDoc
+     * Given a form definition ID, returns the corresponding {@link FormDefinition}.
      *
      * @param formDefId
-     * @return
+     * @return FormDefinition
      */
     public FormDefinition read(Long formDefId) {
         LOG.trace("Reading form definition {}", formDefId);
@@ -55,7 +55,7 @@ public class FormDefinitionService {
     }
 
     /**
-     * TODO finish javaDoc
+     * Updates the given {@link FormDefinition}, formDef.
      *
      * @param formDef
      * @return
@@ -82,7 +82,7 @@ public class FormDefinitionService {
     }
 
     /**
-     * TODO finish javaDoc
+     * Deletes the {@link FormDefinition} corresponding to the given formDefId.
      *
      * @param formDefId
      * @return
@@ -96,7 +96,7 @@ public class FormDefinitionService {
     }
 
     /**
-     * TODO finish javaDoc
+     * Reads all {@link FormDefinition} objects.
      *
      * @return
      */
@@ -104,6 +104,13 @@ public class FormDefinitionService {
         return formDefinitionDao.readAll();
     }
 
+    /**
+     * Checks if the given {@link FormDefinition} formDef is valid.
+     * The formDefId is asserted to be null, if checkNullId is true.
+     *
+     * @param formDef
+     * @param checkNullId
+     */
     private void checkValidFormDefinition(FormDefinition formDef, boolean checkNullId) {
         Assert.notNull(formDef, "Form definition cannot be null");
         if (checkNullId)

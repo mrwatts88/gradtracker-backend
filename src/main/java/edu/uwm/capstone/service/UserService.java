@@ -130,6 +130,13 @@ public class UserService {
         userDao.delete(userId);
     }
 
+    /**
+     * Check if a {@link User} object is valid.
+     * If checkNullId is true, asserts that the {@link User} ID must be null.
+     *
+     * @param user
+     * @param checkNullId
+     */
     private void checkValidUser(User user, boolean checkNullId) {
         Assert.notNull(user, "User must not be null");
         if (checkNullId)
