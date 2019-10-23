@@ -41,7 +41,7 @@ public class FormDefinitionDaoRowMapperComponentTest {
      * Verify that {@link FormDefinitionDaoRowMapper.FormDefColumnType#values()} is working correctly.
      */
     @Test
-    public void userColumnType() {
+    public void formDefinitionColumnType() {
         for (FormDefinitionDaoRowMapper.FormDefColumnType columnType : FormDefinitionDaoRowMapper.FormDefColumnType.values()) {
             assertNotNull(columnType.name());
             assertNotNull(columnType.getColumnName());

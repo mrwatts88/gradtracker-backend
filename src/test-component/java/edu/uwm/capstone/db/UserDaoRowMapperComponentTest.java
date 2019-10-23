@@ -90,7 +90,7 @@ public class UserDaoRowMapperComponentTest {
         when(resultSet.getLong(BaseRowMapper.BaseColumnType.ID.getColumnName())).thenReturn(user.getId());
         when(resultSet.getString(UserDaoRowMapper.UserColumnType.FIRST_NAME.getColumnName())).thenReturn(user.getFirstName());
         when(resultSet.getString(UserDaoRowMapper.UserColumnType.LAST_NAME.getColumnName())).thenReturn(user.getLastName());
-        when(resultSet.getString(UserDaoRowMapper.UserColumnType.PASSWORD.getColumnName())).thenReturn((String) user.getPassword());
+        when(resultSet.getString(UserDaoRowMapper.UserColumnType.PASSWORD.getColumnName())).thenReturn(user.getPassword());
         when(resultSet.getString(UserDaoRowMapper.UserColumnType.PANTHER_ID.getColumnName())).thenReturn(user.getPantherId());
         when(resultSet.getString(UserDaoRowMapper.UserColumnType.EMAIL.getColumnName())).thenReturn(user.getEmail());
         when(resultSet.getObject(BaseRowMapper.BaseColumnType.CREATED_DATE.getColumnName())).thenReturn(javaTimeFromDate(user.getCreatedDate()));

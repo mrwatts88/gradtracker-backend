@@ -3,8 +3,8 @@ package edu.uwm.capstone.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.Claim;
 import edu.uwm.capstone.Application;
+import edu.uwm.capstone.db.UserDao;
 import edu.uwm.capstone.model.User;
-import edu.uwm.capstone.service.UserService;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -42,21 +43,24 @@ public class AuthenticationComponentTest {
     private String basePath;
 
     @Autowired
-    private UserService userService;
+    private UserDao userDao;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private List<User> usersToCleanup = new ArrayList<>();
 
     @Before
     public void setUp() {
         assertNotNull(basePath);
-        assertNotNull(userService);
+        assertNotNull(userDao);
         RestAssured.port = port;
         RestAssured.basePath = basePath;
     }
 
     @After
     public void teardown() {
-        usersToCleanup.forEach(user -> userService.delete(user.getId()));
+        usersToCleanup.forEach(user -> userDao.delete(user.getId()));
         usersToCleanup.clear();
     }
 
@@ -79,7 +83,8 @@ public class AuthenticationComponentTest {
     public void existentUserCanGetToken() {
         User user = userWithTestValues();
         String credentials = "{ \"email\" : \"" + user.getEmail() + "\", \"password\" : \"" + user.getPassword() + "\" }";
-        userService.create(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userDao.create(user);
         usersToCleanup.add(user);
 
         // exercise authentication endpoint
@@ -137,7 +142,8 @@ public class AuthenticationComponentTest {
     public void existentUserJWTClaims() {
         User user = userWithTestValues();
         String credentials = "{ \"email\" : \"" + user.getEmail() + "\", \"password\" : \"" + user.getPassword() + "\" }";
-        userService.create(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userDao.create(user);
         usersToCleanup.add(user);
 
         // exercise authentication endpoint
