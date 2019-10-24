@@ -130,6 +130,7 @@ public class FormService {
             Assert.isNull(form.getId(), "Form id should be null");
         Assert.notNull(form.getFormDefId(), "Form's form definition id should not be null");
         Assert.notNull(form.getUserId(), "Form's user id should not be null");
+        // TODO check that user exists
         Assert.notNull(form.getFields(), "Form fields cannot be null");
         Assert.notEmpty(form.getFields(), "Form must have at least one field");
 
@@ -138,6 +139,7 @@ public class FormService {
             if (checkNullId)
                 Assert.isNull(fd.getId(), "Field id should be null");
             Assert.notNull(fd.getFieldDefId(), "Field's field definition id should not be null");
+            // TODO check that field definition exists
             Assert.notNull(fd.getData(), "Field data cannot be null");
         }
     }

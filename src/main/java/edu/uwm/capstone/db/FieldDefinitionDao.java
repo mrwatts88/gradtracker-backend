@@ -34,6 +34,7 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
         }
 
         LOG.trace("Creating field definition {}", fieldDef);
+
         fieldDef.setCreatedDate(LocalDateTime.now());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int result = this.jdbcTemplate.update(sql("createFieldDef"),
@@ -93,6 +94,7 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
         }
 
         LOG.trace("Updating field definition {}", fieldDef);
+
         fieldDef.setUpdatedDate(LocalDateTime.now());
         int result = this.jdbcTemplate.update(sql("updateFieldDef"), new MapSqlParameterSource(rowMapper.mapObject(fieldDef)));
         if (result != 1) {

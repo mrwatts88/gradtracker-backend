@@ -23,9 +23,12 @@ public class FieldDao extends BaseDao<Long, Field>{
             throw new DaoException("When creating a new field, the id should be null, but was set to " + field.getId());
         } else if (field.getFormId() == null) {
             throw new DaoException("When creating a new field, the form id should not be null");
+        } else if (field.getFieldDefId() == null) {
+            throw new DaoException("When creating a new field, the field definition is should not be null");
         }
 
         LOG.trace("Creating field {}", field);
+
         field.setCreatedDate(LocalDateTime.now());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int result = this.jdbcTemplate.update(sql("createField"),
@@ -69,6 +72,7 @@ public class FieldDao extends BaseDao<Long, Field>{
         }
 
         LOG.trace("Updating field {}", field);
+
         field.setUpdatedDate(LocalDateTime.now());
         int result = this.jdbcTemplate.update(sql("updateField"), new MapSqlParameterSource(rowMapper.mapObject(field)));
         if (result != 1) {
@@ -87,9 +91,6 @@ public class FieldDao extends BaseDao<Long, Field>{
 
     public void deleteFieldsByFromId(Long id) {
         LOG.trace("Deleting fields with form id {}", id);
-        int result = this.jdbcTemplate.update(sql("deleteFieldsByFormId"), new MapSqlParameterSource("form_id", id));
-        if (result < 1) {
-            throw new DaoException(String.format("Failed attempt to delete fields with form id %s affected %s rows", id, result));
-        }
+        this.jdbcTemplate.update(sql("deleteFieldsByFormId"), new MapSqlParameterSource("form_id", id));
     }
 }

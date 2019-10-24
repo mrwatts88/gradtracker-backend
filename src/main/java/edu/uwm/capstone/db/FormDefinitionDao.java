@@ -33,9 +33,9 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
     @Override
     public FormDefinition create(FormDefinition formDef) {
         if (formDef == null) {
-            throw new DaoException("formDef cannot be null");
+            throw new DaoException("form definition cannot be null");
         } else if (formDef.getId() != null) {
-            throw new DaoException("When creating a new form def the id should be null, but was set to " + formDef.getId());
+            throw new DaoException("When creating a new form definition the id should be null, but was set to " + formDef.getId());
         }
         LOG.trace("Creating form definition {}", formDef);
 
@@ -44,7 +44,7 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
         int result = this.jdbcTemplate.update(sql("createFormDef"),
                 new MapSqlParameterSource(rowMapper.mapObject(formDef)), keyHolder, new String[]{BaseRowMapper.BaseColumnType.ID.name()});
         if (result != 1) {
-            throw new DaoException(String.format("Failed attempt to create form def %s - affected %s rows", formDef.toString(), result));
+            throw new DaoException(String.format("Failed attempt to create form definition %s - affected %s rows", formDef.toString(), result));
         }
 
         Long id = keyHolder.getKey().longValue();

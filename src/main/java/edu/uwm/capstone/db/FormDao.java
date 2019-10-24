@@ -7,6 +7,7 @@ import edu.uwm.capstone.sql.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -28,8 +29,13 @@ public class FormDao extends BaseDao<Long, Form>{
         if (form == null) {
             throw new DaoException("form cannot be null");
         } else if (form.getId() != null) {
-            throw new DaoException("When creating a new form the id should be null, but was set to " + form.getId());
+            throw new DaoException("When creating a new form, the id should be null, but was set to " + form.getId());
+        } else if (form.getFormDefId() == null) {
+            throw new DaoException("When creating a new form, the form definition id should not be null");
+        } else if (form.getUserId() == null) {
+            throw new DaoException("When creating a new form, the user id should not be null");
         }
+
         LOG.trace("Creating form {}", form);
 
         form.setCreatedDate(LocalDateTime.now());
@@ -43,9 +49,15 @@ public class FormDao extends BaseDao<Long, Form>{
 
         Long id = keyHolder.getKey().longValue();
         form.setId(id);
-        for (Field fd : form) {
-            fd.setFormId(id);
-            fieldDao.create(fd);
+        try {                       // TODO there may be a better way to do this
+            for (Field fd : form) {
+                fd.setFormId(id);
+                fieldDao.create(fd);
+            }
+        } catch (DaoException | DataIntegrityViolationException e) {
+            // need to remove the form if creating any of the fields fails
+            delete(id);
+            throw e;
         }
         return form;
     }
@@ -91,6 +103,7 @@ public class FormDao extends BaseDao<Long, Form>{
         }
 
         LOG.trace("Updating form {}", form);
+
         form.setUpdatedDate(LocalDateTime.now());
         int result = this.jdbcTemplate.update(sql("updateForm"), new MapSqlParameterSource(rowMapper.mapObject(form)));
         if (result != 1) {
@@ -110,6 +123,10 @@ public class FormDao extends BaseDao<Long, Form>{
                 fieldDao.update(f);
             }
         }
+
+        // TODO may need to catch and handle when field update fails (see create method)
+        //  or we may want to prevent a field update failure...
+        //  this would normally be done in the service layer, but idk if we should do it here too
 
         fieldIdsAssociatedWithOldForm.forEach(fId -> fieldDao.delete(fId));
     }

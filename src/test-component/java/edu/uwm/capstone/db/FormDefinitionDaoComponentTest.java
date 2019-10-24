@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -74,7 +73,7 @@ public class FormDefinitionDaoComponentTest {
     @Test(expected = RuntimeException.class)
     public void createNonNullFormDefId() {
         FormDefinition create_form_def = TestDataUtility.formDefWithTestValues();
-        create_form_def.setId(new Random().longs(1L, Long.MAX_VALUE).findAny().getAsLong());
+        create_form_def.setId(TestDataUtility.randomLong());
         formDefinitionDao.create(create_form_def);
     }
 
@@ -109,16 +108,16 @@ public class FormDefinitionDaoComponentTest {
      */
     @Test
     public void readNonExistentFormDef() {
-        Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
+        Long id = TestDataUtility.randomLong();
         FormDefinition formDefinition = formDefinitionDao.read(id);
         assertNull(formDefinition);
     }
 
     /**
-     * Verify that all {@link FormDefinitionDao#readAll} is working correctly,
+     * Verify that {@link FormDefinitionDao#readAll} is working correctly,
      */
     @Test
-    public void readAllFormDef() {
+    public void readAllFormDefs() {
         List<FormDefinition> persistedFormDefs = new ArrayList<>();
         int randInt = TestDataUtility.randomInt(10, 30);
         for (int i = 0; i < randInt; i++) {
@@ -127,7 +126,6 @@ public class FormDefinitionDaoComponentTest {
             persistedFormDefs.add(formDefinition);
             formDefsToCleanup.add(formDefinition);
         }
-
         assertEquals(persistedFormDefs, formDefinitionDao.readAll());
     }
 
@@ -244,7 +242,7 @@ public class FormDefinitionDaoComponentTest {
     @Test(expected = RuntimeException.class)
     public void updateNonExistentFormDef() {
         FormDefinition updateFormDef = TestDataUtility.formDefWithTestValues();
-        updateFormDef.setId(new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong());
+        updateFormDef.setId(TestDataUtility.randomLong());
         formDefinitionDao.update(updateFormDef);
     }
 
@@ -294,7 +292,7 @@ public class FormDefinitionDaoComponentTest {
      */
     @Test(expected = RuntimeException.class)
     public void deleteNonExistentFormDef() {
-        Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
+        Long id = TestDataUtility.randomLong();
         formDefinitionDao.delete(id);
     }
 }

@@ -101,7 +101,6 @@ public class UserDaoComponentTest {
 
         User readUser = userDao.read(createUser.getId());
         assertNotNull(readUser);
-        assertEquals(createUser.getId(), readUser.getId());
         assertEquals(createUser, readUser);
     }
 
@@ -128,7 +127,6 @@ public class UserDaoComponentTest {
 
         User readUser = userDao.readByEmail(createUser.getEmail());
         assertNotNull(readUser);
-        assertEquals(createUser.getId(), readUser.getId());
         assertEquals(createUser, readUser);
     }
 
@@ -156,7 +154,6 @@ public class UserDaoComponentTest {
             persistedUsers.add(user);
             usersToCleanup.add(user);
         }
-
         assertEquals(persistedUsers, userDao.readAll());
     }
 

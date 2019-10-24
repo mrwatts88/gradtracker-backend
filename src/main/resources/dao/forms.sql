@@ -16,7 +16,7 @@ INSERT INTO forms (
 --STATEMENT readForm
 SELECT * FROM forms WHERE id = :id;
 
---STATEMENT readAllForm
+--STATEMENT readAllForms
 SELECT * FROM forms;
 
 --STATEMENT readAllFormsByUserId

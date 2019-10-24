@@ -15,10 +15,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = UnitTestConfig.class)
@@ -45,7 +44,7 @@ public class FormDaoComponentTest {
         assertNotNull(formDao);
         assertNotNull(formDao.sql("createForm"));
         assertNotNull(formDao.sql("readForm"));
-        assertNotNull(formDao.sql("readAllForm"));
+        assertNotNull(formDao.sql("readAllForms"));
         assertNotNull(formDao.sql("readAllFormsByUserId"));
         assertNotNull(formDao.sql("deleteForm"));
         assertNotNull(formDao.sql("updateForm"));
@@ -86,13 +85,48 @@ public class FormDaoComponentTest {
      * Verify that {@link FormDao#create} is working correctly when a {@link FormDefinition} doesn't exist for that {@link Form}.
      */
     @Test(expected = RuntimeException.class)
-    public void createFormWithoutPersistedDefinition() {
-        Form form = new Form();
-        form.setUserId(TestDataUtility.randomLong());
-        form.setApproved(TestDataUtility.randomBoolean());
-        form.setFormDefId(TestDataUtility.randomLong());
-        form.setFields(Collections.emptyList());
-        formDao.create(form);
+    public void createFormNonExistentFormDefinition() {
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
+
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+        createForm.setFormDefId(TestDataUtility.randomLong());
+
+        formDao.create(createForm);
+    }
+
+    /**
+     * Verify that {@link FormDao#create} is working correctly when a {@link FormDefinition} doesn't exist for that {@link Form}.
+     */
+    @Test(expected = RuntimeException.class)
+    public void createFormNonExistentUser() {
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
+
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, TestDataUtility.randomLong());
+
+        formDao.create(createForm);
+    }
+
+    /**
+     * Verify that {@link FormDao#create} is working correctly when a request for a {@link Form}
+     * containing a field with a null field definition id is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void createNonExistentFieldDef() {
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
+
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+        createForm.getFields().get(0).setFieldDefId(TestDataUtility.randomLong());
+
+        formDao.create(createForm);
     }
 
     /**
@@ -120,6 +154,55 @@ public class FormDaoComponentTest {
         formDao.create(createForm);
     }
 
+    /**
+     * Verify that {@link FormDao#create} is working correctly when a request for a {@link Form} with a null form definition id is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void createNullFormDefId() {
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
+
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+        createForm.setFormDefId(null);
+
+        formDao.create(createForm);
+    }
+
+    /**
+     * Verify that {@link FormDao#create} is working correctly when a request for a {@link Form} with a null user id is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void createNullUserId() {
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
+
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, null);
+
+        formDao.create(createForm);
+    }
+
+    /**
+     * Verify that {@link FormDao#create} is working correctly when a request for a {@link Form}
+     * containing a field with a null field definition id is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void createNullFieldDefId() {
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
+
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+        createForm.getFields().get(0).setFieldDefId(null);
+
+        formDao.create(createForm);
+    }
+
+    // TODO finish this test
 //    /**
 //     * Verify that {@link FormDao#create} is working correctly when a request for a {@link Form} that contains a value
 //     * which exceeds the database configuration is made.
@@ -137,47 +220,87 @@ public class FormDaoComponentTest {
 //        formDao.create(createForm);
 //        formsToCleanUp.add(createForm);
 //    }
-//
-//    /**
-//     * Verify that {@link FormDao#read} is working correctly.
-//     */
-//    @Test
-//    public void read() {
-//        Form create_form = TestDataUtility.formWithTestValues();
-//        formDao.create(create_form);
-//        assertNotNull(create_form.getId());
-//        Form read_form = formDao.read(create_form.getId());
-//        assertNotNull(read_form);
-//        assertEquals(create_form.getId(), read_form.getId());
-//        assertEquals(create_form, read_form);
-//    }
-//
-//    /**
-//     * Verify that {@link FormDao#read} is working correctly when a request for a non-existent {@link Form #id} is made.
-//     */
-//    @Test
-//    public void readNonExistentForm() {
-//        Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
-//        Form form = formDao.read(id);
-//        assertNull(form);
-//    }
-//
-//    /**
-//     * Verify that all {@link FormDao#readAll} is working correctly,
-//     */
-//    @Test
-//    public void readAllForm() {
-//        List<Form> persistedForms = new ArrayList<>();
-//        int randInt = TestDataUtility.randomInt(10, 30);
-//        for (int i = 0; i < randInt; i++) {
-//            Form form = TestDataUtility.formWithTestValues();
-//            formDao.create(form);
-//            persistedForms.add(form);
-//        }
-//
-//        assertEquals(persistedForms, formDao.readAll());
-//    }
-//
+
+    /**
+     * Verify that {@link FormDao#read} is working correctly.
+     */
+    @Test
+    public void read() {
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
+
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+        formsToCleanUp.add(createForm);
+
+        formDao.create(createForm);
+        assertNotNull(createForm.getId());
+
+        Form readForm = formDao.read(createForm.getId());
+        assertNotNull(readForm);
+
+        assertEquals(createForm, readForm);
+    }
+
+    /**
+     * Verify that {@link FormDao#read} is working correctly when a request for a non-existent {@link Form #id} is made.
+     */
+    @Test
+    public void readNonExistentForm() {
+        Long id = TestDataUtility.randomLong();
+        Form form = formDao.read(id);
+        assertNull(form);
+    }
+
+    /**
+     * Verify that {@link FormDao#readAll} is working correctly,
+     */
+    @Test
+    public void readAllForms() {
+        List<Form> persistedForms = new ArrayList<>();
+        int randInt = TestDataUtility.randomInt(10, 30);
+        for (int i = 0; i < randInt; i++) {
+            FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+            formDefsToCleanup.add(createFormDef);
+
+            User user = userDao.create(TestDataUtility.userWithTestValues());
+            usersToCleanup.add(user);
+
+            Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+            formsToCleanUp.add(createForm);
+
+            formDao.create(createForm);
+            persistedForms.add(createForm);
+        }
+        assertEquals(persistedForms, formDao.readAll());
+    }
+
+    /**
+     * Verify that {@link FormDao#readAllByUserId} is working correctly,
+     */
+    @Test
+    public void readAllFormsByUserId() {
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+
+        List<Form> persistedForms = new ArrayList<>();
+        int randInt = TestDataUtility.randomInt(10, 30);
+        for (int i = 0; i < randInt; i++) {
+            FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+            formDefsToCleanup.add(createFormDef);
+
+            Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+            formsToCleanUp.add(createForm);
+
+            formDao.create(createForm);
+            persistedForms.add(createForm);
+        }
+        assertEquals(persistedForms, formDao.readAllByUserId(user.getId()));
+    }
+
+    // TODO finish remaining tests
 //    /**
 //     * Verify that {@link FormDao#update} is working correctly.
 //     */
