@@ -17,7 +17,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -47,12 +46,12 @@ public class FormDefinitionServiceComponentTest {
     @Test
     public void create() {
         FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
-        Long idBefore = createFormDef.getId();
+        formDefinitionToCleanup.add(createFormDef);
+
         formDefinitionService.create(createFormDef);
         assertNotNull(createFormDef.getId());
         assertNotNull(createFormDef.getCreatedDate());
-        assertNotEquals(createFormDef.getId(), idBefore);
-        formDefinitionToCleanup.add(createFormDef);
+
         FormDefinition verifyFormDef = formDefinitionService.read(createFormDef.getId());
         assertEquals(createFormDef, verifyFormDef);
     }
@@ -71,9 +70,8 @@ public class FormDefinitionServiceComponentTest {
     @Test(expected = RuntimeException.class)
     public void createNonNullFormDefId() {
         FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
-        createFormDef.setId(new Random().longs(1L, Long.MAX_VALUE).findAny().getAsLong());
+        createFormDef.setId(TestDataUtility.randomLong());
         formDefinitionService.create(createFormDef);
-        assertNull(formDefinitionService.readAll());
     }
 
     /**
@@ -84,8 +82,6 @@ public class FormDefinitionServiceComponentTest {
         FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
         createFormDef.setFieldDefs(null);
         formDefinitionService.create(createFormDef);
-        formDefinitionToCleanup.add(createFormDef);
-        assertNull(formDefinitionService.readAll());
     }
 
     /**
@@ -94,12 +90,9 @@ public class FormDefinitionServiceComponentTest {
      */
     @Test(expected = RuntimeException.class)
     public void createFormDefNameColumnTooLong() {
-        // generate a test user value with a column that will exceed the database configuration
         FormDefinition sampleFormDef = TestDataUtility.formDefWithTestValues();
         sampleFormDef.setName(RandomStringUtils.randomAlphabetic(2000));
         formDefinitionService.create(sampleFormDef);
-        formDefinitionToCleanup.add(sampleFormDef);
-        assertNull(formDefinitionService.readAll());
     }
 
     /**
@@ -108,13 +101,13 @@ public class FormDefinitionServiceComponentTest {
     @Test
     public void read() {
         FormDefinition sampleFormDef = TestDataUtility.formDefWithTestValues();
+        formDefinitionToCleanup.add(sampleFormDef);
+
         formDefinitionService.create(sampleFormDef);
         assertNotNull(sampleFormDef.getId());
-        formDefinitionToCleanup.add(sampleFormDef);
 
         FormDefinition readFormDef = formDefinitionService.read(sampleFormDef.getId());
         assertNotNull(readFormDef);
-        assertEquals(sampleFormDef.getId(), readFormDef.getId());
         assertEquals(sampleFormDef, readFormDef);
     }
 
@@ -124,10 +117,8 @@ public class FormDefinitionServiceComponentTest {
     @Test(expected = RuntimeException.class)
     public void readNonExistentFormDef() {
         // create a random user id that will not be in our local database
-        Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
-        FormDefinition SampleFormDef = formDefinitionService.read(id);
-        assertNull(SampleFormDef);
-        assertNull(formDefinitionService.readAll());
+        Long id = TestDataUtility.randomLong();
+        formDefinitionService.read(id);
     }
 
     /**
@@ -136,14 +127,13 @@ public class FormDefinitionServiceComponentTest {
     @Test
     public void readAll() {
         List<FormDefinition> persistedFormDefs = new ArrayList<>();
-        int randInt = TestDataUtility.randomInt(0, 1);
+        int randInt = TestDataUtility.randomInt(10, 30);
         for (int i = 0; i < randInt; i++) {
             FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
             formDefinitionService.create(formDefinition);
             formDefinitionToCleanup.add(formDefinition);
             persistedFormDefs.add(formDefinition);
         }
-
         assertEquals(persistedFormDefs, formDefinitionService.readAll());
     }
 
@@ -153,9 +143,10 @@ public class FormDefinitionServiceComponentTest {
     @Test
     public void update() {
         FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
+        formDefinitionToCleanup.add(createFormDef);
+
         formDefinitionService.create(createFormDef);
         assertNotNull(createFormDef.getId());
-        formDefinitionToCleanup.add(createFormDef);
 
         FormDefinition verifyCreateFormDef = formDefinitionService.read(createFormDef.getId());
         assertNotNull(verifyCreateFormDef);
@@ -177,7 +168,6 @@ public class FormDefinitionServiceComponentTest {
     @Test(expected = RuntimeException.class)
     public void updateNullFormDef() {
         formDefinitionService.update(null);
-        assertNull(formDefinitionService.readAll());
     }
 
     /**
@@ -185,11 +175,9 @@ public class FormDefinitionServiceComponentTest {
      */
     @Test(expected = RuntimeException.class)
     public void updateNonExistentFormDef() {
-        // create a random user id that will not be in our local database
         FormDefinition updateFormDef = TestDataUtility.formDefWithTestValues();
-        updateFormDef.setId(new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong());
+        updateFormDef.setId(TestDataUtility.randomLong());
         formDefinitionService.update(updateFormDef);
-        assertNull(formDefinitionService.readAll());
     }
 
     /**
@@ -198,11 +186,11 @@ public class FormDefinitionServiceComponentTest {
      */
     @Test(expected = RuntimeException.class)
     public void updateFormDefColumnTooLong() {
-        // generate a test user value with a column that will exceed the database configuration
         FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
+        formDefinitionToCleanup.add(createFormDef);
+
         formDefinitionService.create(createFormDef);
         assertNotNull(createFormDef.getId());
-        formDefinitionToCleanup.add(createFormDef);
 
         FormDefinition verifyFormDef = formDefinitionService.read(createFormDef.getId());
         assertNotNull(verifyFormDef);
@@ -221,13 +209,14 @@ public class FormDefinitionServiceComponentTest {
     @Test(expected = RuntimeException.class)
     public void updateFormDefUnknownFieldDefId() {
         FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
+        formDefinitionToCleanup.add(createFormDef);
+
         formDefinitionService.create(createFormDef);
         assertNotNull(createFormDef.getId());
 
         FormDefinition verifyCreateFormDef = formDefinitionService.read(createFormDef.getId());
         assertNotNull(verifyCreateFormDef);
         assertEquals(createFormDef, verifyCreateFormDef);
-        formDefinitionToCleanup.add(createFormDef);
 
         FormDefinition updateFormDef = new FormDefinition();
         updateFormDef.setName(TestDataUtility.randomAlphabetic(10));
@@ -235,6 +224,7 @@ public class FormDefinitionServiceComponentTest {
         FieldDefinition fd = TestDataUtility.fieldDefWithTestValues();
         fd.setId(TestDataUtility.randomLong());
         fieldDefinitions.add(fd);
+
         updateFormDef.setFieldDefs(fieldDefinitions);
         formDefinitionService.update(updateFormDef);
     }
@@ -246,13 +236,14 @@ public class FormDefinitionServiceComponentTest {
     @Test(expected = RuntimeException.class)
     public void updateFieldDefEmptyFieldDefs() {
         FormDefinition createFormDef = TestDataUtility.formDefWithTestValues();
+        formDefinitionToCleanup.add(createFormDef);
+
         formDefinitionService.create(createFormDef);
         assertNotNull(createFormDef.getId());
 
         FormDefinition verifyCreateFormDef = formDefinitionService.read(createFormDef.getId());
         assertNotNull(verifyCreateFormDef);
         assertEquals(createFormDef, verifyCreateFormDef);
-        formDefinitionToCleanup.add(createFormDef);
 
         FormDefinition updateFormDef = TestDataUtility.formDefWithTestValues();
         updateFormDef.setId(verifyCreateFormDef.getId());
@@ -271,7 +262,6 @@ public class FormDefinitionServiceComponentTest {
 
         FormDefinition verifyFormDef = formDefinitionService.read(createFormDef.getId());
         assertNotNull(verifyFormDef);
-        assertEquals(createFormDef.getId(), verifyFormDef.getId());
         assertEquals(createFormDef, verifyFormDef);
 
         formDefinitionService.delete(createFormDef.getId());
@@ -282,7 +272,7 @@ public class FormDefinitionServiceComponentTest {
      */
     @Test(expected = RuntimeException.class)
     public void deleteNonExistentFormDef() {
-        Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
+        Long id = TestDataUtility.randomLong();
         formDefinitionService.delete(id);
         assertNull(formDefinitionService.readAll());
     }

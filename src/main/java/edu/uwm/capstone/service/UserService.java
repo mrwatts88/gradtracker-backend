@@ -85,7 +85,7 @@ public class UserService {
     }
 
     /**
-     * Retrieves all the {@link User} objects
+     * Retrieves all the {@link User} objects.
      *
      * @return List of {@link User}
      */

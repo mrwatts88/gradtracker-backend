@@ -39,7 +39,8 @@ CREATE TABLE forms(
     created_date BIGINT(25)   NOT NULL,
     updated_date BIGINT(25) DEFAULT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (form_def_id) REFERENCES form_defs(id)
+    FOREIGN KEY (form_def_id) REFERENCES form_defs(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE fields(

@@ -71,10 +71,10 @@ public class TestDataUtility {
      *
      * @return {@link Form}
      */
-    public static Form formWithTestValues(FormDefinition formDefinition) {
+    public static Form formWithTestValues(FormDefinition formDefinition, Long userId) {
         Form form = new Form();
         form.setApproved(randomBoolean());
-        form.setUserId(randomLong());
+        form.setUserId(userId);
         form.setFormDefId(formDefinition.getId());
         ArrayList<Field> fields = new ArrayList<>();
         for (FieldDefinition fd : formDefinition.getFieldDefs()) {

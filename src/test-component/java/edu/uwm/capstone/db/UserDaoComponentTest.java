@@ -73,7 +73,7 @@ public class UserDaoComponentTest {
     @Test(expected = RuntimeException.class)
     public void createNonNullUserId() {
         User createUser = TestDataUtility.userWithTestValues();
-        createUser.setId(new Random().longs(1L, Long.MAX_VALUE).findAny().getAsLong());
+        createUser.setId(TestDataUtility.randomLong());
         userDao.create(createUser);
     }
 
@@ -111,7 +111,7 @@ public class UserDaoComponentTest {
     @Test
     public void readNonExistentUser() {
         // create a random user id that will not be in our local database
-        Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
+        Long id = TestDataUtility.randomLong();
         User user = userDao.read(id);
         assertNull(user);
     }
@@ -194,7 +194,6 @@ public class UserDaoComponentTest {
         assertNotEquals(verifyCreateUser.getLastName(), verifyUpdateUser.getLastName());
         assertNotEquals(verifyCreateUser.getPantherId(), verifyUpdateUser.getPantherId());
         assertNotEquals(verifyCreateUser.getEmail(), verifyUpdateUser.getEmail());
-
     }
 
     /**
@@ -212,7 +211,7 @@ public class UserDaoComponentTest {
     public void updateNonExistentUser() {
         // create a random user id that will not be in our local database
         User updateUser = TestDataUtility.userWithTestValues();
-        updateUser.setId(new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong());
+        updateUser.setId(TestDataUtility.randomLong());
         userDao.update(updateUser);
     }
 
@@ -224,19 +223,15 @@ public class UserDaoComponentTest {
     public void updateUserColumnTooLong() {
         // generate a test user value with a column that will exceed the database configuration
         User createUser = TestDataUtility.userWithTestValues();
+        usersToCleanup.add(createUser);
+
         userDao.create(createUser);
         assertNotNull(createUser.getId());
 
-        User verifyCreateUser = userDao.read(createUser.getId());
-        assertNotNull(verifyCreateUser);
-        assertEquals(createUser.getId(), verifyCreateUser.getId());
-        assertEquals(createUser, verifyCreateUser);
-        usersToCleanup.add(createUser);
         User updateUser = TestDataUtility.userWithTestValues();
         updateUser.setId(createUser.getId());
         updateUser.setFirstName(RandomStringUtils.randomAlphabetic(2000));
         userDao.update(updateUser);
-        usersToCleanup.add(updateUser);
     }
 
     /**
@@ -247,11 +242,6 @@ public class UserDaoComponentTest {
         User createUser = TestDataUtility.userWithTestValues();
         userDao.create(createUser);
         assertNotNull(createUser.getId());
-
-        User verifyCreateUser = userDao.read(createUser.getId());
-        assertNotNull(verifyCreateUser);
-        assertEquals(createUser.getId(), verifyCreateUser.getId());
-        assertEquals(createUser, verifyCreateUser);
 
         userDao.delete(createUser.getId());
 
@@ -264,8 +254,7 @@ public class UserDaoComponentTest {
      */
     @Test(expected = RuntimeException.class)
     public void deleteNonExistentUser() {
-        Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
+        Long id = TestDataUtility.randomLong();
         userDao.delete(id);
     }
-
 }

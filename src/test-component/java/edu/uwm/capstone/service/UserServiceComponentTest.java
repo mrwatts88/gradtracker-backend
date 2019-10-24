@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import static edu.uwm.capstone.security.SecurityConstants.DEFAULT_USER_EMAIL;
 import static org.junit.Assert.*;
@@ -47,12 +46,14 @@ public class UserServiceComponentTest {
     @Test
     public void create() {
         User createUser = TestDataUtility.userWithTestValues();
+        usersToCleanup.add(createUser);
+
         String passwordBefore = createUser.getPassword();
         userService.create(createUser);
+
         assertNotNull(createUser.getId());
         assertNotNull(createUser.getCreatedDate());
         assertNotEquals(createUser.getPassword(), passwordBefore);
-        usersToCleanup.add(createUser);
     }
 
     /**
@@ -69,7 +70,7 @@ public class UserServiceComponentTest {
     @Test(expected = RuntimeException.class)
     public void createNonNullUserId() {
         User createUser = TestDataUtility.userWithTestValues();
-        createUser.setId(new Random().longs(1L, Long.MAX_VALUE).findAny().getAsLong());
+        createUser.setId(TestDataUtility.randomLong());
         userService.create(createUser);
     }
 
@@ -99,7 +100,6 @@ public class UserServiceComponentTest {
      */
     @Test(expected = RuntimeException.class)
     public void createUserColumnTooLong() {
-        // generate a test user value with a column that will exceed the database configuration
         User createUser = TestDataUtility.userWithTestValues();
         createUser.setFirstName(RandomStringUtils.randomAlphabetic(2000));
         userService.create(createUser);
@@ -111,13 +111,13 @@ public class UserServiceComponentTest {
     @Test
     public void read() {
         User createUser = TestDataUtility.userWithTestValues();
+        usersToCleanup.add(createUser);
+
         userService.create(createUser);
         assertNotNull(createUser.getId());
-        usersToCleanup.add(createUser);
 
         User readUser = userService.read(createUser.getId());
         assertNotNull(readUser);
-        assertEquals(createUser.getId(), readUser.getId());
         assertEquals(createUser, readUser);
     }
 
@@ -127,13 +127,13 @@ public class UserServiceComponentTest {
     @Test
     public void readByEmail() {
         User createUser = TestDataUtility.userWithTestValues();
+        usersToCleanup.add(createUser);
+
         userService.create(createUser);
         assertNotNull(createUser.getId());
-        usersToCleanup.add(createUser);
 
         User readUser = userService.readByEmail(createUser.getEmail());
         assertNotNull(readUser);
-        assertEquals(createUser.getId(), readUser.getId());
         assertEquals(createUser, readUser);
     }
 
@@ -148,7 +148,6 @@ public class UserServiceComponentTest {
             usersToCleanup.add(user);
             persistedUsers.add(user);
         }
-
         assertEquals(persistedUsers, userService.readAll());
     }
 
@@ -158,9 +157,8 @@ public class UserServiceComponentTest {
     @Test(expected = RuntimeException.class)
     public void readNonExistentUser() {
         // create a random user id that will not be in our local database
-        Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
-        User user = userService.read(id);
-        assertNull(user);
+        Long id = TestDataUtility.randomLong();
+        userService.read(id);
     }
 
     /**
@@ -169,9 +167,10 @@ public class UserServiceComponentTest {
     @Test
     public void update() {
         User createUser = TestDataUtility.userWithTestValues();
+        usersToCleanup.add(createUser);
+
         userService.create(createUser);
         assertNotNull(createUser.getId());
-        usersToCleanup.add(createUser);
 
         User verifyCreateUser = userService.read(createUser.getId());
         assertNotNull(verifyCreateUser);
@@ -183,6 +182,7 @@ public class UserServiceComponentTest {
 
         User verifyUpdateUser = userService.read(updateUser.getId());
         assertNotNull(verifyUpdateUser);
+
         assertEquals(createUser.getId(), verifyUpdateUser.getId());
         assertEquals(updateUser.getFirstName(), verifyUpdateUser.getFirstName());
         assertEquals(updateUser.getLastName(), verifyUpdateUser.getLastName());
@@ -210,7 +210,7 @@ public class UserServiceComponentTest {
     public void updateNonExistentUser() {
         // create a random user id that will not be in our local database
         User updateUser = TestDataUtility.userWithTestValues();
-        updateUser.setId(new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong());
+        updateUser.setId(TestDataUtility.randomLong());
         userService.update(updateUser);
     }
 
@@ -219,7 +219,6 @@ public class UserServiceComponentTest {
      */
     @Test(expected = RuntimeException.class)
     public void updateNullUserEmail() {
-        // create a random user id that will not be in our local database
         User updateUser = TestDataUtility.userWithTestValues();
         updateUser.setEmail(null);
         userService.update(updateUser);
@@ -230,7 +229,6 @@ public class UserServiceComponentTest {
      */
     @Test(expected = RuntimeException.class)
     public void updateNullUserPassword() {
-        // create a random user id that will not be in our local database
         User updateUser = TestDataUtility.userWithTestValues();
         updateUser.setPassword(null);
         userService.update(updateUser);
@@ -242,16 +240,11 @@ public class UserServiceComponentTest {
      */
     @Test(expected = RuntimeException.class)
     public void updateUserColumnTooLong() {
-        // generate a test user value with a column that will exceed the database configuration
         User createUser = TestDataUtility.userWithTestValues();
-        userService.create(createUser);
-        assertNotNull(createUser.getId());
         usersToCleanup.add(createUser);
 
-        User verifyCreateUser = userService.read(createUser.getId());
-        assertNotNull(verifyCreateUser);
-        assertEquals(createUser.getId(), verifyCreateUser.getId());
-        assertEquals(createUser, verifyCreateUser);
+        userService.create(createUser);
+        assertNotNull(createUser.getId());
 
         User updateUser = TestDataUtility.userWithTestValues();
         updateUser.setId(createUser.getId());
@@ -268,11 +261,6 @@ public class UserServiceComponentTest {
         userService.create(createUser);
         assertNotNull(createUser.getId());
 
-        User verifyCreateUser = userService.read(createUser.getId());
-        assertNotNull(verifyCreateUser);
-        assertEquals(createUser.getId(), verifyCreateUser.getId());
-        assertEquals(createUser, verifyCreateUser);
-
         userService.delete(createUser.getId());
     }
 
@@ -281,7 +269,7 @@ public class UserServiceComponentTest {
      */
     @Test(expected = RuntimeException.class)
     public void deleteNonExistentUser() {
-        Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
+        Long id = TestDataUtility.randomLong();
         userService.delete(id);
     }
 }

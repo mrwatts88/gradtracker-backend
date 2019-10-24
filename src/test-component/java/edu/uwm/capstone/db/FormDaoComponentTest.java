@@ -3,6 +3,7 @@ package edu.uwm.capstone.db;
 import edu.uwm.capstone.UnitTestConfig;
 import edu.uwm.capstone.model.Form;
 import edu.uwm.capstone.model.FormDefinition;
+import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.util.TestDataUtility;
 import org.junit.After;
 import org.junit.Before;
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -33,9 +33,12 @@ public class FormDaoComponentTest {
     @Autowired
     FormDefinitionDao formDefinitionDao;
 
+    @Autowired
+    private UserDao userDao;
+
     private List<Form> formsToCleanUp = new ArrayList<>();
     private List<FormDefinition> formDefsToCleanup = new ArrayList<>();
-
+    private List<User> usersToCleanup = new ArrayList<>();
 
     @Before
     public void setUp() {
@@ -55,6 +58,9 @@ public class FormDaoComponentTest {
 
         formDefsToCleanup.forEach(formDef -> formDefinitionDao.delete(formDef.getId()));
         formDefsToCleanup.clear();
+
+        usersToCleanup.forEach(user -> userDao.delete(user.getId()));
+        usersToCleanup.clear();
     }
 
     /**
@@ -62,18 +68,18 @@ public class FormDaoComponentTest {
      */
     @Test
     public void create() {
-        // first persist a form def
+        // need a form definition in the db connected to the form
         FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
-        assertNotNull(createFormDef);
         formDefsToCleanup.add(createFormDef);
 
-        Form createForm = TestDataUtility.formWithTestValues(createFormDef);
+        // need a user in the db connected to the form
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+        formsToCleanUp.add(createForm);
 
         formDao.create(createForm);
-        Form verifyCreateForm = formDao.read(createForm.getId());
-        assertNotNull(verifyCreateForm);
-        assertEquals(createForm, verifyCreateForm);
-        formsToCleanUp.add(createForm);
     }
 
     /**
@@ -102,12 +108,13 @@ public class FormDaoComponentTest {
      */
     @Test(expected = RuntimeException.class)
     public void createNonNullFormId() {
-        // first persist a form def
         FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
-        assertNotNull(createFormDef);
         formDefsToCleanup.add(createFormDef);
 
-        Form createForm = TestDataUtility.formWithTestValues(createFormDef);
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
         createForm.setId(TestDataUtility.randomLong());
 
         formDao.create(createForm);

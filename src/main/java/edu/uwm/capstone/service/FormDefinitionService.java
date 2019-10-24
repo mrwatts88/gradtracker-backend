@@ -16,7 +16,9 @@ import java.util.stream.Collectors;
 
 @Service("formDefinitionService")
 public class FormDefinitionService {
+
     private static final Logger LOG = LoggerFactory.getLogger(FormDefinitionService.class);
+
     private final FormDefinitionDao formDefinitionDao;
 
     @Autowired
@@ -55,7 +57,16 @@ public class FormDefinitionService {
     }
 
     /**
-     * Updates the given {@link FormDefinition}, formDef.
+     * Reads all {@link FormDefinition} objects.
+     *
+     * @return
+     */
+    public List<FormDefinition> readAll() {
+        return formDefinitionDao.readAll();
+    }
+
+    /**
+     * Updates the given {@link FormDefinition}.
      *
      * @param formDef
      * @return
@@ -95,18 +106,10 @@ public class FormDefinitionService {
         formDefinitionDao.delete(formDefId);
     }
 
-    /**
-     * Reads all {@link FormDefinition} objects.
-     *
-     * @return
-     */
-    public List<FormDefinition> readAll() {
-        return formDefinitionDao.readAll();
-    }
 
     /**
      * Checks if the given {@link FormDefinition} formDef is valid.
-     * The formDefId is asserted to be null, if checkNullId is true.
+     * The formDef's Id and all fieldDef Ids is asserted to be null, if checkNullId is true.
      *
      * @param formDef
      * @param checkNullId
