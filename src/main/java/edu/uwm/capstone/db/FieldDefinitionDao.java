@@ -81,6 +81,21 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
     }
 
     /**
+     * Reads all {@link FieldDefinition} objects' IDs with the given {@link edu.uwm.capstone.model.FormDefinition} ID.
+     *
+     * @param id
+     * @return
+     */
+    public List<Long> readFieldDefIdsByFormDefId(Long id) {
+        LOG.trace("Reading field definition ids with form_def_id {}", id);
+        try {
+            return this.jdbcTemplate.queryForList(sql("readFieldDefIdsByFormDefId"), new MapSqlParameterSource("id", id), Long.class);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    /**
      * Updates the given {@link FieldDefinition} object.
      *
      * @param fieldDef

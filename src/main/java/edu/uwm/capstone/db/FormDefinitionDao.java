@@ -16,7 +16,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
     private static final Logger LOG = LoggerFactory.getLogger(FormDefinitionDao.class);
@@ -109,8 +108,7 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
             throw new DaoException(String.format("Failed attempt to update form definition %s - affected %s rows", formDef.toString(), result));
         }
 
-        // TODO we may want to create an sql query to select all field def ids
-        HashSet<Long> fieldDefIdsAssociatedWithOldFormDef = fieldDefinitionDao.readFieldDefsByFormDefId(formDef.getId()).stream().map(FieldDefinition::getId).collect(Collectors.toCollection(HashSet::new));
+        HashSet<Long> fieldDefIdsAssociatedWithOldFormDef = new HashSet<>(fieldDefinitionDao.readFieldDefIdsByFormDefId(formDef.getId()));
 
         Long fieldDefId;
         for (FieldDefinition fd : formDef) {

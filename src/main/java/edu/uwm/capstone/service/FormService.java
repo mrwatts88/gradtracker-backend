@@ -1,8 +1,12 @@
 package edu.uwm.capstone.service;
 
 import edu.uwm.capstone.db.FormDao;
+import edu.uwm.capstone.db.FormDefinitionDao;
+import edu.uwm.capstone.db.UserDao;
 import edu.uwm.capstone.model.Field;
+import edu.uwm.capstone.model.FieldDefinition;
 import edu.uwm.capstone.model.Form;
+import edu.uwm.capstone.model.FormDefinition;
 import edu.uwm.capstone.service.exception.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +25,14 @@ public class FormService {
     private static final Logger LOG = LoggerFactory.getLogger(FormService.class);
 
     private final FormDao formDao;
+    private final FormDefinitionDao formDefinitionDao;
+    private final UserDao userDao;
 
     @Autowired
-    public FormService(FormDao formDao) {
+    public FormService(FormDao formDao, UserDao userDao, FormDefinitionDao formDefinitionDao) {
         this.formDao = formDao;
+        this.formDefinitionDao = formDefinitionDao;
+        this.userDao = userDao;
     }
 
     /**
@@ -72,7 +80,8 @@ public class FormService {
      * @return
      */
     public List<Form> readAllByUserId(Long userId) {
-        // TODO finish this method
+        // TODO finish this method.
+        //  First check if user exists
         return Collections.emptyList();
     }
 
@@ -92,10 +101,10 @@ public class FormService {
             throw new EntityNotFoundException("Could not update form " + form.getId() + " - record not found.");
         }
 
-        HashSet<Long> fieldIdsAssociatedWithOldFormDef = formInDb.getFields().stream().map(Field::getId).collect(Collectors.toCollection(HashSet::new));
+        HashSet<Long> fieldIdsAssociatedWithOldForm = formInDb.getFields().stream().map(Field::getId).collect(Collectors.toCollection(HashSet::new));
         for (Field fd : form) {
             if (fd.getId() != null) {
-                Assert.isTrue(fieldIdsAssociatedWithOldFormDef.contains(fd.getId()), "Could update form " + form.getId() +
+                Assert.isTrue(fieldIdsAssociatedWithOldForm.contains(fd.getId()), "Could not update form " + form.getId() +
                         " - found a field with id = " + fd.getId() + " which is not associated with this form");
             }
         }
@@ -129,17 +138,26 @@ public class FormService {
         if (checkNullId)
             Assert.isNull(form.getId(), "Form id should be null");
         Assert.notNull(form.getFormDefId(), "Form's form definition id should not be null");
+
+        FormDefinition formDefinitionInDb = formDefinitionDao.read(form.getFormDefId());
+        Assert.notNull(formDefinitionInDb, "Form's form definition should exist");
+
         Assert.notNull(form.getUserId(), "Form's user id should not be null");
-        // TODO check that user exists
+        Assert.notNull(userDao.read(form.getUserId()), "Form's user should exist");
+
         Assert.notNull(form.getFields(), "Form fields cannot be null");
         Assert.notEmpty(form.getFields(), "Form must have at least one field");
 
+        HashSet<Long> fieldDefIdsInDb = formDefinitionInDb.getFieldDefs().stream().map(FieldDefinition::getId).collect(Collectors.toCollection(HashSet::new));
         for (Field fd : form) {
             Assert.notNull(fd, "Field should not be null");
+
             if (checkNullId)
                 Assert.isNull(fd.getId(), "Field id should be null");
+
             Assert.notNull(fd.getFieldDefId(), "Field's field definition id should not be null");
-            // TODO check that field definition exists
+            Assert.isTrue(fieldDefIdsInDb.contains(fd.getFieldDefId()),
+                    "Field's field definition should be apart of the form's definition");
             Assert.notNull(fd.getData(), "Field data cannot be null");
         }
     }

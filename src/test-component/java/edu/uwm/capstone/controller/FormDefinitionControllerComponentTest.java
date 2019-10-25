@@ -277,7 +277,7 @@ public class FormDefinitionControllerComponentTest {
                 .when()
                 .put(FormDefinitionRestController.FORM_DEF_PATH + formDefinition.getId())
                 .then().log().ifValidationFails()
-                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("Could update form definition " + formDefinition.getId() +
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("Could not update form definition " + formDefinition.getId() +
                 " - found a field definition with id = " + randLong + " which is not associated with this form definition"));
     }
 

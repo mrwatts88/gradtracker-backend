@@ -23,6 +23,9 @@ SELECT * FROM field_defs WHERE id = :id;
 --STATEMENT readFieldDefsByFormDefId
 SELECT * FROM field_defs WHERE form_def_id = :id;
 
+--STATEMENT readFieldDefIdsByFormDefId
+SELECT id FROM field_defs WHERE form_def_id = :id;
+
 --STATEMENT deleteFieldDef
 DELETE FROM field_defs WHERE id = :id;
 

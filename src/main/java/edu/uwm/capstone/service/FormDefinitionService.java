@@ -84,7 +84,7 @@ public class FormDefinitionService {
         HashSet<Long> fieldDefIdsAssociatedWithOldFormDef = formDefinitionInDb.getFieldDefs().stream().map(FieldDefinition::getId).collect(Collectors.toCollection(HashSet::new));
         for (FieldDefinition fd : formDef) {
             if (fd.getId() != null) {
-                Assert.isTrue(fieldDefIdsAssociatedWithOldFormDef.contains(fd.getId()), "Could update form definition " + formDef.getId() +
+                Assert.isTrue(fieldDefIdsAssociatedWithOldFormDef.contains(fd.getId()), "Could not update form definition " + formDef.getId() +
                         " - found a field definition with id = " + fd.getId() + " which is not associated with this form definition");
             }
         }
