@@ -14,13 +14,21 @@ INSERT INTO forms (
 );
 
 --STATEMENT readForm
-SELECT * FROM forms WHERE id = :id;
+SELECT forms.*, form_defs.name
+FROM forms
+LEFT JOIN form_defs ON forms.form_def_id = form_defs.id
+WHERE forms.id = :id;
 
 --STATEMENT readAllForms
-SELECT * FROM forms;
+SELECT forms.*, form_defs.name
+FROM forms
+LEFT JOIN form_defs ON forms.form_def_id = form_defs.id;
 
 --STATEMENT readAllFormsByUserId
-SELECT * FROM forms WHERE user_id = :user_id;
+SELECT forms.*, form_defs.name
+FROM forms
+LEFT JOIN form_defs ON forms.form_def_id = form_defs.id
+WHERE forms.user_id = :user_id;
 
 --STATEMENT deleteForm
 DELETE FROM forms WHERE id = :id;

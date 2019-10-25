@@ -1,9 +1,7 @@
 package edu.uwm.capstone.db;
 
 import edu.uwm.capstone.UnitTestConfig;
-import edu.uwm.capstone.model.Form;
-import edu.uwm.capstone.model.FormDefinition;
-import edu.uwm.capstone.model.User;
+import edu.uwm.capstone.model.*;
 import edu.uwm.capstone.util.TestDataUtility;
 import org.junit.After;
 import org.junit.Before;
@@ -15,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -253,6 +252,16 @@ public class FormDaoComponentTest {
         Form readForm = formDao.read(createForm.getId());
         assertNotNull(readForm);
         assertEquals(createForm, readForm);
+
+        assertEquals(createFormDef.getName(), readForm.getName());
+
+        HashMap<Long, FieldDefinition> map = new HashMap<>();
+        createFormDef.forEach((fd) -> map.put(fd.getId(), fd));
+
+        for (Field f : readForm.getFields()) {
+            assertEquals(map.get(f.getFieldDefId()).getLabel(), f.getLabel());
+            assertEquals(map.get(f.getFieldDefId()).getFieldIndex(), f.getFieldIndex());
+        }
     }
 
     /**

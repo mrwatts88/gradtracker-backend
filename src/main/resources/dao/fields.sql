@@ -14,10 +14,16 @@ INSERT INTO fields (
 );
 
 --STATEMENT readField
-SELECT * FROM fields WHERE id = :id;
+SELECT fields.*, field_defs.label, field_defs.field_index
+FROM fields
+LEFT JOIN field_defs ON fields.field_def_id = field_defs.id
+WHERE fields.id = :id;
 
 --STATEMENT readFieldsByFormId
-SELECT * FROM fields WHERE form_id = :form_id;
+SELECT fields.*, field_defs.label, field_defs.field_index
+FROM fields
+LEFT JOIN field_defs ON fields.field_def_id = field_defs.id
+WHERE fields.form_id = :form_id;
 
 --STATEMENT deleteField
 DELETE FROM fields WHERE id = :id;

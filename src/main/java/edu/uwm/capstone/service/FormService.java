@@ -61,9 +61,6 @@ public class FormService {
         if (form == null) {
             throw new EntityNotFoundException("Form with ID: " + formId + " not found.");
         }
-
-        // TODO get form definition for this form and set form's name and all its field's label and field index
-
         return form;
     }
 
@@ -73,11 +70,7 @@ public class FormService {
      * @return
      */
     public List<Form> readAll() {
-        List<Form> forms = formDao.readAll();
-
-        // TODO get form definition for this form and set form's name and all its field's label and field index
-
-        return forms;
+        return formDao.readAll();
     }
 
     /**

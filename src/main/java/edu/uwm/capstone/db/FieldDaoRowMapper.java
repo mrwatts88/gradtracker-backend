@@ -14,6 +14,8 @@ public class FieldDaoRowMapper extends BaseRowMapper<Field> {
     public enum FieldColumnType {
         FORM_ID(),
         FIELD_DEF_ID(),
+        LABEL(),            // only used for read operations
+        FIELD_INDEX(),      // only used for read operations
         DATA();
 
         private String columnName;
@@ -32,8 +34,8 @@ public class FieldDaoRowMapper extends BaseRowMapper<Field> {
         Map<String, Object> map = new HashMap<>();
         map.put(ID.getColumnName(), object.getId());
         map.put(FORM_ID.getColumnName(), object.getFormId());
-        map.put(DATA.getColumnName(), object.getData());
         map.put(FIELD_DEF_ID.getColumnName(), object.getFieldDefId());
+        map.put(DATA.getColumnName(), object.getData());
         map.put(CREATED_DATE.getColumnName(), javaTimeFromDate(object.getCreatedDate()));
         map.put(UPDATED_DATE.getColumnName(), javaTimeFromDate(object.getUpdatedDate()));
         return map;
@@ -44,8 +46,10 @@ public class FieldDaoRowMapper extends BaseRowMapper<Field> {
         Field folder = new Field();
         folder.setId(rs.getLong(ID.getColumnName()));
         folder.setFormId(rs.getLong(FORM_ID.getColumnName()));
-        folder.setData(rs.getString(DATA.getColumnName()));
         folder.setFieldDefId(rs.getLong(FIELD_DEF_ID.getColumnName()));
+        folder.setLabel(rs.getString(LABEL.getColumnName()));
+        folder.setFieldIndex(rs.getInt(FIELD_INDEX.getColumnName()));
+        folder.setData(rs.getString(DATA.getColumnName()));
         folder.setCreatedDate(dateFromJavaTime(rs.getObject(CREATED_DATE.getColumnName())));
         folder.setUpdatedDate(dateFromJavaTime(rs.getObject(UPDATED_DATE.getColumnName())));
         return folder;

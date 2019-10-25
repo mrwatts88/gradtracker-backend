@@ -1,14 +1,13 @@
 package edu.uwm.capstone.model;
+
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class Field extends BaseEntity{
     @ApiModelProperty(hidden = true)
     private Long formId;
@@ -16,7 +15,10 @@ public class Field extends BaseEntity{
     private String data;
 
     @ApiModelProperty(hidden = true)
-    private String label; // only needed for returning a field to front end (should be gotten from field definition)
+    @EqualsAndHashCode.Exclude
+    private String label; // only needed for returning a field to front end
+
     @ApiModelProperty(hidden = true)
-    private int fieldIndex; // only needed for returning a field to front end (should be gotten from field definition)
+    @EqualsAndHashCode.Exclude
+    private int fieldIndex; // only needed for returning a field to front end
 }

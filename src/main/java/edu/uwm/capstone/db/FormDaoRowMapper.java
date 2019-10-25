@@ -14,7 +14,8 @@ public class FormDaoRowMapper extends BaseRowMapper<Form> {
     public enum FormColumnType {
         FORM_DEF_ID(),
         USER_ID(),
-        APPROVED();
+        APPROVED(),
+        NAME();         // only used for read operations
 
         private String columnName;
 
@@ -46,6 +47,7 @@ public class FormDaoRowMapper extends BaseRowMapper<Form> {
         folder.setFormDefId(rs.getLong(FORM_DEF_ID.getColumnName()));
         folder.setUserId(rs.getLong(USER_ID.getColumnName()));
         folder.setApproved(rs.getBoolean(APPROVED.getColumnName()));
+        folder.setName(rs.getString(NAME.getColumnName()));
         folder.setCreatedDate(dateFromJavaTime(rs.getObject(CREATED_DATE.getColumnName())));
         folder.setUpdatedDate(dateFromJavaTime(rs.getObject(UPDATED_DATE.getColumnName())));
         return folder;
