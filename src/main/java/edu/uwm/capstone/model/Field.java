@@ -14,4 +14,9 @@ public class Field extends BaseEntity{
     private Long formId;
     private Long fieldDefId;
     private String data;
+
+    @ApiModelProperty(hidden = true)
+    private String label; // only needed for returning a field to front end (should be gotten from field definition)
+    @ApiModelProperty(hidden = true)
+    private int fieldIndex; // only needed for returning a field to front end (should be gotten from field definition)
 }

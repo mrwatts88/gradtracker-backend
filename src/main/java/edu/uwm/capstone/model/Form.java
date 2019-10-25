@@ -19,6 +19,9 @@ public class Form extends BaseEntity implements Iterable<Field>  {
     private Boolean approved;
     private List<Field> fields;
 
+    @ApiModelProperty(hidden = true)
+    private String name; // only needed for returning a form to front end (should be gotten from form definition)
+
     @Override
     public Iterator<Field> iterator() {
         return fields.iterator();
