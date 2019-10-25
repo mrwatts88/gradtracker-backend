@@ -81,7 +81,6 @@ public class FormService {
      */
     public List<Form> readAllByUserId(Long userId) {
         // TODO finish this method.
-        //  First check if user exists
         return Collections.emptyList();
     }
 

@@ -17,6 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -78,6 +79,51 @@ public class FormServiceComponentTest {
     }
 
     /**
+     * Verify that {@link FormService#create} is working correctly when a {@link FormDefinition} doesn't exist for that {@link Form}.
+     */
+    @Test(expected = RuntimeException.class)
+    public void createFormNonExistentFormDef() {
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
+
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+        createForm.setFormDefId(TestDataUtility.randomLong());
+        formService.create(createForm);
+    }
+
+    /**
+     * Verify that {@link FormService#create} is working correctly when a {@link FormDefinition} doesn't exist for that {@link Form}.
+     */
+    @Test(expected = RuntimeException.class)
+    public void createFormNonExistentUser() {
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
+
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, TestDataUtility.randomLong());
+        formService.create(createForm);
+    }
+
+    /**
+     * Verify that {@link FormService#create} is working correctly when a request for a {@link Form}
+     * containing a field with a null field definition id is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void createNonExistentFieldDef() {
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
+
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+        createForm.getFields().get(0).setFieldDefId(TestDataUtility.randomLong());
+        formService.create(createForm);
+    }
+
+    /**
      * Verify that {@link FormService#create} is working correctly when a request for creating a null object is made.
      */
     @Test(expected = RuntimeException.class)
@@ -102,6 +148,23 @@ public class FormServiceComponentTest {
     }
 
     /**
+     * Verify that {@link FormService#create} is working correctly when a request for a {@link Form}
+     * containing a field with a non null field id is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void createNonNullFieldId() {
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
+
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+        createForm.getFields().get(0).setId(TestDataUtility.randomLong());
+        formService.create(createForm);
+    }
+
+    /**
      * Verify that {@link FormService#create} is working correctly when a request for a {@link Form} with a null list of fields is made.
      */
     @Test(expected = RuntimeException.class)
@@ -114,6 +177,38 @@ public class FormServiceComponentTest {
 
         Form createForm = TestDataUtility.formWithTestValues(formDef, user.getId());
         createForm.setFields(null);
+        formService.create(createForm);
+    }
+
+    /**
+     * Verify that {@link FormService#create} is working correctly when a request for a {@link Form} with an empty list of fields is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void createEmptyFields() {
+        FormDefinition formDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(formDef);
+
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+
+        Form createForm = TestDataUtility.formWithTestValues(formDef, user.getId());
+        createForm.setFields(Collections.emptyList());
+        formService.create(createForm);
+    }
+
+    /**
+     * Verify that {@link FormService#create} is working correctly when a request for a {@link Form} with a null form definition id is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void createNullFormDefId() {
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
+
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+        createForm.setFormDefId(null);
         formService.create(createForm);
     }
 
@@ -134,52 +229,102 @@ public class FormServiceComponentTest {
         formService.create(createForm);
     }
 
-    // TODO finish remaining tests
+    /**
+     * Verify that {@link FormService#create} is working correctly when a request for a {@link Form}
+     * containing a field with a null field definition id is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void createNullFieldDefId() {
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
+
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+        createForm.getFields().get(0).setFieldDefId(null);
+        formService.create(createForm);
+    }
+
+    /**
+     * Verify that {@link FormService#read} is working correctly.
+     */
+    @Test
+    public void read() {
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
+
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+        formsToCleanup.add(createForm);
+
+        formService.create(createForm);
+        assertNotNull(createForm.getId());
+
+        Form readForm = formService.read(createForm.getId());
+        assertNotNull(readForm);
+        assertEquals(createForm, readForm);
+    }
+
+    /**
+     * Verify that {@link FormService#read} is working correctly when a request for a non-existent {@link Form #id} is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void readNonExistentForm() {
+        Long id = TestDataUtility.randomLong();
+        formService.read(id);
+    }
+
+    /**
+     * Verify that {@link FormService#readAll} is working correctly,
+     */
+    @Test
+    public void readAllForms() {
+        List<Form> persistedForms = new ArrayList<>();
+        int randInt = TestDataUtility.randomInt(10, 30);
+        for (int i = 0; i < randInt; i++) {
+            FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+            formDefsToCleanup.add(createFormDef);
+
+            User user = userDao.create(TestDataUtility.userWithTestValues());
+            usersToCleanup.add(user);
+
+            Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+            formsToCleanup.add(createForm);
+
+            formService.create(createForm);
+            persistedForms.add(createForm);
+        }
+        assertEquals(persistedForms, formService.readAll());
+    }
+
+    // TODO uncomment this test when FormService#readAllByUserId is done
 //    /**
-//     * Verify that {@link FormService#read} is working correctly.
+//     * Verify that {@link FormService#readAllByUserId} is working correctly,
 //     */
 //    @Test
-//    public void read() {
-//        Form sampleform = TestDataUtility.formWithTestValues();
-//        formService.create(sampleform);
-//        assertNotNull(sampleform.getId());
-//        formsToCleanup.add(sampleform);
+//    public void readAllFormsByUserId() {
+//        User user = userDao.create(TestDataUtility.userWithTestValues());
+//        usersToCleanup.add(user);
 //
-//        Form readform = formService.read(sampleform.getId());
-//        assertNotNull(readform);
-//        assertEquals(sampleform.getId(), readform.getId());
-//        assertEquals(sampleform, readform);
-//    }
-//
-//    /**
-//     * Verify that {@link FormService#read} is working correctly when a request for a non-existent {@link Form #id} is made.
-//     */
-//    @Test(expected = RuntimeException.class)
-//    public void readNonExistentform() {
-//        // create a random user id that will not be in our local database
-//        Long id = TestDataUtility.randomLong();
-//        Form Sampleform = formService.read(id);
-//        assertNull(Sampleform);
-//        assertNull(formService.readAll());
-//    }
-//
-//    /**
-//     * Verify that all {@link FormService#readAll} is working correctly,
-//     */
-//    @Test
-//    public void readAll() {
-//        List<Form> persistedforms = new ArrayList<>();
-//        int randInt = TestDataUtility.randomInt(0, 1);
+//        List<Form> persistedForms = new ArrayList<>();
+//        int randInt = TestDataUtility.randomInt(10, 30);
 //        for (int i = 0; i < randInt; i++) {
-//            Form form = TestDataUtility.formWithTestValues();
-//            formService.create(form);
-//            formsToCleanup.add(form);
-//            persistedforms.add(form);
+//            FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+//            formDefsToCleanup.add(createFormDef);
+//
+//            Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+//            formsToCleanup.add(createForm);
+//
+//            formService.create(createForm);
+//            persistedForms.add(createForm);
 //        }
-//
-//        assertEquals(persistedforms, formService.readAll());
+//        assertEquals(persistedForms, formService.readAllByUserId(user.getId()));
 //    }
-//
+
+    // TODO finish remaining tests
 //    /**
 //     * Verify that {@link FormService#update} is working correctly.
 //     */

@@ -85,7 +85,7 @@ public class FormDaoComponentTest {
      * Verify that {@link FormDao#create} is working correctly when a {@link FormDefinition} doesn't exist for that {@link Form}.
      */
     @Test(expected = RuntimeException.class)
-    public void createFormNonExistentFormDefinition() {
+    public void createFormNonExistentFormDef() {
         FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
         formDefsToCleanup.add(createFormDef);
 
@@ -150,7 +150,23 @@ public class FormDaoComponentTest {
 
         Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
         createForm.setId(TestDataUtility.randomLong());
+        formDao.create(createForm);
+    }
 
+    /**
+     * Verify that {@link FormDao#create} is working correctly when a request for a {@link Form}
+     * containing a field with a non null field id is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void createNonNullFieldId() {
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
+
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+        createForm.getFields().get(0).setId(TestDataUtility.randomLong());
         formDao.create(createForm);
     }
 
@@ -167,7 +183,6 @@ public class FormDaoComponentTest {
 
         Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
         createForm.setFormDefId(null);
-
         formDao.create(createForm);
     }
 
@@ -178,9 +193,7 @@ public class FormDaoComponentTest {
     public void createNullUserId() {
         FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
         formDefsToCleanup.add(createFormDef);
-
         Form createForm = TestDataUtility.formWithTestValues(createFormDef, null);
-
         formDao.create(createForm);
     }
 
@@ -198,7 +211,6 @@ public class FormDaoComponentTest {
 
         Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
         createForm.getFields().get(0).setFieldDefId(null);
-
         formDao.create(createForm);
     }
 
@@ -240,7 +252,6 @@ public class FormDaoComponentTest {
 
         Form readForm = formDao.read(createForm.getId());
         assertNotNull(readForm);
-
         assertEquals(createForm, readForm);
     }
 
