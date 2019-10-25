@@ -37,7 +37,8 @@ public class SwaggerConfig {
                 null, // "client secret",
                 null, // "realm",
                 null, // "app",
-                "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkZWZhdWx0QHV3bS5lZHUiLCJwYW50aGVyIGlkIjoiMTIzNDU2Nzg5IiwibGFzdCBuYW1lIjoiZGVmYXVsdF9sYXN0X25hbWUiLCJmaXJzdCBuYW1lIjoiZGVmYXVsdF9maXJzdF9uYW1lIiwiaWQiOjEsImV4cCI6MTU3MTc3NzI1NSwiZW1haWwiOiJkZWZhdWx0QHV3bS5lZHUifQ.QJmHfCsge-v-dfldQSWUjUTMLS9F-nr8YF5LBL89HUO_AT7pamoiNZ4LivYHjznT4cqf9r7XgH3WDjwOUH9bVw", ApiKeyVehicle.HEADER, "Authorization", "," /* scope separator */);
+                "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkZWZhdWx0QHV3bS5lZHUiLCJwYW50aGVyIGlkIjoiMTIzNDU2Nzg5IiwibGFzdCBuYW1lIjoiZGVmYXVsdF9sYXN0X25hbWUiLCJmaXJzdCBuYW1lIjoiZGVmYXVsdF9maXJzdF9uYW1lIiwiaWQiOjEsImV4cCI6MTU3Mjg4Nzg1NywiZW1haWwiOiJkZWZhdWx0QHV3bS5lZHUifQ.XdcoN1OOewcbYt06ozQW03MNRPhs5iS8jFvQkWtQxs3BPdUjwv-SR6JDiG2S4EHC0_zlaYEAnFdm-bGOez2RjA",
+                ApiKeyVehicle.HEADER, "Authorization", "," /* scope separator */);
     }
 
     @Bean
