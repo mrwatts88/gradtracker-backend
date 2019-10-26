@@ -99,9 +99,10 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
      * Updates the given {@link FieldDefinition} object.
      *
      * @param fieldDef
+     * @return
      */
     @Override
-    public void update(FieldDefinition fieldDef) {
+    public FieldDefinition update(FieldDefinition fieldDef) {
         if (fieldDef == null) {
             throw new DaoException("field definition cannot be null");
         } else if (fieldDef.getId() == null) {
@@ -115,6 +116,7 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
         if (result != 1) {
             throw new DaoException(String.format("Failed attempt to update field definition %s - affected %s rows", fieldDef.toString(), result));
         }
+        return fieldDef;
     }
 
     /**

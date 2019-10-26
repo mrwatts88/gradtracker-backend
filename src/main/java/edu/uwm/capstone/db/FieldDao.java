@@ -62,7 +62,7 @@ public class FieldDao extends BaseDao<Long, Field>{
     }
 
     @Override
-    public void update(Field field) {
+    public Field update(Field field) {
         if (field == null) {
             throw new DaoException("field cannot be null");
         } else if (field.getId() == null) {
@@ -78,6 +78,7 @@ public class FieldDao extends BaseDao<Long, Field>{
         if (result != 1) {
             throw new DaoException(String.format("Failed attempt to update field %s - affected %s rows", field.toString(), result));
         }
+        return field;
     }
 
     @Override

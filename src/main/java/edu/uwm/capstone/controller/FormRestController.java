@@ -122,19 +122,22 @@ public class FormRestController {
      */
     @ApiOperation(value = "Update Form by ID")
     @PutMapping(value = FORM_PATH + "{formId}")
-    public void update(@PathVariable Long formId, @RequestBody Form form, @ApiIgnore HttpServletResponse response) throws IOException {
+    public Form update(@PathVariable Long formId, @RequestBody Form form, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
             form.setId(formId);
-            formService.update(form);
+            return formService.update(form);
         } catch (IllegalArgumentException e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
+            return null;
         } catch (EntityNotFoundException e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+            return null;
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            return null;
         }
     }
 

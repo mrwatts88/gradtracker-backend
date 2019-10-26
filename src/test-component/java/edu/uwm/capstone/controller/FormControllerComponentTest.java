@@ -196,7 +196,7 @@ public class FormControllerComponentTest {
                 .post(FormRestController.FORM_PATH)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.PRECONDITION_FAILED.value())
-                .body("message", equalTo("Form must have at least one field"));
+                .body("message", equalTo("Form should have same number of fields as its form definition"));
     }
 
 //    /**

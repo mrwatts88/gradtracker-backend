@@ -42,7 +42,19 @@ public class FormService {
      */
     public Form create(Form form) {
         LOG.trace("Creating form definition {}", form);
-        checkValidForm(form, true);
+        FormDefinition formDefinitionInDb = formDefinitionDao.read(form.getFormDefId());
+
+        checkValidForm(form, true, formDefinitionInDb);
+
+        form.setName(formDefinitionInDb.getName());
+
+        FieldDefinition fd;
+        for (Field f : form) {
+            fd = formDefinitionInDb.getFieldDefinitionById(f.getFieldDefId());
+            f.setLabel(fd.getLabel());
+            f.setFieldIndex(fd.getFieldIndex());
+        }
+
         return formDao.create(form);
     }
 
@@ -87,10 +99,11 @@ public class FormService {
      * @param form
      * @return
      */
-    public void update(Form form) {
+    public Form update(Form form) {
         LOG.trace("Updating form {}", form);
+        FormDefinition formDefinitionInDb = formDefinitionDao.read(form.getFormDefId());
 
-        checkValidForm(form, false);
+        checkValidForm(form, false, formDefinitionInDb);
         Form formInDb = formDao.read(form.getId());
 
         if (formInDb == null) {
@@ -105,7 +118,16 @@ public class FormService {
             }
         }
 
-        formDao.update(form);
+        form.setName(formDefinitionInDb.getName());
+
+        FieldDefinition fd;
+        for (Field f : form) {
+            fd = formDefinitionInDb.getFieldDefinitionById(f.getFieldDefId());
+            f.setLabel(fd.getLabel());
+            f.setFieldIndex(fd.getFieldIndex());
+        }
+
+        return formDao.update(form);
     }
 
     /**
@@ -129,13 +151,12 @@ public class FormService {
      * @param form
      * @param checkNullId
      */
-    private void checkValidForm(Form form, boolean checkNullId) {
+    private void checkValidForm(Form form, boolean checkNullId, FormDefinition formDefinitionInDb) {
         Assert.notNull(form, "Form cannot be null");
         if (checkNullId)
             Assert.isNull(form.getId(), "Form id should be null");
         Assert.notNull(form.getFormDefId(), "Form's form definition id should not be null");
 
-        FormDefinition formDefinitionInDb = formDefinitionDao.read(form.getFormDefId());
         Assert.notNull(formDefinitionInDb, "Form's form definition should exist");
 
         Assert.isTrue(formDefinitionInDb.getFieldDefs().size() == form.getFields().size(),

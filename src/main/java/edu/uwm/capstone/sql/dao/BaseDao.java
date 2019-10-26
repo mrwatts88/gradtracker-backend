@@ -20,7 +20,7 @@ public abstract class BaseDao<K, V> {
 
     public abstract V read(K id);
 
-    public abstract void update(V object);
+    public abstract V update(V object);
 
     public abstract void delete(K id);
 

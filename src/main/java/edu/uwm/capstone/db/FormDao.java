@@ -95,7 +95,7 @@ public class FormDao extends BaseDao<Long, Form>{
     }
 
     @Override
-    public void update(Form form) {
+    public Form update(Form form) {
         if (form == null) {
             throw new DaoException("form cannot be null");
         } else if (form.getId() == null) {
@@ -129,6 +129,7 @@ public class FormDao extends BaseDao<Long, Form>{
         //  this would normally be done in the service layer, but idk if we should do it here too
 
         fieldIdsAssociatedWithOldForm.forEach(fId -> fieldDao.delete(fId));
+        return form;
     }
 
     @Override

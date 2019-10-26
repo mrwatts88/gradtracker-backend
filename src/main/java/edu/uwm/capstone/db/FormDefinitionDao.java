@@ -92,9 +92,10 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
      * Given a {@link FormDefinition} formDef, updates the corresponding form definition record in the database.
      *
      * @param formDef
+     * @return
      */
     @Override
-    public void update(FormDefinition formDef) {
+    public FormDefinition update(FormDefinition formDef) {
         if (formDef == null) {
             throw new DaoException("form definition cannot be null");
         } else if (formDef.getId() == null) {
@@ -123,6 +124,7 @@ public class FormDefinitionDao extends BaseDao<Long, FormDefinition> {
         }
 
         fieldDefIdsAssociatedWithOldFormDef.forEach(fdId -> fieldDefinitionDao.delete(fdId)); // remove old field defs
+        return formDef;
     }
 
     /**

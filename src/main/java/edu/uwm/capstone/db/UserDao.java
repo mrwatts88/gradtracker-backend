@@ -97,7 +97,7 @@ public class UserDao extends BaseDao<Long, User> {
      * @return true if successful
      */
     @Override
-    public void update(User user) {
+    public User update(User user) {
         if (user == null) {
             throw new DaoException("Request to update a new user received null");
         } else if (user.getId() == null) {
@@ -111,6 +111,7 @@ public class UserDao extends BaseDao<Long, User> {
         if (result != 1) {
             throw new DaoException(String.format("Failed attempt to update user %s - affected %s rows", user.toString(), result));
         }
+        return user;
     }
 
     /**
