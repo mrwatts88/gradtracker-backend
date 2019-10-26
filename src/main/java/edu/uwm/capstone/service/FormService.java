@@ -101,14 +101,17 @@ public class FormService {
      */
     public Form update(Form form) {
         LOG.trace("Updating form {}", form);
-        FormDefinition formDefinitionInDb = formDefinitionDao.read(form.getFormDefId());
 
-        checkValidForm(form, false, formDefinitionInDb);
         Form formInDb = formDao.read(form.getId());
 
         if (formInDb == null) {
             throw new EntityNotFoundException("Could not update form " + form.getId() + " - record not found.");
         }
+
+        Assert.isTrue(formInDb.getUserId().equals(form.getUserId()), "Cannot change form's user");
+
+        FormDefinition formDefinitionInDb = formDefinitionDao.read(form.getFormDefId());
+        checkValidForm(form, false, formDefinitionInDb);
 
         HashSet<Long> fieldIdsAssociatedWithOldForm = formInDb.getFields().stream().map(Field::getId).collect(Collectors.toCollection(HashSet::new));
         for (Field fd : form) {
