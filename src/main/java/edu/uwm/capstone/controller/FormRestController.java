@@ -93,6 +93,26 @@ public class FormRestController {
     }
 
     /**
+     * Gets all the {@link Form} that were submitted by a User with Id = userId.
+     *
+     * @param userId
+     * @param response {@link HttpServletResponse}
+     * @return {@link Form} retrieved from the database
+     * @throws IOException if error response cannot be created.
+     */
+    @ApiOperation(value = "Read All Form")
+    @GetMapping(value = FORM_PATH + "/user/{userId}")
+    public List<Form> readAllByUserId(@PathVariable Long userId, @ApiIgnore HttpServletResponse response) throws IOException {
+        try {
+            return formService.readAllByUserId(userId);
+        } catch (EntityNotFoundException e) {
+            LOG.error(e.getMessage(), e);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+            return null;
+        }
+    }
+
+    /**
      * Updates the provided {@link Form} by Id
      *
      * @param formId      {@link Form#getId()}

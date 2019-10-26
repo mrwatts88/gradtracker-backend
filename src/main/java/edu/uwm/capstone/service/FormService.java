@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -79,8 +78,7 @@ public class FormService {
      * @return
      */
     public List<Form> readAllByUserId(Long userId) {
-        // TODO finish this method.
-        return Collections.emptyList();
+        return formDao.readAllByUserId(userId);
     }
 
     /**
@@ -140,13 +138,19 @@ public class FormService {
         FormDefinition formDefinitionInDb = formDefinitionDao.read(form.getFormDefId());
         Assert.notNull(formDefinitionInDb, "Form's form definition should exist");
 
+        Assert.isTrue(formDefinitionInDb.getFieldDefs().size() == form.getFields().size(),
+                "Form should have same number of fields as its form definition");
+
         Assert.notNull(form.getUserId(), "Form's user id should not be null");
         Assert.notNull(userDao.read(form.getUserId()), "Form's user should exist");
 
         Assert.notNull(form.getFields(), "Form fields cannot be null");
         Assert.notEmpty(form.getFields(), "Form must have at least one field");
 
-        HashSet<Long> fieldDefIdsInDb = formDefinitionInDb.getFieldDefs().stream().map(FieldDefinition::getId).collect(Collectors.toCollection(HashSet::new));
+        HashSet<Long> fieldDefIdsInDb = formDefinitionInDb.getFieldDefs().stream().map(FieldDefinition::getId)
+                .collect(Collectors.toCollection(HashSet::new));
+
+        HashSet<Long> seenFieldDefIds = new HashSet<>();
         for (Field fd : form) {
             Assert.notNull(fd, "Field should not be null");
 
@@ -157,6 +161,9 @@ public class FormService {
             Assert.isTrue(fieldDefIdsInDb.contains(fd.getFieldDefId()),
                     "Field's field definition should be apart of the form's definition");
             Assert.notNull(fd.getData(), "Field data cannot be null");
+
+            Assert.isTrue(!seenFieldDefIds.contains(fd.getFieldDefId()), "Field defs must be unique");
+            seenFieldDefIds.add(fd.getFieldDefId());
         }
     }
 }

@@ -309,29 +309,28 @@ public class FormServiceComponentTest {
         assertEquals(persistedForms, formService.readAll());
     }
 
-    // TODO uncomment this test when FormService#readAllByUserId is done
-//    /**
-//     * Verify that {@link FormService#readAllByUserId} is working correctly,
-//     */
-//    @Test
-//    public void readAllFormsByUserId() {
-//        User user = userDao.create(TestDataUtility.userWithTestValues());
-//        usersToCleanup.add(user);
-//
-//        List<Form> persistedForms = new ArrayList<>();
-//        int randInt = TestDataUtility.randomInt(10, 30);
-//        for (int i = 0; i < randInt; i++) {
-//            FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
-//            formDefsToCleanup.add(createFormDef);
-//
-//            Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
-//            formsToCleanup.add(createForm);
-//
-//            formService.create(createForm);
-//            persistedForms.add(createForm);
-//        }
-//        assertEquals(persistedForms, formService.readAllByUserId(user.getId()));
-//    }
+    /**
+     * Verify that {@link FormService#readAllByUserId} is working correctly,
+     */
+    @Test
+    public void readAllFormsByUserId() {
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+
+        List<Form> persistedForms = new ArrayList<>();
+        int randInt = TestDataUtility.randomInt(10, 30);
+        for (int i = 0; i < randInt; i++) {
+            FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+            formDefsToCleanup.add(createFormDef);
+
+            Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+            formsToCleanup.add(createForm);
+
+            formService.create(createForm);
+            persistedForms.add(createForm);
+        }
+        assertEquals(persistedForms, formService.readAllByUserId(user.getId()));
+    }
 
     // TODO finish remaining tests
 //    /**
