@@ -102,10 +102,10 @@ public class UserRestController {
      */
     @ApiOperation(value = "Update User")
     @PutMapping(value = USER_PATH + "{userId}")
-    public void update(@PathVariable Long userId, @RequestBody User user, @ApiIgnore HttpServletResponse response) throws IOException {
+    public User update(@PathVariable Long userId, @RequestBody User user, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
             user.setId(userId);
-            userService.update(user);
+            return userService.update(user);
         } catch (IllegalArgumentException e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
@@ -116,6 +116,7 @@ public class UserRestController {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
+        return null;
     }
 
     /**

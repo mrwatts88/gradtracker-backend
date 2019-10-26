@@ -71,7 +71,7 @@ public class FormDefinitionService {
      * @param formDef
      * @return
      */
-    public void update(FormDefinition formDef) {
+    public FormDefinition update(FormDefinition formDef) {
         LOG.trace("Updating form {}", formDef);
 
         checkValidFormDefinition(formDef, false);
@@ -89,7 +89,7 @@ public class FormDefinitionService {
             }
         }
 
-        formDefinitionDao.update(formDef);
+        return formDefinitionDao.update(formDef);
     }
 
     /**

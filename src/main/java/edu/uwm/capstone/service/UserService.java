@@ -103,7 +103,7 @@ public class UserService {
      * @param user {@link User}
      * @return true if successful
      */
-    public void update(User user) {
+    public User update(User user) {
         LOG.trace("Updating user {}", user);
 
         checkValidUser(user, false);
@@ -112,7 +112,7 @@ public class UserService {
             throw new EntityNotFoundException("Could not update User " + user.getId() + " - record not found.");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userDao.update(user);
+        return userDao.update(user);
     }
 
     /**

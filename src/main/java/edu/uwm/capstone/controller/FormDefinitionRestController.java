@@ -102,10 +102,10 @@ public class FormDefinitionRestController {
      */
     @ApiOperation(value = "Update FormDefinition by ID")
     @PutMapping(value = FORM_DEF_PATH + "{formDefId}")
-    public void update(@PathVariable Long formDefId, @RequestBody FormDefinition formDefinition, @ApiIgnore HttpServletResponse response) throws IOException {
+    public FormDefinition update(@PathVariable Long formDefId, @RequestBody FormDefinition formDefinition, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
             formDefinition.setId(formDefId);
-            formDefinitionService.update(formDefinition);
+            return formDefinitionService.update(formDefinition);
         } catch (IllegalArgumentException e) {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
@@ -116,6 +116,7 @@ public class FormDefinitionRestController {
             LOG.error(e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
+        return null;
     }
 
     /**
