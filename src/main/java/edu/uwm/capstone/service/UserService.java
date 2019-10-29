@@ -55,8 +55,6 @@ public class UserService {
     public User read(Long userId) {
         LOG.trace("Reading user {}", userId);
 
-        // TODO make sure user has access to read
-
         User user = userDao.read(userId);
 
         if (user == null) {
@@ -74,8 +72,6 @@ public class UserService {
     public User readByEmail(String email) {
         LOG.trace("Reading user by email {}", email);
 
-        // TODO make sure user has access to read
-
         User user = userDao.readByEmail(email);
 
         if (user == null) {
@@ -92,8 +88,6 @@ public class UserService {
     public List<User> readAll() {
         LOG.trace("Reading all users");
 
-        // TODO make sure user has access to read
-
         return userDao.readAll();
     }
 
@@ -108,10 +102,12 @@ public class UserService {
 
         checkValidUser(user, false);
 
-        if (userDao.read(user.getId()) == null) {
+        User userInDb = userDao.read(user.getId());
+        if (userInDb == null) {
             throw new EntityNotFoundException("Could not update User " + user.getId() + " - record not found.");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setCreatedDate(userInDb.getCreatedDate());
         return userDao.update(user);
     }
 
@@ -147,6 +143,4 @@ public class UserService {
         Assert.notNull(user.getFirstName(), "User last name must not be null");
         Assert.notNull(user.getFirstName(), "User panther id must not be null");
     }
-
-
 }

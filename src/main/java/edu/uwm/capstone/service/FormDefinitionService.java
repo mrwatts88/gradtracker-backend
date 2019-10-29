@@ -88,7 +88,7 @@ public class FormDefinitionService {
                         " - found a field definition with id = " + fd.getId() + " which is not associated with this form definition");
             }
         }
-
+        formDef.setCreatedDate(formDefinitionInDb.getCreatedDate());
         return formDefinitionDao.update(formDef);
     }
 

@@ -130,6 +130,7 @@ public class FormService {
             f.setFieldIndex(fd.getFieldIndex());
         }
 
+        form.setCreatedDate(formInDb.getCreatedDate());
         return formDao.update(form);
     }
 
