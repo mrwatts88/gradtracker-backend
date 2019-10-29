@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -453,29 +454,30 @@ public class FormDaoComponentTest {
 //        formDao.update(updateUser);
 //    }
 //
-//    /**
-//     * Verify that {@link FormDao#delete} is working correctly.
-//     */
-//    @Test(expected = RuntimeException.class)
-//    public void delete() {
-//        Form sample_form = TestDataUtility.formWithTestValues();
-//        formDao.create(sample_form);
-//        assertNotNull(sample_form.getId());
-//
-//        Form verify_form = formDao.read(sample_form.getId());
-//        assertNotNull(verify_form);
-//        assertEquals(sample_form.getId(), verify_form.getId());
-//        assertEquals(sample_form, verify_form);
-//
-//        formDao.delete(sample_form.getId());
-//    }
-//
-//    /**
-//     * Verify that {@link FormDao#delete} is working correctly when a request for a non-existent {@link Form #id} is made.
-//     */
-//    @Test(expected = RuntimeException.class)
-//    public void deleteNonExistentForm() {
-//        Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
-//        formDao.delete(id);
-//    }
+    /**
+     * Verify that {@link FormDao#delete} is working correctly.
+     */
+    @Test(expected = RuntimeException.class)
+    public void delete() {
+        FormDefinition form_def = TestDataUtility.formDefWithTestValues();
+        Form sample_form = TestDataUtility.formWithTestValues(form_def, TestDataUtility.randomLong());
+        formDao.create(sample_form);
+        assertNotNull(sample_form.getId());
+
+        Form verify_form = formDao.read(sample_form.getId());
+        assertNotNull(verify_form);
+        assertEquals(sample_form.getId(), verify_form.getId());
+        assertEquals(sample_form, verify_form);
+
+        formDao.delete(sample_form.getId());
+    }
+
+    /**
+     * Verify that {@link FormDao#delete} is working correctly when a request for a non-existent {@link Form #id} is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void deleteNonExistentForm() {
+        Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
+        formDao.delete(id);
+    }
 }

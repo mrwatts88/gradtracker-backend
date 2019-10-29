@@ -19,8 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -446,30 +445,40 @@ public class FormServiceComponentTest {
 //        formService.update(updateform);
 //    }
 //
-//    /**
-//     * Verify that {@link FormService#delete} is working correctly.
-//     */
-//    @Test
-//    public void delete() {
-//        Form createform = TestDataUtility.formWithTestValues();
-//        formService.create(createform);
-//        assertNotNull(createform.getId());
-//
-//        Form verifyform = formService.read(createform.getId());
-//        assertNotNull(verifyform);
-//        assertEquals(createform.getId(), verifyform.getId());
-//        assertEquals(createform, verifyform);
-//
-//        formService.delete(createform.getId());
-//    }
-//
-//    /**
-//     * Verify that {@link FormService#delete} is working correctly when a request for a non-existent {@link Form #id} is made.
-//     */
-//    @Test(expected = RuntimeException.class)
-//    public void deleteNonExistentform() {
-//        Long id = TestDataUtility.randomLong();
-//        formService.delete(id);
-//        assertNull(formService.readAll());
-//    }
+    /**
+     * Verify that {@link FormService#delete} is working correctly.
+     */
+    @Test
+    public void delete() {
+        // Create a form definition
+        FormDefinition form_def = TestDataUtility.formDefWithTestValues();
+        formDefinitionDao.create(form_def);
+
+        // Create a user
+        User user = TestDataUtility.userWithTestValues();
+        userDao.create(user);
+
+        // Create a form based on the form_def
+        Form createform = TestDataUtility.formWithTestValues(form_def, user.getId());
+        formService.create(createform); // error here?
+        assertNotNull(createform.getId());
+
+        // Read the created form from the database
+        Form verifyform = formService.read(createform.getId());
+        assertNotNull(verifyform);
+        assertEquals(createform.getId(), verifyform.getId());
+        assertEquals(createform, verifyform);
+
+        formService.delete(createform.getId());
+    }
+
+    /**
+     * Verify that {@link FormService#delete} is working correctly when a request for a non-existent {@link Form #id} is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void deleteNonExistentform() {
+        Long id = TestDataUtility.randomLong();
+        formService.delete(id);
+        assertTrue(formService.readAll() == null);
+    }
 }

@@ -519,48 +519,48 @@ public class FormControllerComponentTest {
         assertEquals(userForms, response.body().jsonPath().getList(".", Form.class));
     }
 
-//    /**
-//     * Verify that {@link FormRestController#deleteById} is working correctly
-//     * when a request for a {@link Form#id} is made.
-//     **/
-//    @Test
-//    public void deleteById() {
-//        // need a form definition in the db connected to the form
-//        FormDefinition createFormDef = formDefinitionDao.create(formDefWithTestValues());
-//        formDefsToCleanup.add(createFormDef);
-//
-//        // need a user in the db connected to the form
-//        User user = userDao.create(userWithTestValues());
-//        usersToCleanup.add(user);
-//
-//        Form createForm = formWithTestValues(createFormDef, user.getId());
-//
-//        formDao.create(createForm);
-//
-//        // exercise endpoint
-//        ExtractableResponse<Response> response = given()
-//                .header(new Header("Authorization", authorizationToken))
-//                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                .when()
-//                .delete(FormRestController.FORM_PATH + createForm.getId())
-//                .then().log().ifValidationFails()
-//                .statusCode(HttpStatus.OK.value()).extract();
-//    }
-//
-//    /**
-//     * Verify that {@link FormRestController#deleteById} is working correctly
-//     * when a request for a non-existent {@link Form#id} is made.
-//     **/
-//    @Test
-//    public void deleteByIdNotFound() {
-//        Long formId = randomLong();
-//
-//        // exercise endpoint
-//        given().header(new Header("Authorization", authorizationToken))
-//                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                .when()
-//                .delete(FormRestController.FORM_PATH + formId)
-//                .then().log().ifValidationFails()
-//                .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("Could not delete form " + formId + " - record not found."));
-//    }
+    /**
+     * Verify that {@link FormRestController#deleteById} is working correctly
+     * when a request for a {@link Form#id} is made.
+     **/
+    @Test
+    public void deleteById() {
+        // need a form definition in the db connected to the form
+        FormDefinition createFormDef = formDefinitionDao.create(formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
+
+        // need a user in the db connected to the form
+        User user = userDao.create(userWithTestValues());
+        usersToCleanup.add(user);
+
+        Form createForm = formWithTestValues(createFormDef, user.getId());
+
+        formDao.create(createForm);
+
+        // exercise endpoint
+        ExtractableResponse<Response> response = given()
+                .header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .when()
+                .delete(FormRestController.FORM_PATH + createForm.getId())
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.OK.value()).extract();
+    }
+
+    /**
+     * Verify that {@link FormRestController#deleteById} is working correctly
+     * when a request for a non-existent {@link Form#id} is made.
+     **/
+    @Test
+    public void deleteByIdNotFound() {
+        Long formId = randomLong();
+
+        // exercise endpoint
+        given().header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .when()
+                .delete(FormRestController.FORM_PATH + formId)
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("Could not delete form " + formId + " - record not found."));
+    }
 }
