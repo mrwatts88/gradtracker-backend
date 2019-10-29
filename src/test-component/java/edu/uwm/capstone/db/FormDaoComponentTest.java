@@ -3,7 +3,6 @@ package edu.uwm.capstone.db;
 import edu.uwm.capstone.UnitTestConfig;
 import edu.uwm.capstone.model.*;
 import edu.uwm.capstone.util.TestDataUtility;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,13 +15,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = UnitTestConfig.class)
-
 public class FormDaoComponentTest {
     @Autowired
     ApplicationContext applicationContext;
@@ -36,13 +33,9 @@ public class FormDaoComponentTest {
     @Autowired
     private UserDao userDao;
 
-    @Autowired
-    private FieldDefinitionDao fieldDefinitionDao;
-
-    private List<Form> formsToCleanUp = new ArrayList<>();
+    private List<Form> formsToCleanup = new ArrayList<>();
     private List<FormDefinition> formDefsToCleanup = new ArrayList<>();
     private List<User> usersToCleanup = new ArrayList<>();
-    private List<FieldDefinition> fieldDefsToCleanup = new ArrayList<>();
 
     @Before
     public void setUp() {
@@ -57,17 +50,14 @@ public class FormDaoComponentTest {
 
     @After
     public void teardown() {
-        formsToCleanUp.forEach(formDef -> formDao.delete(formDef.getId()));
-        formsToCleanUp.clear();
+        formsToCleanup.forEach(formDef -> formDao.delete(formDef.getId()));
+        formsToCleanup.clear();
 
         formDefsToCleanup.forEach(formDef -> formDefinitionDao.delete(formDef.getId()));
         formDefsToCleanup.clear();
 
         usersToCleanup.forEach(user -> userDao.delete(user.getId()));
         usersToCleanup.clear();
-
-        fieldDefsToCleanup.forEach(fieldDefinition -> fieldDefinitionDao.delete(fieldDefinition.getId()));
-        fieldDefsToCleanup.clear();
     }
 
     /**
@@ -84,7 +74,7 @@ public class FormDaoComponentTest {
         usersToCleanup.add(user);
 
         Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
-        formsToCleanUp.add(createForm);
+        formsToCleanup.add(createForm);
 
         formDao.create(createForm);
     }
@@ -222,24 +212,23 @@ public class FormDaoComponentTest {
         formDao.create(createForm);
     }
 
-    // TODO finish this test
-//    /**
-//     * Verify that {@link FormDao#create} is working correctly when a request for a {@link Form} that contains a value
-//     * which exceeds the database configuration is made.
-//     */
-//    @Test(expected = RuntimeException.class)
-//    public void createFormColumnTooLong() {
-//        // first persist a form def
-//        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
-//        assertNotNull(createFormDef);
-//        formDefsToCleanup.add(createFormDef);
-//
-//        Form createForm = TestDataUtility.formWithTestValues(createFormDef);
-//        createForm.getFields().get(1).setData(TestDataUtility.randomAlphabetic(10000000));
-//
-//        formDao.create(createForm);
-//        formsToCleanUp.add(createForm);
-//    }
+    /**
+     * Verify that {@link FormDao#create} is working correctly when a request for a {@link Form} that contains a value
+     * which exceeds the database configuration is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void createFormColumnTooLong() {
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
+
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+        createForm.getFields().get(0).setData(TestDataUtility.randomAlphabetic(2000));
+
+        formDao.create(createForm);
+    }
 
     /**
      * Verify that {@link FormDao#read} is working correctly.
@@ -253,7 +242,7 @@ public class FormDaoComponentTest {
         usersToCleanup.add(user);
 
         Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
-        formsToCleanUp.add(createForm);
+        formsToCleanup.add(createForm);
 
         formDao.create(createForm);
         assertNotNull(createForm.getId());
@@ -298,7 +287,7 @@ public class FormDaoComponentTest {
             usersToCleanup.add(user);
 
             Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
-            formsToCleanUp.add(createForm);
+            formsToCleanup.add(createForm);
 
             formDao.create(createForm);
             persistedForms.add(createForm);
@@ -313,6 +302,7 @@ public class FormDaoComponentTest {
     public void readAllFormsByUserId() {
         User user = userDao.create(TestDataUtility.userWithTestValues());
         usersToCleanup.add(user);
+        Long userId = user.getId();
 
         List<Form> persistedForms = new ArrayList<>();
         int randInt = TestDataUtility.randomInt(10, 30);
@@ -321,61 +311,61 @@ public class FormDaoComponentTest {
             formDefsToCleanup.add(createFormDef);
 
             Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
-            formsToCleanUp.add(createForm);
+            formsToCleanup.add(createForm);
 
             formDao.create(createForm);
             persistedForms.add(createForm);
         }
-        assertEquals(persistedForms, formDao.readAllByUserId(user.getId()));
+
+        // create more forms
+        for (int i = 0; i < randInt; i++) {
+            // need a form definition in the db connected to the form
+            FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+            formDefsToCleanup.add(createFormDef);
+
+            // need a user in the db connected to the form
+            user = userDao.create(TestDataUtility.userWithTestValues());
+            usersToCleanup.add(user);
+
+            formsToCleanup.add(formDao.create(TestDataUtility.formWithTestValues(createFormDef, user.getId())));
+        }
+        assertEquals(persistedForms, formDao.readAllByUserId(userId));
     }
 
-    // TODO finish remaining tests
     /**
      * Verify that {@link FormDao#update} is working correctly.
      */
     @Test
     public void update() {
-        //create form definitions
-        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
-        formDefinitionDao.create(formDefinition);
-        formDefsToCleanup.add(formDefinition);
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
 
-        //create user
-        User user = TestDataUtility.userWithTestValues();
-        userDao.create(user);
+        User user = userDao.create(TestDataUtility.userWithTestValues());
         usersToCleanup.add(user);
 
-        //create form
-        Form form = TestDataUtility.formWithTestValues(formDefinition, user.getId());
-        formDao.create(form);
-        formsToCleanUp.add(form);
+        Form createForm = formDao.create(TestDataUtility.formWithTestValues(createFormDef, user.getId()));
+        formsToCleanup.add(createForm);
 
-        assertNotNull(form.getId());
+        // update the Form
+        Form updatedForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+        updatedForm.setId(createForm.getId());
+        formDao.update(updatedForm);
 
-        //verify the form
-        Form verifyCreateForm = formDao.read(form.getId());
-        assertNotNull(verifyCreateForm);
-        assertEquals(form, verifyCreateForm);
-
-        //update the Form
-        Form formUpd = TestDataUtility.formWithTestValues(formDefinition, user.getId());
-        formUpd.setId(form.getId());
-        formDao.update(formUpd);
-
-        Form verifyUpdateForm = formDao.read(formUpd.getId());
+        Form verifyUpdateForm = formDao.read(updatedForm.getId());
 
         assertNotNull(verifyUpdateForm);
-        assertEquals(formUpd, verifyUpdateForm);
-        assertEquals(verifyUpdateForm.getUserId(), verifyCreateForm.getUserId());
-        assertNotEquals(verifyUpdateForm.getFields(), verifyCreateForm.getFields());
+        assertEquals(updatedForm, verifyUpdateForm);
+        assertEquals(createForm.getFormDefId(), verifyUpdateForm.getFormDefId());
+        assertNotEquals(createForm.getFields(), verifyUpdateForm.getFields());
     }
 
     /**
-     * Verify that {@link FormDao#update} is working correctly when one field is kept
-     * but all others are replaced by new fields.
+     * Verify that {@link FormDao#update} is working correctly when field definitions are updated
+     * but not exist for form definition.
      */
-    @Test
-    public void updateFormLeaveOneFieldTheSame() {
+    @Test(expected = RuntimeException.class)
+    public void updateFormUnknownFieldDefId() {
+
         //create form definitions
         FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
         formDefinitionDao.create(formDefinition);
@@ -389,76 +379,23 @@ public class FormDaoComponentTest {
         //create form
         Form form = TestDataUtility.formWithTestValues(formDefinition, user.getId());
         formDao.create(form);
-        formsToCleanUp.add(form);
+        formsToCleanup.add(form);
 
         assertNotNull(form.getId());
 
-        //verify the form
         Form verifyCreateForm = formDao.read(form.getId());
         assertNotNull(verifyCreateForm);
         assertEquals(form, verifyCreateForm);
 
-        //update the Form
-        Form formUpd = TestDataUtility.formWithTestValues(formDefinition, user.getId());
-        List<Field> tmp = form.getFields();
-        tmp.set(0, form.getFields().get(0));
-        formUpd.setFields(tmp);
+        Form updateForm = TestDataUtility.formWithTestValues(formDefinition, user.getId());
 
-        formUpd.setId(form.getId());
-        formDao.update(formUpd);
-
-        Form verifyUpdateForm = formDao.read(formUpd.getId());
-
-        assertNotNull(verifyUpdateForm);
-        assertEquals(formUpd, verifyUpdateForm);
-        assertEquals(verifyUpdateForm.getUserId(), verifyCreateForm.getUserId());
+        List<Field> fieldDefinitions = new ArrayList<>();
+        Field fd = TestDataUtility.fieldWithTestValues(TestDataUtility.fieldDefWithTestValues());
+        fieldDefinitions.add(fd);
+        updateForm.setFields(fieldDefinitions);
+        formDao.update(updateForm);
     }
 
-    /**
-     * Verify that {@link FormDao#update} is working correctly when fields are updated
-     * but not removed or added to the form.
-     */
-    @Test (expected = RuntimeException.class)
-    public void updateFormLeaveAllFieldIds() {
-        //create form definitions
-        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
-        formDefinitionDao.create(formDefinition);
-        formDefsToCleanup.add(formDefinition);
-
-        //create user
-        User user = TestDataUtility.userWithTestValues();
-        userDao.create(user);
-        usersToCleanup.add(user);
-
-        //create form
-        Form form = TestDataUtility.formWithTestValues(formDefinition, user.getId());
-        formDao.create(form);
-        formsToCleanUp.add(form);
-
-        assertNotNull(form.getId());
-
-        //verify the form
-        Form verifyCreateForm = formDao.read(form.getId());
-        assertNotNull(verifyCreateForm);
-        assertEquals(form, verifyCreateForm);
-
-        //update the Form
-        Form formUpd = TestDataUtility.formWithTestValues(formDefinition, user.getId());
-        formUpd.setFields(new ArrayList<>());
-
-        formUpd.setId(form.getId());
-
-        for (Field fd : verifyCreateForm) {
-            FieldDefinition fieldDefinition = TestDataUtility.fieldDefWithTestValues();
-
-            Field updatedField = TestDataUtility.fieldWithTestValues(fieldDefinition);
-            updatedField.setId(fd.getId());
-            formUpd.getFields().add(updatedField);
-        }
-
-        formDao.update(formUpd);
-    }
-//
     /**
      * Verify that {@link FormDao#update} is working correctly when a request for creating a null object is made.
      */
@@ -484,7 +421,7 @@ public class FormDaoComponentTest {
         usersToCleanup.add(user);
 
         Form updateForm = TestDataUtility.formWithTestValues(formDefinition, user.getId());
-        updateForm.setId(new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong());
+        updateForm.setId(TestDataUtility.randomLong());
         formDao.update(updateForm);
     }
 
@@ -506,7 +443,7 @@ public class FormDaoComponentTest {
 
         Form form = TestDataUtility.formWithTestValues(formDefinition, user.getId());
         formDao.create(form);
-        formsToCleanUp.add(form);
+        formsToCleanup.add(form);
         assertNotNull(form.getId());
 
         Form verifyCreateForm = formDao.read(form.getId());
@@ -515,7 +452,7 @@ public class FormDaoComponentTest {
 
         Form updateUser = TestDataUtility.formWithTestValues(formDefinition, user.getId());
         updateUser.setId(form.getId());
-        updateUser.getFields().get(1).setData(RandomStringUtils.randomAlphabetic(2000));
+        updateUser.getFields().get(0).setData(TestDataUtility.randomAlphabetic(2000));
         formDao.update(updateUser);
     }
 
@@ -530,8 +467,7 @@ public class FormDaoComponentTest {
         User user = userDao.create(TestDataUtility.userWithTestValues());
         usersToCleanup.add(user);
 
-        Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
-        formDao.create(createForm);
+        Form createForm = formDao.create(TestDataUtility.formWithTestValues(createFormDef, user.getId()));
         assertNotNull(createForm.getId());
 
         formDao.delete(createForm.getId());
@@ -542,7 +478,6 @@ public class FormDaoComponentTest {
      */
     @Test(expected = RuntimeException.class)
     public void deleteNonExistentForm() {
-        Long id = TestDataUtility.randomLong();
-        formDao.delete(id);
+        formDao.delete(TestDataUtility.randomLong());
     }
 }

@@ -3,7 +3,6 @@ package edu.uwm.capstone.db;
 import edu.uwm.capstone.UnitTestConfig;
 import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.util.TestDataUtility;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +14,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -85,7 +83,7 @@ public class UserDaoComponentTest {
     public void createUserColumnTooLong() {
         // generate a test user value with a column that will exceed the database configuration
         User createUser = TestDataUtility.userWithTestValues();
-        createUser.setFirstName(RandomStringUtils.randomAlphabetic(2000));
+        createUser.setFirstName(TestDataUtility.randomAlphabetic(2000));
         userDao.create(createUser);
     }
 
@@ -136,7 +134,7 @@ public class UserDaoComponentTest {
     @Test
     public void readNonExistentUserByEmail() {
         // create a random email that will not be in our local database
-        String email = new Random().longs(10000L, Long.MAX_VALUE).findAny().toString();
+        String email = TestDataUtility.randomAlphanumeric(20);
         User user = userDao.readByEmail(email);
         assertNull(user);
     }
@@ -227,7 +225,7 @@ public class UserDaoComponentTest {
 
         User updateUser = TestDataUtility.userWithTestValues();
         updateUser.setId(createUser.getId());
-        updateUser.setFirstName(RandomStringUtils.randomAlphabetic(2000));
+        updateUser.setFirstName(TestDataUtility.randomAlphabetic(2000));
         userDao.update(updateUser);
     }
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uwm.capstone.Application;
 import edu.uwm.capstone.db.UserDao;
 import edu.uwm.capstone.model.User;
+import edu.uwm.capstone.util.TestDataUtility;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.response.ExtractableResponse;
@@ -25,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static edu.uwm.capstone.security.SecurityConstants.*;
-import static edu.uwm.capstone.util.TestDataUtility.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
@@ -88,7 +88,7 @@ public class UserRestControllerComponentTest {
 
     @Test
     public void create() throws Exception {
-        User userToCreate = userWithTestValues();
+        User userToCreate = TestDataUtility.userWithTestValues();
 
         // exercise endpoint
         ExtractableResponse<Response> response = given()
@@ -112,8 +112,8 @@ public class UserRestControllerComponentTest {
 
     @Test
     public void createPreconditionFailedId() throws Exception {
-        User user = userWithTestValues();
-        user.setId(randomLong());
+        User user = TestDataUtility.userWithTestValues();
+        user.setId(TestDataUtility.randomLong());
 
         // exercise endpoint
         given().header(new Header("Authorization", authorizationToken))
@@ -127,7 +127,7 @@ public class UserRestControllerComponentTest {
 
     @Test
     public void createPreconditionFailedEmail() throws Exception {
-        User user = userWithTestValues();
+        User user = TestDataUtility.userWithTestValues();
         user.setEmail(null);
 
         // exercise endpoint
@@ -142,7 +142,7 @@ public class UserRestControllerComponentTest {
 
     @Test
     public void createPreconditionFailedPassword() throws Exception {
-        User user = userWithTestValues();
+        User user = TestDataUtility.userWithTestValues();
         user.setPassword(null);
 
         // exercise endpoint
@@ -157,10 +157,10 @@ public class UserRestControllerComponentTest {
 
     @Test
     public void update() throws Exception {
-        User user = userWithTestValues();
+        User user = TestDataUtility.userWithTestValues();
         usersToCleanup.add(userDao.create(user));
 
-        User userToUpdate = userWithTestValues();
+        User userToUpdate = TestDataUtility.userWithTestValues();
 
         // exercise endpoint
         given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -182,8 +182,8 @@ public class UserRestControllerComponentTest {
 
     @Test
     public void updateNotFound() throws Exception {
-        User userToUpdate = userWithTestValues();
-        userToUpdate.setId(randomLong());
+        User userToUpdate = TestDataUtility.userWithTestValues();
+        userToUpdate.setId(TestDataUtility.randomLong());
 
         // exercise endpoint
         given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -197,10 +197,10 @@ public class UserRestControllerComponentTest {
 
     @Test
     public void updatePreconditionFailedEmail() throws Exception {
-        User user = userWithTestValues();
+        User user = TestDataUtility.userWithTestValues();
         usersToCleanup.add(userDao.create(user));
 
-        User userToUpdate = userWithTestValues();
+        User userToUpdate = TestDataUtility.userWithTestValues();
         userToUpdate.setEmail(null);
 
         // exercise endpoint
@@ -215,10 +215,10 @@ public class UserRestControllerComponentTest {
 
     @Test
     public void updatePreconditionFailedPassword() throws Exception {
-        User user = userWithTestValues();
+        User user = TestDataUtility.userWithTestValues();
         usersToCleanup.add(userDao.create(user));
 
-        User userToUpdate = userWithTestValues();
+        User userToUpdate = TestDataUtility.userWithTestValues();
         userToUpdate.setPassword(null);
 
         // exercise endpoint
@@ -233,7 +233,7 @@ public class UserRestControllerComponentTest {
 
     @Test
     public void readById() {
-        User user = userWithTestValues();
+        User user = TestDataUtility.userWithTestValues();
         usersToCleanup.add(userDao.create(user));
 
         // exercise endpoint
@@ -251,7 +251,7 @@ public class UserRestControllerComponentTest {
 
     @Test
     public void readByIdNotFound() {
-        Long userId = randomLong();
+        Long userId = TestDataUtility.randomLong();
 
         // exercise endpoint
         given().header(new Header("Authorization", authorizationToken))
@@ -266,9 +266,9 @@ public class UserRestControllerComponentTest {
     public void readAll() {
         List<User> persistedUsers = new ArrayList<>();
         persistedUsers.add(userDao.readByEmail(DEFAULT_USER_EMAIL)); // need default user in here
-        int randInt = randomInt(10, 30);
+        int randInt = TestDataUtility.randomInt(10, 30);
         for (int i = 0; i < randInt; i++) {
-            User user = userWithTestValues();
+            User user = TestDataUtility.userWithTestValues();
             userDao.create(user);
             usersToCleanup.add(user);
             persistedUsers.add(user);
@@ -288,7 +288,7 @@ public class UserRestControllerComponentTest {
 
     @Test
     public void deleteById() {
-        User user = userWithTestValues();
+        User user = TestDataUtility.userWithTestValues();
         userDao.create(user);
 
         // exercise endpoint
@@ -303,7 +303,7 @@ public class UserRestControllerComponentTest {
 
     @Test
     public void deleteByIdNotFound() {
-        Long userId = randomLong();
+        Long userId = TestDataUtility.randomLong();
 
         // exercise endpoint
         given().header(new Header("Authorization", authorizationToken))

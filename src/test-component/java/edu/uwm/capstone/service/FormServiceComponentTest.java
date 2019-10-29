@@ -5,7 +5,6 @@ import edu.uwm.capstone.db.FormDefinitionDao;
 import edu.uwm.capstone.db.UserDao;
 import edu.uwm.capstone.model.*;
 import edu.uwm.capstone.util.TestDataUtility;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,15 +65,13 @@ public class FormServiceComponentTest {
 
         User user = userDao.create(TestDataUtility.userWithTestValues());
         usersToCleanup.add(user);
-        
-        Form createForm = TestDataUtility.formWithTestValues(formDef, user.getId());
-        formsToCleanup.add(createForm);
 
-        formService.create(createForm);
+        Form createForm = formService.create(TestDataUtility.formWithTestValues(formDef, user.getId()));
+
         assertNotNull(createForm.getId());
         assertNotNull(createForm.getCreatedDate());
-        Form verifyForm = formService.read(createForm.getId());
-        assertEquals(createForm, verifyForm);
+
+        formsToCleanup.add(createForm);
     }
 
     /**
@@ -101,8 +98,7 @@ public class FormServiceComponentTest {
         FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
         formDefsToCleanup.add(createFormDef);
 
-        Form createForm = TestDataUtility.formWithTestValues(createFormDef, TestDataUtility.randomLong());
-        formService.create(createForm);
+        formService.create(TestDataUtility.formWithTestValues(createFormDef, TestDataUtility.randomLong()));
     }
 
     /**
@@ -256,11 +252,8 @@ public class FormServiceComponentTest {
         User user = userDao.create(TestDataUtility.userWithTestValues());
         usersToCleanup.add(user);
 
-        Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+        Form createForm = formService.create(TestDataUtility.formWithTestValues(createFormDef, user.getId()));
         formsToCleanup.add(createForm);
-
-        formService.create(createForm);
-        assertNotNull(createForm.getId());
 
         Form readForm = formService.read(createForm.getId());
         assertNotNull(readForm);
@@ -282,8 +275,7 @@ public class FormServiceComponentTest {
      */
     @Test(expected = RuntimeException.class)
     public void readNonExistentForm() {
-        Long id = TestDataUtility.randomLong();
-        formService.read(id);
+        formService.read(TestDataUtility.randomLong());
     }
 
     /**
@@ -300,10 +292,8 @@ public class FormServiceComponentTest {
             User user = userDao.create(TestDataUtility.userWithTestValues());
             usersToCleanup.add(user);
 
-            Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+            Form createForm = formService.create(TestDataUtility.formWithTestValues(createFormDef, user.getId()));
             formsToCleanup.add(createForm);
-
-            formService.create(createForm);
             persistedForms.add(createForm);
         }
         assertEquals(persistedForms, formService.readAll());
@@ -316,6 +306,7 @@ public class FormServiceComponentTest {
     public void readAllFormsByUserId() {
         User user = userDao.create(TestDataUtility.userWithTestValues());
         usersToCleanup.add(user);
+        Long userId = user.getId();
 
         List<Form> persistedForms = new ArrayList<>();
         int randInt = TestDataUtility.randomInt(10, 30);
@@ -323,16 +314,26 @@ public class FormServiceComponentTest {
             FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
             formDefsToCleanup.add(createFormDef);
 
-            Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+            Form createForm = formService.create(TestDataUtility.formWithTestValues(createFormDef, user.getId()));
             formsToCleanup.add(createForm);
-
-            formService.create(createForm);
             persistedForms.add(createForm);
         }
-        assertEquals(persistedForms, formService.readAllByUserId(user.getId()));
+
+        // create more forms
+        for (int i = 0; i < randInt; i++) {
+            // need a form definition in the db connected to the form
+            FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+            formDefsToCleanup.add(createFormDef);
+
+            // need a user in the db connected to the form
+            user = userDao.create(TestDataUtility.userWithTestValues());
+            usersToCleanup.add(user);
+
+            formsToCleanup.add(formService.create(TestDataUtility.formWithTestValues(createFormDef, user.getId())));
+        }
+        assertEquals(persistedForms, formService.readAllByUserId(userId));
     }
 
-    // TODO finish remaining tests
     /**
      * Verify that {@link FormService#update} is working correctly.
      */
@@ -359,13 +360,13 @@ public class FormServiceComponentTest {
         assertNotNull(verifyCreateForm);
         assertEquals(form, verifyCreateForm);
 
-        Form updateform = TestDataUtility.formWithTestValues(formDefinition, user.getId());
-        updateform.setId(form.getId());
-        formService.update(updateform);
+        Form updateForm = TestDataUtility.formWithTestValues(formDefinition, user.getId());
+        updateForm.setId(form.getId());
+        formService.update(updateForm);
 
-        Form verifyUpdateForm = formService.read(updateform.getId());
+        Form verifyUpdateForm = formService.read(updateForm.getId());
         assertNotNull(verifyUpdateForm);
-        assertEquals(updateform, verifyUpdateForm);
+        assertEquals(updateForm, verifyUpdateForm);
         assertNotEquals(verifyUpdateForm, verifyCreateForm);
     }
 
@@ -407,7 +408,6 @@ public class FormServiceComponentTest {
      */
     @Test(expected = RuntimeException.class)
     public void updateFormUnknownFieldDefId() {
-
         //create form definitions
         FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
         formDefinitionDao.create(formDefinition);
@@ -430,13 +430,9 @@ public class FormServiceComponentTest {
         assertEquals(form, verifyCreateForm);
 
         Form updateForm = TestDataUtility.formWithTestValues(formDefinition, user.getId());
-        updateForm.setName(TestDataUtility.randomAlphabetic(10));
-
-        //create fieldDef
-        FieldDefinition fieldDefinition = TestDataUtility.fieldDefWithTestValues();
 
         List<Field> fieldDefinitions = new ArrayList<>();
-        Field fd = TestDataUtility.fieldWithTestValues(fieldDefinition);
+        Field fd = TestDataUtility.fieldWithTestValues(TestDataUtility.fieldDefWithTestValues());
         fieldDefinitions.add(fd);
         updateForm.setFields(fieldDefinitions);
         formService.update(updateForm);

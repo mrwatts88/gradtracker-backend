@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uwm.capstone.Application;
 import edu.uwm.capstone.db.FormDefinitionDao;
 import edu.uwm.capstone.model.FormDefinition;
+import edu.uwm.capstone.util.TestDataUtility;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.response.ExtractableResponse;
@@ -27,7 +28,6 @@ import java.util.List;
 
 import static edu.uwm.capstone.security.SecurityConstants.AUTHENTICATE_URL;
 import static edu.uwm.capstone.security.SecurityConstants.DEFAULT_USER_CREDENTIALS;
-import static edu.uwm.capstone.util.TestDataUtility.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
@@ -93,7 +93,7 @@ public class FormDefinitionControllerComponentTest {
      */
     @Test
     public void create() throws Exception {
-        FormDefinition formToCreate = formDefWithTestValues();
+        FormDefinition formToCreate = TestDataUtility.formDefWithTestValues();
 
         // exercise endpoint
         ExtractableResponse<Response> response = given()
@@ -119,8 +119,8 @@ public class FormDefinitionControllerComponentTest {
      */
     @Test
     public void createPreconditionFailedId() throws Exception {
-        FormDefinition formDefinition = formDefWithTestValues();
-        formDefinition.setId(randomLong());
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
+        formDefinition.setId(TestDataUtility.randomLong());
 
         // exercise endpoint
         given().header(new Header("Authorization", authorizationToken))
@@ -138,7 +138,7 @@ public class FormDefinitionControllerComponentTest {
      */
     @Test
     public void createPreconditionFailedName() throws Exception {
-        FormDefinition formDefinition = formDefWithTestValues();
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
         formDefinition.setName(null);
 
         // exercise endpoint
@@ -158,7 +158,7 @@ public class FormDefinitionControllerComponentTest {
      */
     @Test
     public void createPreconditionFailedEmptyFieldDefinitions() throws Exception {
-        FormDefinition formDefinition = formDefWithTestValues();
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
         formDefinition.setFieldDefs(Collections.emptyList());
 
         // exercise endpoint
@@ -177,10 +177,10 @@ public class FormDefinitionControllerComponentTest {
      */
     @Test
     public void update() throws Exception {
-        FormDefinition formDefinition = formDefWithTestValues();
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
         formsToCleanup.add(formDefinitionDao.create(formDefinition));
 
-        FormDefinition formDefinitionToUpdate = formDefWithTestValues();
+        FormDefinition formDefinitionToUpdate = TestDataUtility.formDefWithTestValues();
 
         // exercise endpoint
         given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -201,8 +201,8 @@ public class FormDefinitionControllerComponentTest {
      */
     @Test
     public void updateNotFound() throws Exception {
-        FormDefinition formDefinitionToUpdate = formDefWithTestValues();
-        formDefinitionToUpdate.setId(randomLong());
+        FormDefinition formDefinitionToUpdate = TestDataUtility.formDefWithTestValues();
+        formDefinitionToUpdate.setId(TestDataUtility.randomLong());
 
         // exercise endpoint
         given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -219,10 +219,10 @@ public class FormDefinitionControllerComponentTest {
      */
     @Test
     public void updatePreconditionFailedName() throws Exception {
-        FormDefinition formDefinition = formDefWithTestValues();
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
         formsToCleanup.add(formDefinitionDao.create(formDefinition));
 
-        FormDefinition formDefinitionToUpdate = formDefWithTestValues();
+        FormDefinition formDefinitionToUpdate = TestDataUtility.formDefWithTestValues();
         formDefinitionToUpdate.setName(null);
 
         // exercise endpoint
@@ -241,10 +241,10 @@ public class FormDefinitionControllerComponentTest {
      */
     @Test
     public void updatePreconditionFailedEmptyFieldDefinitions() throws Exception {
-        FormDefinition formDefinition = formDefWithTestValues();
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
         formsToCleanup.add(formDefinitionDao.create(formDefinition));
 
-        FormDefinition formDefinitionToUpdate = formDefWithTestValues();
+        FormDefinition formDefinitionToUpdate = TestDataUtility.formDefWithTestValues();
         formDefinitionToUpdate.setFieldDefs(Collections.emptyList());
 
         // exercise endpoint
@@ -263,11 +263,11 @@ public class FormDefinitionControllerComponentTest {
      */
     @Test
     public void updatePreconditionFailedUnknownFieldDefinitionId() throws Exception {
-        FormDefinition formDefinition = formDefWithTestValues();
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
         formsToCleanup.add(formDefinitionDao.create(formDefinition));
 
-        FormDefinition formDefinitionToUpdate = formDefWithTestValues();
-        Long randLong = randomLong();
+        FormDefinition formDefinitionToUpdate = TestDataUtility.formDefWithTestValues();
+        Long randLong = TestDataUtility.randomLong();
         formDefinitionToUpdate.getFieldDefs().get(1).setId(randLong);
 
         // exercise endpoint
@@ -287,7 +287,7 @@ public class FormDefinitionControllerComponentTest {
      **/
     @Test
     public void readById() {
-        FormDefinition formDefinition = formDefWithTestValues();
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
         formsToCleanup.add(formDefinitionDao.create(formDefinition));
 
         // exercise endpoint
@@ -309,7 +309,7 @@ public class FormDefinitionControllerComponentTest {
      **/
     @Test
     public void readByIdNotFound() {
-        Long formDefId = randomLong();
+        Long formDefId = TestDataUtility.randomLong();
 
         // exercise endpoint
         given().header(new Header("Authorization", authorizationToken))
@@ -326,9 +326,9 @@ public class FormDefinitionControllerComponentTest {
     @Test
     public void readAll() {
         List<FormDefinition> persistedFormDefs = new ArrayList<>();
-        int randInt = randomInt(10, 30);
+        int randInt = TestDataUtility.randomInt(10, 30);
         for (int i = 0; i < randInt; i++) {
-            FormDefinition formDefinition = formDefWithTestValues();
+            FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
             formsToCleanup.add(formDefinition);
             persistedFormDefs.add(formDefinitionDao.create(formDefinition));
         }
@@ -351,7 +351,7 @@ public class FormDefinitionControllerComponentTest {
      **/
     @Test
     public void deleteById() {
-        FormDefinition formDefinition = formDefWithTestValues();
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
         formDefinitionDao.create(formDefinition);
 
         // exercise endpoint
@@ -370,7 +370,7 @@ public class FormDefinitionControllerComponentTest {
      **/
     @Test
     public void deleteByIdNotFound() {
-        Long formDefId = randomLong();
+        Long formDefId = TestDataUtility.randomLong();
 
         // exercise endpoint
         given().header(new Header("Authorization", authorizationToken))
