@@ -60,9 +60,6 @@ public class FormControllerComponentTest {
     private FormDao formDao;
 
     @Autowired
-    private FormService formService;
-
-    @Autowired
     private FormDefinitionDao formDefinitionDao;
 
     @Autowired
@@ -220,12 +217,12 @@ public class FormControllerComponentTest {
 
         //create form
         Form form = TestDataUtility.formWithTestValues(formDefinition, user.getId());
-        formService.create(form);
+        formDao.create(form);
         formsToCleanup.add(form);
 
         assertNotNull(form.getId());
 
-        Form verifyCreateForm = formService.read(form.getId());
+        Form verifyCreateForm = formDao.read(form.getId());
         assertNotNull(verifyCreateForm);
         assertEquals(form, verifyCreateForm);
 
@@ -261,12 +258,12 @@ public class FormControllerComponentTest {
 
         //create form
         Form form = TestDataUtility.formWithTestValues(formDefinition, user.getId());
-        formService.create(form);
+        formDao.create(form);
         formsToCleanup.add(form);
 
         assertNotNull(form.getId());
 
-        Form verifyCreateForm = formService.read(form.getId());
+        Form verifyCreateForm = formDao.read(form.getId());
         assertNotNull(verifyCreateForm);
         assertEquals(form, verifyCreateForm);
 
@@ -283,128 +280,75 @@ public class FormControllerComponentTest {
     }
 
     /**
-     * Verify that {@link FormRestController#update} is working correctly when a null name is passed in.
+     * Verify that {@link FormRestController#update} is working correctly
+     * when an empty list of {@link edu.uwm.capstone.model.Field} is passed in.
      */
     @Test
-    public void updatePreconditionFailedName() throws Exception {
-        //TODO: find out the spot for "bad request" error (400)
-        assertTrue(true);
-//        //create form definitions
-//        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
-//        formDefinitionDao.create(formDefinition);
-//        formDefsToCleanup.add(formDefinition);
-//
-//        //create user
-//        User user = TestDataUtility.userWithTestValues();
-//        userDao.create(user);
-//        usersToCleanup.add(user);
-//
-//        //create form
-//        Form form = TestDataUtility.formWithTestValues(formDefinition, user.getId());
-//        formService.create(form);
-//        formsToCleanup.add(form);
-//
-//        assertNotNull(form.getId());
-//
-//        Form verifyCreateForm = formService.read(form.getId());
-//        assertNotNull(verifyCreateForm);
-//        assertEquals(form, verifyCreateForm);
-//
-//        Form createFormUpdate = formWithTestValues(formDefinition, user.getId());
-//
-//        createFormUpdate.setName(null);
-//
-//        given().header(new Header("Authorization", authorizationToken))
-//                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                .body(mapper.writeValueAsString(createFormUpdate))
-//                .when()
-//                .put(FormRestController.FORM_PATH + createFormUpdate.getId())
-//                .then().log().ifValidationFails()
-//                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("Form name cannot be null"));
+    public void updatePreconditionFailedEmptyField() throws Exception {
+
+        //create form definitions
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
+        formDefinitionDao.create(formDefinition);
+        formDefsToCleanup.add(formDefinition);
+
+        //create user
+        User user = TestDataUtility.userWithTestValues();
+        userDao.create(user);
+        usersToCleanup.add(user);
+
+        //create form
+        Form form = TestDataUtility.formWithTestValues(formDefinition, user.getId());
+        formDao.create(form);
+        formsToCleanup.add(form);
+
+        form.setCreatedDate(null);
+        form.setFields(Collections.emptyList());
+
+        given().header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .body(mapper.writeValueAsString(form))
+                .when()
+                .put(FormRestController.FORM_PATH + form.getId())
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("Form should have same number of fields as its form definition"));
     }
 
-//    /**
-//     * Verify that {@link FormRestController#update} is working correctly
-//     * when an empty list of {@link edu.uwm.capstone.model.Field} is passed in.
-//     */
-//    @Test
-//    public void updatePreconditionFailedEmptyFieldDefinitions() throws Exception {
-//        // need a form definition in the db connected to the form
-//        FormDefinition createFormDef = formDefinitionDao.create(formDefWithTestValues());
-//        formDefsToCleanup.add(createFormDef);
-//
-//        // need a user in the db connected to the form
-//        User user = userDao.create(userWithTestValues());
-//        usersToCleanup.add(user);
-//
-//        Form createForm = formWithTestValues(createFormDef, user.getId());
-////        formsToCleanup.add(createForm);
-//
-//        formsToCleanup.add(formDao.create(createForm));
-//
-//        // need a form definition in the db connected to the form
-//        FormDefinition UpdateFormDef = formDefinitionDao.create(formDefWithTestValues());
-//        formDefsToCleanup.add(UpdateFormDef);
-//
-//        // need a user in the db connected to the form
-//        User UpdateUser = userDao.create(userWithTestValues());
-//        usersToCleanup.add(UpdateUser);
-//
-//        Form upDateForm = formWithTestValues(UpdateFormDef, UpdateUser.getId());
-//
-//        upDateForm.setFields(Collections.emptyList());
-//
-//        // exercise endpoint
-//        given().header(new Header("Authorization", authorizationToken))
-//                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                .body(mapper.writeValueAsString(upDateForm))
-//                .when()
-//                .put(FormRestController.FORM_PATH + upDateForm.getId())
-//                .then().log().ifValidationFails()
-//                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("Form definition must have at least one field"));
-//    }
-//
-//    /**
-//     * Verify that {@link FormRestController#update} is working correctly
-//     * when a field definition with an unknown id for a {@link Form} is passed in.
-//     */
-//    @Test
-//    public void updatePreconditionFailedUnknownFieldDefinitionId() throws Exception {
-//        // need a form definition in the db connected to the form
-//        FormDefinition createFormDef = formDefinitionDao.create(formDefWithTestValues());
-//        formDefsToCleanup.add(createFormDef);
-//
-//        // need a user in the db connected to the form
-//        User user = userDao.create(userWithTestValues());
-//        usersToCleanup.add(user);
-//
-//        Form createForm = formWithTestValues(createFormDef, user.getId());
-//
-//        formsToCleanup.add(formDao.create(createForm));
-//
-//        // need a form definition in the db connected to the form
-//        FormDefinition updateFormDef = formDefinitionDao.create(formDefWithTestValues());
-//        formDefsToCleanup.add(updateFormDef);
-//
-//        // need a user in the db connected to the form
-//        User updateUser = userDao.create(userWithTestValues());
-//        usersToCleanup.add(updateUser);
-//
-//        Form updateForm = formWithTestValues(updateFormDef, updateUser.getId());
-//
-//        Long randLong = randomLong();
-//        updateForm.getFields().get(1).setId(randLong);
-//
-//        // exercise endpoint
-//        given().header(new Header("Authorization", authorizationToken))
-//                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                .body(mapper.writeValueAsString(updateForm))
-//                .when()
-//                .put(FormRestController.FORM_PATH + updateForm.getId())
-//                .then().log().ifValidationFails()
-//                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("Could not update form " + updateForm.getId() +
-//                " - found a field with id = " + randLong + " which is not associated with this form"));
-//    }
+    /**
+     * Verify that {@link FormRestController#update} is working correctly
+     * when a field with an unknown id for a {@link Form} is passed in.
+     */
+    @Test
+    public void updatePreconditionFailedUnknownFieldDefinitionId() throws Exception {
+
+        //create form definitions
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
+        formDefinitionDao.create(formDefinition);
+        formDefsToCleanup.add(formDefinition);
+
+        //create user
+        User user = TestDataUtility.userWithTestValues();
+        userDao.create(user);
+        usersToCleanup.add(user);
+
+        //create form
+        Form form = TestDataUtility.formWithTestValues(formDefinition, user.getId());
+        formDao.create(form);
+        formsToCleanup.add(form);
+
+        Long randLong = randomLong();
+        form.getFields().get(1).setId(randLong);
+        form.setCreatedDate(null);
+        form.getFields().forEach(field -> field.setCreatedDate(null));
+
+        given().header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .body(mapper.writeValueAsString(form))
+                .when()
+                .put(FormRestController.FORM_PATH + form.getId())
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("Could not update form " + form.getId() +
+                " - found a field with id = " + randLong + " which is not associated with this form"));
+    }
 
     /**
      * Verify that {@link FormRestController #read} is working correctly
