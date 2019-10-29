@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -453,23 +452,23 @@ public class FormDaoComponentTest {
 //        updateUser.getFields().get(1).setData(RandomStringUtils.randomAlphabetic(2000));
 //        formDao.update(updateUser);
 //    }
-//
+
     /**
      * Verify that {@link FormDao#delete} is working correctly.
      */
-    @Test(expected = RuntimeException.class)
+    @Test
     public void delete() {
-        FormDefinition form_def = TestDataUtility.formDefWithTestValues();
-        Form sample_form = TestDataUtility.formWithTestValues(form_def, TestDataUtility.randomLong());
-        formDao.create(sample_form);
-        assertNotNull(sample_form.getId());
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
 
-        Form verify_form = formDao.read(sample_form.getId());
-        assertNotNull(verify_form);
-        assertEquals(sample_form.getId(), verify_form.getId());
-        assertEquals(sample_form, verify_form);
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
 
-        formDao.delete(sample_form.getId());
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+        formDao.create(createForm);
+        assertNotNull(createForm.getId());
+
+        formDao.delete(createForm.getId());
     }
 
     /**
@@ -477,7 +476,7 @@ public class FormDaoComponentTest {
      */
     @Test(expected = RuntimeException.class)
     public void deleteNonExistentForm() {
-        Long id = new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong();
+        Long id = TestDataUtility.randomLong();
         formDao.delete(id);
     }
 }
