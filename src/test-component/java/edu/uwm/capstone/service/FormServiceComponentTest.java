@@ -5,6 +5,7 @@ import edu.uwm.capstone.db.FormDefinitionDao;
 import edu.uwm.capstone.db.UserDao;
 import edu.uwm.capstone.model.*;
 import edu.uwm.capstone.util.TestDataUtility;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,8 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -333,118 +333,148 @@ public class FormServiceComponentTest {
     }
 
     // TODO finish remaining tests
-//    /**
-//     * Verify that {@link FormService#update} is working correctly.
-//     */
-//    @Test
-//    public void update() {
-//        Form createform = TestDataUtility.formWithTestValues();
-//        formService.create(createform);
-//        assertNotNull(createform.getId());
-//        formsToCleanup.add(createform);
-//
-//        Form verifyCreateform = formService.read(createform.getId());
-//        assertNotNull(verifyCreateform);
-//        assertEquals(createform, verifyCreateform);
-//
-//        Form updateform = TestDataUtility.formWithTestValues();
-//        updateform.setId(createform.getId());
-//        formService.update(updateform);
-//
-//        Form verifyUpdateform = formService.read(updateform.getId());
-//        assertNotNull(verifyUpdateform);
-//        assertEquals(updateform, verifyUpdateform);
-//        assertNotEquals(verifyUpdateform, verifyCreateform);
-//    }
-//
-//    /**
-//     * Verify that {@link FormService#update} is working correctly when a request for creating a null object is made.
-//     */
-//    @Test(expected = RuntimeException.class)
-//    public void updateNullform() {
-//        formService.update(null);
-//        assertNull(formService.readAll());
-//    }
-//
-//    /**
-//     * Verify that {@link FormService#update} is working correctly when a request for a non-existent {@link Form#id} is made.
-//     */
-//    @Test(expected = RuntimeException.class)
-//    public void updateNonExistentform() {
-//        // create a random user id that will not be in our local database
-//        Form updateform = TestDataUtility.formWithTestValues();
-//        updateform.setId(TestDataUtility.randomLong());
-//        formService.update(updateform);
-//        assertNull(formService.readAll());
-//    }
-//
-//    /**
-//     * Verify that {@link FormService#update} is working correctly when a request for a {@link Form} that contains a value
-//     * which exceeds the database configuration is made.
-//     */
-//    @Test(expected = RuntimeException.class)
-//    public void updateformColumnTooLong() {
-//        // generate a test user value with a column that will exceed the database configuration
-//        Form createform = TestDataUtility.formWithTestValues();
-//        formService.create(createform);
-//        assertNotNull(createform.getId());
-//        formsToCleanup.add(createform);
-//
-//        Form verifyform = formService.read(createform.getId());
-//        assertNotNull(verifyform);
-//        assertEquals(createform, verifyform);
-//
-//        Form updateform = TestDataUtility.formWithTestValues();
-//        updateform.setId(createform.getId());
-//        updateform.setName(RandomStringUtils.randomAlphabetic(2000));
-//        formService.update(updateform);
-//    }
-//
-//    /**
-//     * Verify that {@link FormService#update} is working correctly when field definitions are updated
-//     * but not exist for form definition.
-//     */
-//    @Test(expected = RuntimeException.class)
-//    public void updateformUnknownFieldDefId() {
-//        Form createform = TestDataUtility.formWithTestValues();
-//        formService.create(createform);
-//        assertNotNull(createform.getId());
-//
-//        Form verifyCreateform = formService.read(createform.getId());
-//        assertNotNull(verifyCreateform);
-//        assertEquals(createform, verifyCreateform);
-//        formsToCleanup.add(createform);
-//
-//        Form updateform = new Form();
-//        updateform.setName(TestDataUtility.randomAlphabetic(10));
-//        List<FieldDefinition> fieldDefinitions = new ArrayList<>();
-//        FieldDefinition fd = TestDataUtility.fieldDefWithTestValues();
-//        fd.setId(TestDataUtility.randomLong());
-//        fieldDefinitions.add(fd);
-//        updateform.setFieldDefs(fieldDefinitions);
-//        formService.update(updateform);
-//    }
-//
-//    /**
-//     * Verify that {@link FormService#update} is working correctly when field definitions are updated
-//     * but without FieldDef.
-//     */
-//    @Test(expected = RuntimeException.class)
-//    public void updateFieldDefEmptyFieldDefs() {
-//        Form createform = TestDataUtility.formWithTestValues();
-//        formService.create(createform);
-//        assertNotNull(createform.getId());
-//
-//        Form verifyCreateform = formService.read(createform.getId());
-//        assertNotNull(verifyCreateform);
-//        assertEquals(createform, verifyCreateform);
-//        formsToCleanup.add(createform);
-//
-//        Form updateform = TestDataUtility.formWithTestValues();
-//        updateform.setId(verifyCreateform.getId());
-//        updateform.setFieldDefs(Collections.emptyList());
-//        formService.update(updateform);
-//    }
+    /**
+     * Verify that {@link FormService#update} is working correctly.
+     */
+    @Test
+    public void update() {
+        //create form definitions
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
+        formDefinitionDao.create(formDefinition);
+        formDefsToCleanup.add(formDefinition);
+
+        //create user
+        User user = TestDataUtility.userWithTestValues();
+        userDao.create(user);
+        usersToCleanup.add(user);
+
+        //create form
+        Form form = TestDataUtility.formWithTestValues(formDefinition, user.getId());
+        formService.create(form);
+        formsToCleanup.add(form);
+
+        assertNotNull(form.getId());
+
+        Form verifyCreateForm = formService.read(form.getId());
+        assertNotNull(verifyCreateForm);
+        assertEquals(form, verifyCreateForm);
+
+        Form updateform = TestDataUtility.formWithTestValues(formDefinition, user.getId());
+        updateform.setId(form.getId());
+        formService.update(updateform);
+
+        Form verifyUpdateForm = formService.read(updateform.getId());
+        assertNotNull(verifyUpdateForm);
+        assertEquals(updateform, verifyUpdateForm);
+        assertNotEquals(verifyUpdateForm, verifyCreateForm);
+    }
+
+    /**
+     * Verify that {@link FormService#update} is working correctly when a request for creating a null object is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void updateNullForm() {
+        formService.update(null);
+        assertNull(formService.readAll());
+    }
+
+    /**
+     * Verify that {@link FormService#update} is working correctly when a request for a non-existent {@link Form#id} is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void updateNonExistentForm() {
+        // create a random user id that will not be in our local database
+
+        //create form definitions
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
+        formDefinitionDao.create(formDefinition);
+        formDefsToCleanup.add(formDefinition);
+
+        //create user
+        User user = TestDataUtility.userWithTestValues();
+        userDao.create(user);
+        usersToCleanup.add(user);
+
+        Form updateForm = TestDataUtility.formWithTestValues(formDefinition, user.getId());
+        updateForm.setId(TestDataUtility.randomLong());
+        formService.update(updateForm);
+        assertNull(formService.readAll());
+    }
+
+    /**
+     * Verify that {@link FormService#update} is working correctly when field definitions are updated
+     * but not exist for form definition.
+     */
+    @Test(expected = RuntimeException.class)
+    public void updateFormUnknownFieldDefId() {
+
+        //create form definitions
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
+        formDefinitionDao.create(formDefinition);
+        formDefsToCleanup.add(formDefinition);
+
+        //create user
+        User user = TestDataUtility.userWithTestValues();
+        userDao.create(user);
+        usersToCleanup.add(user);
+
+        //create form
+        Form form = TestDataUtility.formWithTestValues(formDefinition, user.getId());
+        formService.create(form);
+        formsToCleanup.add(form);
+
+        assertNotNull(form.getId());
+
+        Form verifyCreateForm = formService.read(form.getId());
+        assertNotNull(verifyCreateForm);
+        assertEquals(form, verifyCreateForm);
+
+        Form updateForm = TestDataUtility.formWithTestValues(formDefinition, user.getId());
+        updateForm.setName(TestDataUtility.randomAlphabetic(10));
+
+        //create fieldDef
+        FieldDefinition fieldDefinition = TestDataUtility.fieldDefWithTestValues();
+
+        List<Field> fieldDefinitions = new ArrayList<>();
+        Field fd = TestDataUtility.fieldWithTestValues(fieldDefinition);
+        fieldDefinitions.add(fd);
+        updateForm.setFields(fieldDefinitions);
+        formService.update(updateForm);
+    }
+
+    /**
+     * Verify that {@link FormService#update} is working correctly when field definitions are updated
+     * but without FieldDef.
+     */
+    @Test(expected = RuntimeException.class)
+    public void updateFieldDefEmptyFieldDefs() {
+
+        //create form definitions
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
+        formDefinitionDao.create(formDefinition);
+        formDefsToCleanup.add(formDefinition);
+
+        //create user
+        User user = TestDataUtility.userWithTestValues();
+        userDao.create(user);
+        usersToCleanup.add(user);
+
+        //create form
+        Form form = TestDataUtility.formWithTestValues(formDefinition, user.getId());
+        formService.create(form);
+        formsToCleanup.add(form);
+
+        assertNotNull(form.getId());
+
+        Form verifyCreateForm = formService.read(form.getId());
+        assertNotNull(verifyCreateForm);
+        assertEquals(form, verifyCreateForm);
+
+        Form updateForm = TestDataUtility.formWithTestValues(formDefinition, user.getId());
+        updateForm.setId(verifyCreateForm.getId());
+        updateForm.setFields(Collections.emptyList());
+        formService.update(updateForm);
+    }
 
     /**
      * Verify that {@link FormService#delete} is working correctly.

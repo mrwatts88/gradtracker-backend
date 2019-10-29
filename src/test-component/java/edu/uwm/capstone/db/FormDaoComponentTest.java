@@ -3,6 +3,7 @@ package edu.uwm.capstone.db;
 import edu.uwm.capstone.UnitTestConfig;
 import edu.uwm.capstone.model.*;
 import edu.uwm.capstone.util.TestDataUtility;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -34,9 +36,13 @@ public class FormDaoComponentTest {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private FieldDefinitionDao fieldDefinitionDao;
+
     private List<Form> formsToCleanUp = new ArrayList<>();
     private List<FormDefinition> formDefsToCleanup = new ArrayList<>();
     private List<User> usersToCleanup = new ArrayList<>();
+    private List<FieldDefinition> fieldDefsToCleanup = new ArrayList<>();
 
     @Before
     public void setUp() {
@@ -59,6 +65,9 @@ public class FormDaoComponentTest {
 
         usersToCleanup.forEach(user -> userDao.delete(user.getId()));
         usersToCleanup.clear();
+
+        fieldDefsToCleanup.forEach(fieldDefinition -> fieldDefinitionDao.delete(fieldDefinition.getId()));
+        fieldDefsToCleanup.clear();
     }
 
     /**
@@ -321,137 +330,194 @@ public class FormDaoComponentTest {
     }
 
     // TODO finish remaining tests
-//    /**
-//     * Verify that {@link FormDao#update} is working correctly.
-//     */
-//    @Test
-//    public void update() {
-//        Form createForm = TestDataUtility.formWithTestValues();
-//        formDao.create(createForm);
-//        assertNotNull(createForm.getId());
+    /**
+     * Verify that {@link FormDao#update} is working correctly.
+     */
+    @Test
+    public void update() {
+        //create form definitions
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
+        formDefinitionDao.create(formDefinition);
+        formDefsToCleanup.add(formDefinition);
+
+        //create user
+        User user = TestDataUtility.userWithTestValues();
+        userDao.create(user);
+        usersToCleanup.add(user);
+
+        //create form
+        Form form = TestDataUtility.formWithTestValues(formDefinition, user.getId());
+        formDao.create(form);
+        formsToCleanUp.add(form);
+
+        assertNotNull(form.getId());
+
+        //verify the form
+        Form verifyCreateForm = formDao.read(form.getId());
+        assertNotNull(verifyCreateForm);
+        assertEquals(form, verifyCreateForm);
+
+        //update the Form
+        Form formUpd = TestDataUtility.formWithTestValues(formDefinition, user.getId());
+        formUpd.setId(form.getId());
+        formDao.update(formUpd);
+
+        Form verifyUpdateForm = formDao.read(formUpd.getId());
+
+        assertNotNull(verifyUpdateForm);
+        assertEquals(formUpd, verifyUpdateForm);
+        assertEquals(verifyUpdateForm.getUserId(), verifyCreateForm.getUserId());
+        assertNotEquals(verifyUpdateForm.getFields(), verifyCreateForm.getFields());
+    }
+
+    /**
+     * Verify that {@link FormDao#update} is working correctly when one field is kept
+     * but all others are replaced by new fields.
+     */
+    @Test
+    public void updateFormLeaveOneFieldTheSame() {
+        //create form definitions
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
+        formDefinitionDao.create(formDefinition);
+        formDefsToCleanup.add(formDefinition);
+
+        //create user
+        User user = TestDataUtility.userWithTestValues();
+        userDao.create(user);
+        usersToCleanup.add(user);
+
+        //create form
+        Form form = TestDataUtility.formWithTestValues(formDefinition, user.getId());
+        formDao.create(form);
+        formsToCleanUp.add(form);
+
+        assertNotNull(form.getId());
+
+        //verify the form
+        Form verifyCreateForm = formDao.read(form.getId());
+        assertNotNull(verifyCreateForm);
+        assertEquals(form, verifyCreateForm);
+
+        //update the Form
+        Form formUpd = TestDataUtility.formWithTestValues(formDefinition, user.getId());
+        List<Field> tmp = form.getFields();
+        tmp.set(0, form.getFields().get(0));
+        formUpd.setFields(tmp);
+
+        formUpd.setId(form.getId());
+        formDao.update(formUpd);
+
+        Form verifyUpdateForm = formDao.read(formUpd.getId());
+
+        assertNotNull(verifyUpdateForm);
+        assertEquals(formUpd, verifyUpdateForm);
+        assertEquals(verifyUpdateForm.getUserId(), verifyCreateForm.getUserId());
+    }
+
+    /**
+     * Verify that {@link FormDao#update} is working correctly when fields are updated
+     * but not removed or added to the form.
+     */
+    @Test (expected = RuntimeException.class)
+    public void updateFormLeaveAllFieldIds() {
+        //create form definitions
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
+        formDefinitionDao.create(formDefinition);
+        formDefsToCleanup.add(formDefinition);
+
+        //create user
+        User user = TestDataUtility.userWithTestValues();
+        userDao.create(user);
+        usersToCleanup.add(user);
+
+        //create form
+        Form form = TestDataUtility.formWithTestValues(formDefinition, user.getId());
+        formDao.create(form);
+        formsToCleanUp.add(form);
+
+        assertNotNull(form.getId());
+
+        //verify the form
+        Form verifyCreateForm = formDao.read(form.getId());
+        assertNotNull(verifyCreateForm);
+        assertEquals(form, verifyCreateForm);
+
+        //update the Form
+        Form formUpd = TestDataUtility.formWithTestValues(formDefinition, user.getId());
+        formUpd.setFields(new ArrayList<>());
+
+        formUpd.setId(form.getId());
+
+        for (Field fd : verifyCreateForm) {
+            FieldDefinition fieldDefinition = TestDataUtility.fieldDefWithTestValues();
+
+            Field updatedField = TestDataUtility.fieldWithTestValues(fieldDefinition);
+            updatedField.setId(fd.getId());
+            formUpd.getFields().add(updatedField);
+        }
+
+        formDao.update(formUpd);
+    }
 //
-//        Form verifyCreateForm = formDao.read(createForm.getId());
-//        assertNotNull(verifyCreateForm);
-//        assertEquals(createForm, verifyCreateForm);
-//
-//        Form updateForm = TestDataUtility.formWithTestValues();
-//        updateForm.setId(createForm.getId());
-//        formDao.update(updateForm);
-//
-//        Form verifyUpdateForm = formDao.read(updateForm.getId());
-//
-//        assertNotNull(verifyUpdateForm);
-//        assertEquals(updateForm, verifyUpdateForm);
-//        assertNotEquals(verifyUpdateForm.getUserId(), verifyCreateForm.getUserId());
-//        assertNotEquals(verifyUpdateForm.getFields(), verifyCreateForm.getFields());
-//    }
-//
-//    /**
-//     * Verify that {@link FormDao#update} is working correctly when one field is kept
-//     * but all others are replaced by new fields.
-//     */
-//    @Test
-//    public void updateFormLeaveOneFieldTheSame() {
-//        Form createForm = TestDataUtility.formWithTestValues();
-//        formDao.create(createForm);
-//        assertNotNull(createForm.getId());
-//
-//        Form verifyCreateForm = formDao.read(createForm.getId());
-//        assertNotNull(verifyCreateForm);
-//        assertEquals(createForm, verifyCreateForm);
-//
-//        Form updateForm = TestDataUtility.formWithTestValues();
-//        updateForm.setId(createForm.getId());
-//        Field fd = verifyCreateForm.getFields().get(1);
-//        updateForm.getFields().add(fd); // add Field from created Form
-//        formDao.update(updateForm);
-//
-//        Form verifyUpdateForm = formDao.read(updateForm.getId());
-//
-//        assertNotNull(verifyUpdateForm);
-//        assertNotEquals(verifyUpdateForm, verifyCreateForm);
-//        assertTrue(verifyCreateForm.getFields().contains(fd));
-//    }
-//
-//    /**
-//     * Verify that {@link FormDao#update} is working correctly when fields are updated
-//     * but not removed or added to the form.
-//     */
-//    @Test
-//    public void updateFormLeaveAllFieldIds() {
-//        Form createForm = TestDataUtility.formWithTestValues();
-//        formDao.create(createForm);
-//        assertNotNull(createForm.getId());
-//
-//        Form verifyCreateForm = formDao.read(createForm.getId());
-//        assertNotNull(verifyCreateForm);
-//        assertEquals(createForm, verifyCreateForm);
-//
-//
-//        Form updateForm = new Form();
-//        updateForm.setFields(new ArrayList<>());
-//
-//        updateForm.setId(createForm.getId());
-//
-//        for (Field fd : verifyCreateForm) {
-//            Field updatedField = TestDataUtility.fieldWithTestValues();
-//            updatedField.setId(fd.getId());
-//            updateForm.getFields().add(updatedField);
-//        }
-//
-//        formDao.update(updateForm);
-//
-//        Form verifyUpdateForm = formDao.read(updateForm.getId());
-//
-//        assertNotNull(verifyUpdateForm);
-//
-//        Field createdField, updatedField;
-//        for (int i = 0; i < verifyCreateForm.getFields().size(); i++) {
-//            createdField = verifyCreateForm.getFields().get(i);
-//            updatedField = verifyUpdateForm.getFields().get(i);
-//            assertEquals(createdField.getId(), updatedField.getId());
-//            assertNotEquals(createdField, updatedField);
-//        }
-//    }
-//
-//    /**
-//     * Verify that {@link FormDao#update} is working correctly when a request for creating a null object is made.
-//     */
-//    @Test(expected = RuntimeException.class)
-//    public void updateNullForm() {
-//        formDao.update(null);
-//    }
-//
-//    /**
-//     * Verify that {@link FormDao#update} is working correctly when a request for a non-existent {@link Form #id} is made.
-//     */
-//
-//    @Test(expected = RuntimeException.class)
-//    public void updateNonExistentForm() {
-//        Form updateForm = TestDataUtility.formWithTestValues();
-//        updateForm.setId(new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong());
-//        formDao.update(updateForm);
-//    }
-//
-//    /**
-//     * Verify that {@link FormDao#update} is working correctly when a request for a {@link Form} that contains a value
-//     * which exceeds the database configuration is made.
-//     */
-//    @Test(expected = RuntimeException.class)
-//    public void updateFormColumnTooLong() {
-//        Form createForm = TestDataUtility.formWithTestValues();
-//        formDao.create(createForm);
-//        assertNotNull(createForm.getId());
-//
-//        Form verifyCreateForm = formDao.read(createForm.getId());
-//        assertNotNull(verifyCreateForm);
-//        assertEquals(createForm, verifyCreateForm);
-//
-//        Form updateUser = TestDataUtility.formWithTestValues();
-//        updateUser.setId(createForm.getId());
-//        updateUser.getFields().get(1).setData(RandomStringUtils.randomAlphabetic(2000));
-//        formDao.update(updateUser);
-//    }
+    /**
+     * Verify that {@link FormDao#update} is working correctly when a request for creating a null object is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void updateNullForm() {
+        formDao.update(null);
+    }
+
+    /**
+     * Verify that {@link FormDao#update} is working correctly when a request for a non-existent {@link Form #id} is made.
+     */
+
+    @Test(expected = RuntimeException.class)
+    public void updateNonExistentForm() {
+        //create form definitions
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
+        formDefinitionDao.create(formDefinition);
+        formDefsToCleanup.add(formDefinition);
+
+        //create user
+        User user = TestDataUtility.userWithTestValues();
+        userDao.create(user);
+        usersToCleanup.add(user);
+
+        Form updateForm = TestDataUtility.formWithTestValues(formDefinition, user.getId());
+        updateForm.setId(new Random().longs(10000L, Long.MAX_VALUE).findAny().getAsLong());
+        formDao.update(updateForm);
+    }
+
+    /**
+     * Verify that {@link FormDao#update} is working correctly when a request for a {@link Form} that contains a value
+     * which exceeds the database configuration is made.
+     */
+    @Test(expected = RuntimeException.class)
+    public void updateFormColumnTooLong() {
+        //create form definitions
+        FormDefinition formDefinition = TestDataUtility.formDefWithTestValues();
+        formDefinitionDao.create(formDefinition);
+        formDefsToCleanup.add(formDefinition);
+
+        //create user
+        User user = TestDataUtility.userWithTestValues();
+        userDao.create(user);
+        usersToCleanup.add(user);
+
+        Form form = TestDataUtility.formWithTestValues(formDefinition, user.getId());
+        formDao.create(form);
+        formsToCleanUp.add(form);
+        assertNotNull(form.getId());
+
+        Form verifyCreateForm = formDao.read(form.getId());
+        assertNotNull(verifyCreateForm);
+        assertEquals(form, verifyCreateForm);
+
+        Form updateUser = TestDataUtility.formWithTestValues(formDefinition, user.getId());
+        updateUser.setId(form.getId());
+        updateUser.getFields().get(1).setData(RandomStringUtils.randomAlphabetic(2000));
+        formDao.update(updateUser);
+    }
 
     /**
      * Verify that {@link FormDao#delete} is working correctly.

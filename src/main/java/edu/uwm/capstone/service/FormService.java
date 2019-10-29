@@ -108,6 +108,11 @@ public class FormService {
             throw new EntityNotFoundException("Could not update form " + form.getId() + " - record not found.");
         }
 
+        if(form.getName() == null)
+        {
+            throw new IllegalArgumentException("Form name cannot be null");
+        }
+
         Assert.isTrue(formInDb.getUserId().equals(form.getUserId()), "Cannot change form's user");
 
         FormDefinition formDefinitionInDb = formDefinitionDao.read(form.getFormDefId());
