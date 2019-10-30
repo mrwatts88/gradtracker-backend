@@ -30,14 +30,14 @@ public class FormDefinitionRestController {
     }
 
     /**
-     * Creates the provided {@link FormDefinition}
+     * Creates the provided {@link FormDefinition}.
      *
-     * @param formDef  {@link FormDefinition}
-     * @param response {@link HttpServletResponse}
-     * @return {@link FormDefinition}
-     * @throws IOException if error response cannot be created.
+     * @param formDef  {@link FormDefinition} to create
+     * @param response {@link HttpServletResponse} that is sent back
+     * @return created {@link FormDefinition}
+     * @throws IOException if error response cannot be created
      */
-    @ApiOperation(value = "Create FormDefinition")
+    @ApiOperation(value = "Create Form Definition")
     @PostMapping(value = FORM_DEF_PATH)
     public FormDefinition create(@RequestBody FormDefinition formDef, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
@@ -54,14 +54,14 @@ public class FormDefinitionRestController {
     }
 
     /**
-     * Get the {@link FormDefinition} by Id
+     * Get a {@link FormDefinition} by its Id.
      *
-     * @param formDefId {@link FormDefinition#getId()}
-     * @param response  {@link HttpServletResponse}
+     * @param formDefId id of the {@link FormDefinition} to read
+     * @param response  {@link HttpServletResponse} that is sent back
      * @return {@link FormDefinition} retrieved from the database
-     * @throws IOException if error response cannot be created.
+     * @throws IOException if error response cannot be created
      */
-    @ApiOperation(value = "Read FormDefinition by ID")
+    @ApiOperation(value = "Read Form Definition by ID")
     @GetMapping(value = FORM_DEF_PATH + "{formDefId}")
     public FormDefinition readById(@PathVariable Long formDefId, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
@@ -74,13 +74,13 @@ public class FormDefinitionRestController {
     }
 
     /**
-     * Gets all the {@link FormDefinition}s
+     * Gets all {@link FormDefinition}s.
      *
-     * @param response {@link HttpServletResponse}
-     * @return {@link FormDefinition} retrieved from the database
-     * @throws IOException if error response cannot be created.
+     * @param response {@link HttpServletResponse} that is sent back
+     * @return list of {@link FormDefinition}s retrieved from the database
+     * @throws IOException if error response cannot be created
      */
-    @ApiOperation(value = "Read All FormDefinition")
+    @ApiOperation(value = "Read All Form Definitions")
     @GetMapping(value = FORM_DEF_PATH)
     public List<FormDefinition> readAll(@ApiIgnore HttpServletResponse response) throws IOException {
         try {
@@ -93,14 +93,15 @@ public class FormDefinitionRestController {
     }
 
     /**
-     * Updates the provided {@link FormDefinition} by Id
+     * Updates a {@link FormDefinition} by its Id.
      *
-     * @param formDefId      {@link FormDefinition#getId()}
-     * @param formDefinition {@link FormDefinition}
-     * @param response       {@link HttpServletResponse}
-     * @throws IOException if error response cannot be created.
+     * @param formDefId      id of the {@link FormDefinition} to update
+     * @param formDefinition updated {@link FormDefinition}
+     * @param response       {@link HttpServletResponse} that is sent back
+     * @return updated {@link FormDefinition}
+     * @throws IOException if error response cannot be created
      */
-    @ApiOperation(value = "Update FormDefinition by ID")
+    @ApiOperation(value = "Update Form Definition by ID")
     @PutMapping(value = FORM_DEF_PATH + "{formDefId}")
     public FormDefinition update(@PathVariable Long formDefId, @RequestBody FormDefinition formDefinition, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
@@ -120,11 +121,11 @@ public class FormDefinitionRestController {
     }
 
     /**
-     * Delete the {@link FormDefinition} by Id
+     * Deletes a {@link FormDefinition} by Id.
      *
-     * @param formDefId {@link FormDefinition#getId()}
-     * @param response  {@link HttpServletResponse}
-     * @throws IOException if error response cannot be created.
+     * @param formDefId id of the {@link FormDefinition} to update
+     * @param response  {@link HttpServletResponse} that is sent back
+     * @throws IOException if error response cannot be created
      */
     @ApiOperation(value = "Delete FormDefinition by ID")
     @DeleteMapping(value = FORM_DEF_PATH + "{formDefId}")

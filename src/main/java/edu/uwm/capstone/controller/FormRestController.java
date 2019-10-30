@@ -1,6 +1,8 @@
 package edu.uwm.capstone.controller;
 
 import edu.uwm.capstone.model.Form;
+import edu.uwm.capstone.model.FormDefinition;
+import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.service.FormService;
 import edu.uwm.capstone.service.exception.EntityNotFoundException;
 import io.swagger.annotations.ApiOperation;
@@ -16,7 +18,6 @@ import java.util.List;
 
 @RestController
 @SuppressWarnings("squid:S1075") // suppress sonar warning about hard-coded URL path
-
 public class FormRestController {
     static final String FORM_PATH = "/form/";
 
@@ -30,12 +31,12 @@ public class FormRestController {
     }
 
     /**
-     * Creates the provided {@link Form}
+     * Creates the provided {@link Form}.
      *
-     * @param form  {@link Form}
-     * @param response {@link HttpServletResponse}
-     * @return {@link Form}
-     * @throws IOException if error response cannot be created.
+     * @param form     {@link Form} to create
+     * @param response {@link HttpServletResponse} that is sent back
+     * @return created {@link Form}
+     * @throws IOException if error response cannot be created
      */
     @ApiOperation(value = "Create Form")
     @PostMapping(value = FORM_PATH)
@@ -54,12 +55,12 @@ public class FormRestController {
     }
 
     /**
-     * Get the {@link Form} by Id
+     * Get a {@link Form} by its Id.
      *
-     * @param formId {@link Form#getId()}
-     * @param response  {@link HttpServletResponse}
+     * @param formId   id of the {@link Form} to read
+     * @param response {@link HttpServletResponse} that is sent back
      * @return {@link Form} retrieved from the database
-     * @throws IOException if error response cannot be created.
+     * @throws IOException if error response cannot be created
      */
     @ApiOperation(value = "Read Form by ID")
     @GetMapping(value = FORM_PATH + "{formId}")
@@ -74,13 +75,13 @@ public class FormRestController {
     }
 
     /**
-     * Gets all the {@link Form}
+     * Gets all {@link Form}s.
      *
-     * @param response {@link HttpServletResponse}
-     * @return {@link Form} retrieved from the database
-     * @throws IOException if error response cannot be created.
+     * @param response {@link HttpServletResponse} that is sent back
+     * @return list of {@link Form}s retrieved from the database
+     * @throws IOException if error response cannot be created
      */
-    @ApiOperation(value = "Read All Form")
+    @ApiOperation(value = "Read All Forms")
     @GetMapping(value = FORM_PATH)
     public List<Form> readAll(@ApiIgnore HttpServletResponse response) throws IOException {
         try {
@@ -93,14 +94,14 @@ public class FormRestController {
     }
 
     /**
-     * Gets all the {@link Form}s that have a form definition id = formDefId
+     * Gets all {@link Form}s that have a {@link Form#getFormDefId()} = formDefId.
      *
-     * @param formDefId id of the form definition
-     * @param response {@link HttpServletResponse}
-     * @return {@link Form} retrieved from the database
-     * @throws IOException if error response cannot be created.
+     * @param formDefId id of the {@link FormDefinition}
+     * @param response  {@link HttpServletResponse} that is sent back
+     * @return list of {@link Form}s retrieved from the database
+     * @throws IOException if error response cannot be created
      */
-    @ApiOperation(value = "Read All Form")
+    @ApiOperation(value = "Read All Forms by Form Definition Id")
     @GetMapping(value = FORM_PATH + "/formDef/{formDefId}")
     public List<Form> readAllByFormDefId(@PathVariable Long formDefId, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
@@ -113,14 +114,14 @@ public class FormRestController {
     }
 
     /**
-     * Gets all the {@link Form}s that were submitted by a User with Id = userId.
+     * Gets all {@link Form}s that have a {@link Form#getUserId()} = userId.
      *
-     * @param userId id of the user
-     * @param response {@link HttpServletResponse}
-     * @return {@link Form} retrieved from the database
-     * @throws IOException if error response cannot be created.
+     * @param userId   id of the {@link User}
+     * @param response {@link HttpServletResponse} that is sent back
+     * @return list of {@link Form}s retrieved from the database
+     * @throws IOException if error response cannot be created
      */
-    @ApiOperation(value = "Read All Form")
+    @ApiOperation(value = "Read All Forms by User Id")
     @GetMapping(value = FORM_PATH + "/user/{userId}")
     public List<Form> readAllByUserId(@PathVariable Long userId, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
@@ -133,12 +134,13 @@ public class FormRestController {
     }
 
     /**
-     * Updates the provided {@link Form} by Id
+     * Updates a {@link Form} by its Id.
      *
-     * @param formId      {@link Form#getId()}
-     * @param form {@link Form}
-     * @param response       {@link HttpServletResponse}
-     * @throws IOException if error response cannot be created.
+     * @param formId   id of the {@link Form} to update
+     * @param form     updated {@link Form}
+     * @param response {@link HttpServletResponse} that is sent back
+     * @return updated {@link Form}
+     * @throws IOException if error response cannot be created
      */
     @ApiOperation(value = "Update Form by ID")
     @PutMapping(value = FORM_PATH + "{formId}")
@@ -162,11 +164,11 @@ public class FormRestController {
     }
 
     /**
-     * Delete the {@link Form} by Id
+     * Deletes a {@link FormDefinition} by Id.
      *
-     * @param formId {@link Form#getId()}
-     * @param response  {@link HttpServletResponse}
-     * @throws IOException if error response cannot be created.
+     * @param formId   id of the {@link Form} to update
+     * @param response {@link HttpServletResponse} that is sent back
+     * @throws IOException if error response cannot be created
      */
     @ApiOperation(value = "Delete Form by ID")
     @DeleteMapping(value = FORM_PATH + "{formId}")

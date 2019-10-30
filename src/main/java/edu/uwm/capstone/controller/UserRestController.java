@@ -30,12 +30,12 @@ public class UserRestController {
     }
 
     /**
-     * Creates the provided {@link User}
+     * Creates the provided {@link User}.
      *
-     * @param user     {@link User}
-     * @param response {@link HttpServletResponse}
-     * @return {@link User}
-     * @throws IOException if error response cannot be created.
+     * @param user  {@link User} to create
+     * @param response {@link HttpServletResponse} that is sent back
+     * @return created {@link User}
+     * @throws IOException if error response cannot be created
      */
     @ApiOperation(value = "Create User")
     @PostMapping(value = USER_PATH)
@@ -54,12 +54,12 @@ public class UserRestController {
     }
 
     /**
-     * Get the {@link User} by Id
+     * Get a {@link User} by its Id.
      *
-     * @param userId   {@link User#getId()}
-     * @param response {@link HttpServletResponse}
+     * @param userId id of the {@link User} to read
+     * @param response  {@link HttpServletResponse} that is sent back
      * @return {@link User} retrieved from the database
-     * @throws IOException if error response cannot be created.
+     * @throws IOException if error response cannot be created
      */
     @ApiOperation(value = "Read User by ID")
     @GetMapping(value = USER_PATH + "{userId}")
@@ -77,7 +77,7 @@ public class UserRestController {
      * Gets all the {@link User}s
      *
      * @param response {@link HttpServletResponse}
-     * @return {@link User} retrieved from the database
+     * @return list of {@link User}s retrieved from the database
      * @throws IOException if error response cannot be created.
      */
     @ApiOperation(value = "Read All Users")
@@ -93,14 +93,15 @@ public class UserRestController {
     }
 
     /**
-     * Updates the provided {@link User} by Id
+     * Updates a {@link User} by its Id.
      *
-     * @param userId   {@link User#getId()}
-     * @param user     {@link User}
-     * @param response {@link HttpServletResponse}
-     * @throws IOException if error response cannot be created.
+     * @param userId      id of the {@link User} to update
+     * @param user updated {@link User}
+     * @param response       {@link HttpServletResponse} that is sent back
+     * @return updated {@link User}
+     * @throws IOException if error response cannot be created
      */
-    @ApiOperation(value = "Update User")
+    @ApiOperation(value = "Update User by ID")
     @PutMapping(value = USER_PATH + "{userId}")
     public User update(@PathVariable Long userId, @RequestBody User user, @ApiIgnore HttpServletResponse response) throws IOException {
         try {
@@ -120,11 +121,11 @@ public class UserRestController {
     }
 
     /**
-     * Delete the {@link User} by Id
+     * Deletes a {@link User} by Id.
      *
-     * @param userId   {@link User#getId()}
-     * @param response {@link HttpServletResponse}
-     * @throws IOException if error response cannot be created.
+     * @param userId id of the {@link User} to update
+     * @param response  {@link HttpServletResponse} that is sent back
+     * @throws IOException if error response cannot be created
      */
     @ApiOperation(value = "Delete User by ID")
     @DeleteMapping(value = USER_PATH + "{userId}")
