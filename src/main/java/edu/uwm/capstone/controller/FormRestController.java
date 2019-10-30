@@ -4,7 +4,6 @@ import edu.uwm.capstone.model.Form;
 import edu.uwm.capstone.model.FormDefinition;
 import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.service.FormService;
-import edu.uwm.capstone.service.exception.EntityNotFoundException;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,17 +40,7 @@ public class FormRestController {
     @ApiOperation(value = "Create Form")
     @PostMapping(value = FORM_PATH)
     public Form create(@RequestBody Form form, @ApiIgnore HttpServletResponse response) throws IOException {
-        try {
-            return formService.create(form);
-        } catch (IllegalArgumentException e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
-            return null;
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-            return null;
-        }
+        return RestControllerUtil.runCallable(() -> formService.create(form), response, LOG);
     }
 
     /**
@@ -65,72 +54,42 @@ public class FormRestController {
     @ApiOperation(value = "Read Form by ID")
     @GetMapping(value = FORM_PATH + "{formId}")
     public Form readById(@PathVariable Long formId, @ApiIgnore HttpServletResponse response) throws IOException {
-        try {
-            return formService.read(formId);
-        } catch (EntityNotFoundException e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-            return null;
-        }
+        return RestControllerUtil.runCallable(() -> formService.read(formId), response, LOG);
     }
 
     /**
      * Gets all {@link Form}s.
      *
-     * @param response {@link HttpServletResponse} that is sent back
      * @return list of {@link Form}s retrieved from the database
-     * @throws IOException if error response cannot be created
      */
     @ApiOperation(value = "Read All Forms")
     @GetMapping(value = FORM_PATH)
-    public List<Form> readAll(@ApiIgnore HttpServletResponse response) throws IOException {
-        try {
-            return formService.readAll();
-        } catch (EntityNotFoundException e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-            return null;
-        }
+    public List<Form> readAll() {
+        return formService.readAll();
     }
 
     /**
      * Gets all {@link Form}s that have a {@link Form#getFormDefId()} = formDefId.
      *
      * @param formDefId id of the {@link FormDefinition}
-     * @param response  {@link HttpServletResponse} that is sent back
      * @return list of {@link Form}s retrieved from the database
-     * @throws IOException if error response cannot be created
      */
     @ApiOperation(value = "Read All Forms by Form Definition Id")
     @GetMapping(value = FORM_PATH + "/formDef/{formDefId}")
-    public List<Form> readAllByFormDefId(@PathVariable Long formDefId, @ApiIgnore HttpServletResponse response) throws IOException {
-        try {
-            return formService.readAllByFormDefId(formDefId);
-        } catch (EntityNotFoundException e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-            return null;
-        }
+    public List<Form> readAllByFormDefId(@PathVariable Long formDefId) {
+        return formService.readAllByFormDefId(formDefId);
     }
 
     /**
      * Gets all {@link Form}s that have a {@link Form#getUserId()} = userId.
      *
      * @param userId   id of the {@link User}
-     * @param response {@link HttpServletResponse} that is sent back
      * @return list of {@link Form}s retrieved from the database
-     * @throws IOException if error response cannot be created
      */
     @ApiOperation(value = "Read All Forms by User Id")
     @GetMapping(value = FORM_PATH + "/user/{userId}")
-    public List<Form> readAllByUserId(@PathVariable Long userId, @ApiIgnore HttpServletResponse response) throws IOException {
-        try {
-            return formService.readAllByUserId(userId);
-        } catch (EntityNotFoundException e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-            return null;
-        }
+    public List<Form> readAllByUserId(@PathVariable Long userId) {
+        return formService.readAllByUserId(userId);
     }
 
     /**
@@ -145,22 +104,8 @@ public class FormRestController {
     @ApiOperation(value = "Update Form by ID")
     @PutMapping(value = FORM_PATH + "{formId}")
     public Form update(@PathVariable Long formId, @RequestBody Form form, @ApiIgnore HttpServletResponse response) throws IOException {
-        try {
-            form.setId(formId);
-            return formService.update(form);
-        } catch (IllegalArgumentException e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
-            return null;
-        } catch (EntityNotFoundException e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-            return null;
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-            return null;
-        }
+        form.setId(formId);
+        return RestControllerUtil.runCallable(() -> formService.update(form), response, LOG);
     }
 
     /**
@@ -173,17 +118,6 @@ public class FormRestController {
     @ApiOperation(value = "Delete Form by ID")
     @DeleteMapping(value = FORM_PATH + "{formId}")
     public void deleteById(@PathVariable Long formId, @ApiIgnore HttpServletResponse response) throws IOException {
-        try {
-            formService.delete(formId);
-        } catch (IllegalArgumentException e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
-        } catch (EntityNotFoundException e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+        RestControllerUtil.runRunnable(() -> formService.delete(formId), response, LOG);
     }
 }

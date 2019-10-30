@@ -2,7 +2,6 @@ package edu.uwm.capstone.controller;
 
 import edu.uwm.capstone.model.FormDefinition;
 import edu.uwm.capstone.service.FormDefinitionService;
-import edu.uwm.capstone.service.exception.EntityNotFoundException;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,17 +39,7 @@ public class FormDefinitionRestController {
     @ApiOperation(value = "Create Form Definition")
     @PostMapping(value = FORM_DEF_PATH)
     public FormDefinition create(@RequestBody FormDefinition formDef, @ApiIgnore HttpServletResponse response) throws IOException {
-        try {
-            return formDefinitionService.create(formDef);
-        } catch (IllegalArgumentException e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
-            return null;
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-            return null;
-        }
+        return RestControllerUtil.runCallable(() -> formDefinitionService.create(formDef), response, LOG);
     }
 
     /**
@@ -64,32 +53,18 @@ public class FormDefinitionRestController {
     @ApiOperation(value = "Read Form Definition by ID")
     @GetMapping(value = FORM_DEF_PATH + "{formDefId}")
     public FormDefinition readById(@PathVariable Long formDefId, @ApiIgnore HttpServletResponse response) throws IOException {
-        try {
-            return formDefinitionService.read(formDefId);
-        } catch (EntityNotFoundException e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-            return null;
-        }
+        return RestControllerUtil.runCallable(() -> formDefinitionService.read(formDefId), response, LOG);
     }
 
     /**
      * Gets all {@link FormDefinition}s.
      *
-     * @param response {@link HttpServletResponse} that is sent back
      * @return list of {@link FormDefinition}s retrieved from the database
-     * @throws IOException if error response cannot be created
      */
     @ApiOperation(value = "Read All Form Definitions")
     @GetMapping(value = FORM_DEF_PATH)
-    public List<FormDefinition> readAll(@ApiIgnore HttpServletResponse response) throws IOException {
-        try {
-            return formDefinitionService.readAll();
-        } catch (EntityNotFoundException e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-            return null;
-        }
+    public List<FormDefinition> readAll() {
+        return formDefinitionService.readAll();
     }
 
     /**
@@ -104,20 +79,8 @@ public class FormDefinitionRestController {
     @ApiOperation(value = "Update Form Definition by ID")
     @PutMapping(value = FORM_DEF_PATH + "{formDefId}")
     public FormDefinition update(@PathVariable Long formDefId, @RequestBody FormDefinition formDefinition, @ApiIgnore HttpServletResponse response) throws IOException {
-        try {
-            formDefinition.setId(formDefId);
-            return formDefinitionService.update(formDefinition);
-        } catch (IllegalArgumentException e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
-        } catch (EntityNotFoundException e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-        return null;
+        formDefinition.setId(formDefId);
+        return RestControllerUtil.runCallable(() -> formDefinitionService.update(formDefinition), response, LOG);
     }
 
     /**
@@ -130,17 +93,6 @@ public class FormDefinitionRestController {
     @ApiOperation(value = "Delete FormDefinition by ID")
     @DeleteMapping(value = FORM_DEF_PATH + "{formDefId}")
     public void deleteById(@PathVariable Long formDefId, @ApiIgnore HttpServletResponse response) throws IOException {
-        try {
-            formDefinitionService.delete(formDefId);
-        } catch (IllegalArgumentException e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
-        } catch (EntityNotFoundException e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+        RestControllerUtil.runRunnable(() -> formDefinitionService.delete(formDefId), response, LOG);
     }
 }
