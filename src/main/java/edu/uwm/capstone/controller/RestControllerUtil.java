@@ -9,6 +9,9 @@ import java.util.concurrent.Callable;
 
 class RestControllerUtil {
 
+    private RestControllerUtil() {
+    } // removes sonarqube code smell
+
     static <T> T runCallable(Callable<T> callable, HttpServletResponse response, Logger log) throws IOException {
         try {
             return callable.call();

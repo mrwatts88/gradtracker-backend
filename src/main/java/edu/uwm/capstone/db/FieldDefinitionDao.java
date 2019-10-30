@@ -12,6 +12,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
@@ -76,7 +77,7 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
         try {
             return this.jdbcTemplate.query(sql("readFieldDefsByFormDefId"), new MapSqlParameterSource("id", id), rowMapper);
         } catch (EmptyResultDataAccessException e) {
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -91,7 +92,7 @@ public class FieldDefinitionDao extends BaseDao<Long, FieldDefinition> {
         try {
             return this.jdbcTemplate.queryForList(sql("readFieldDefIdsByFormDefId"), new MapSqlParameterSource("id", id), Long.class);
         } catch (EmptyResultDataAccessException e) {
-            return null;
+            return Collections.emptyList();
         }
     }
 

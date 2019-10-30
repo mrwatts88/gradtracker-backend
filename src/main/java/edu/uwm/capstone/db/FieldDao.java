@@ -12,6 +12,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 public class FieldDao extends BaseDao<Long, Field>{
     private static final Logger LOG = LoggerFactory.getLogger(FieldDao.class);
@@ -57,7 +58,7 @@ public class FieldDao extends BaseDao<Long, Field>{
         try {
             return this.jdbcTemplate.query(sql("readFieldsByFormId"), new MapSqlParameterSource("form_id", id), rowMapper);
         } catch (EmptyResultDataAccessException e) {
-            return null;
+            return Collections.emptyList();
         }
     }
 
