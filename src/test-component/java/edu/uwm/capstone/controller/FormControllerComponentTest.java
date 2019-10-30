@@ -401,6 +401,54 @@ public class FormControllerComponentTest {
      * Verify that {@link FormRestController#readAll} is working correctly.
      */
     @Test
+    public void readAllByFormDefId() {
+        List<Form> forms = new ArrayList<>();
+        int randInt = TestDataUtility.randomInt(10, 30);
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
+
+        Long formDefId = createFormDef.getId();
+
+        // create user's forms
+        for (int i = 0; i < randInt; i++) {
+            // need a user in the db connected to the form
+            User user = userDao.create(TestDataUtility.userWithTestValues());
+            usersToCleanup.add(user);
+
+            Form createForm = formDao.create(TestDataUtility.formWithTestValues(createFormDef, user.getId()));
+            formsToCleanup.add(createForm);
+            forms.add(createForm);
+        }
+
+        // create more forms
+        for (int i = 0; i < randInt; i++) {
+            // need a form definition in the db connected to the form
+            createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+            formDefsToCleanup.add(createFormDef);
+
+            // need a user in the db connected to the form
+            User user = userDao.create(TestDataUtility.userWithTestValues());
+            usersToCleanup.add(user);
+
+            formsToCleanup.add(formDao.create(TestDataUtility.formWithTestValues(createFormDef, user.getId())));
+        }
+
+        // exercise endpoint
+        ExtractableResponse<Response> response = given()
+                .header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .when()
+                .get(FormRestController.FORM_PATH + "formDef/" + formDefId)
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        assertEquals(forms, response.body().jsonPath().getList(".", Form.class));
+    }
+
+    /**
+     * Verify that {@link FormRestController#readAll} is working correctly.
+     */
+    @Test
     public void readAllByUserId() {
         List<Form> userForms = new ArrayList<>();
         int randInt = TestDataUtility.randomInt(10, 30);
@@ -416,7 +464,6 @@ public class FormControllerComponentTest {
             formDefsToCleanup.add(createFormDef);
 
             Form createForm = formDao.create(TestDataUtility.formWithTestValues(createFormDef, user.getId()));
-
             formsToCleanup.add(createForm);
             userForms.add(createForm);
         }

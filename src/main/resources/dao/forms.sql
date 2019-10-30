@@ -30,6 +30,12 @@ FROM forms
 LEFT JOIN form_defs ON forms.form_def_id = form_defs.id
 WHERE forms.user_id = :user_id;
 
+--STATEMENT readAllFormsByFormDefId
+SELECT forms.*, form_defs.name
+FROM forms
+LEFT JOIN form_defs ON forms.form_def_id = form_defs.id
+WHERE forms.form_def_id = :form_def_id;
+
 --STATEMENT deleteForm
 DELETE FROM forms WHERE id = :id;
 

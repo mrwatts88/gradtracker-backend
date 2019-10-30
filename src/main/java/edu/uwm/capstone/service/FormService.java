@@ -85,6 +85,15 @@ public class FormService {
     }
 
     /**
+     * Retrieves all {@link Form} objects.
+     *
+     * @return
+     */
+    public List<Form> readAllByFormDefId(Long formDefId) {
+        return formDao.readAllByFormDefId(formDefId);
+    }
+
+    /**
      * Retrieves all {@link Form} objects with {@link Form#userId} = userId.
      *
      * @return

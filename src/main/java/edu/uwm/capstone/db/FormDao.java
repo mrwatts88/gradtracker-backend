@@ -94,6 +94,16 @@ public class FormDao extends BaseDao<Long, Form>{
         return forms;
     }
 
+    public List<Form> readAllByFormDefId(Long formDefId) {
+        LOG.trace("Reading all forms by form definition id {}", formDefId);
+        List<Form> forms = this.jdbcTemplate.query(sql("readAllFormsByFormDefId"), new MapSqlParameterSource("form_def_id", formDefId), rowMapper);
+        // uncomment this to return forms with their fields
+        for (Form fd : forms) {
+            fd.setFields(fieldDao.readFieldsByFormId(fd.getId()));
+        }
+        return forms;
+    }
+
     @Override
     public Form update(Form form) {
         if (form == null) {

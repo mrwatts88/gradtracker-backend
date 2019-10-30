@@ -296,6 +296,44 @@ public class FormDaoComponentTest {
     }
 
     /**
+     * Verify that {@link FormDao#readAllByFormDefId} is working correctly,
+     */
+    @Test
+    public void readAllFormsByFormDefId() {
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
+        Long formDefId = createFormDef.getId();
+        
+        List<Form> persistedForms = new ArrayList<>();
+        int randInt = TestDataUtility.randomInt(10, 30);
+        for (int i = 0; i < randInt; i++) {
+
+            User user = userDao.create(TestDataUtility.userWithTestValues());
+            usersToCleanup.add(user);
+
+            Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+            formsToCleanup.add(createForm);
+
+            formDao.create(createForm);
+            persistedForms.add(createForm);
+        }
+
+        // create more forms
+        for (int i = 0; i < randInt; i++) {
+            // need a form definition in the db connected to the form
+            createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+            formDefsToCleanup.add(createFormDef);
+
+            // need a user in the db connected to the form
+            User user = userDao.create(TestDataUtility.userWithTestValues());
+            usersToCleanup.add(user);
+
+            formsToCleanup.add(formDao.create(TestDataUtility.formWithTestValues(createFormDef, user.getId())));
+        }
+        assertEquals(persistedForms, formDao.readAllByFormDefId(formDefId));
+    }
+
+    /**
      * Verify that {@link FormDao#readAllByUserId} is working correctly,
      */
     @Test
