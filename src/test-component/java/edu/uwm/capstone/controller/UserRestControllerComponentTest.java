@@ -313,4 +313,5 @@ public class UserRestControllerComponentTest {
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("Could not delete User " + userId + " - record not found."));
     }
+
 }

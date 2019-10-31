@@ -27,6 +27,7 @@ public class FormDefinition extends BaseEntity implements Iterable<FieldDefiniti
 
     public FieldDefinition getFieldDefinitionById(Long fieldDefId) {
         for (FieldDefinition fd : fieldDefs) {
+            if (fd.getId() == null) continue;
             if (fd.getId().equals(fieldDefId)) {
                 return fd;
             }
