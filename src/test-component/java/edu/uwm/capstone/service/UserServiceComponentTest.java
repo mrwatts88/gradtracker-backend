@@ -95,6 +95,26 @@ public class UserServiceComponentTest {
     }
 
     /**
+     * Verify that {@link UserService#create} is working correctly when a request for a {@link User} with a email already exist in the DB.
+     */
+    @Test(expected = RuntimeException.class)
+    public void createExistUserEmail() {
+        User createUser = TestDataUtility.userWithTestValues();
+        usersToCleanup.add(createUser);
+
+        String passwordBefore = createUser.getPassword();
+        userService.create(createUser);
+
+        assertNotNull(createUser.getId());
+        assertNotNull(createUser.getCreatedDate());
+        assertNotEquals(createUser.getPassword(), passwordBefore);
+
+        User createRepeatUserEmail = TestDataUtility.userWithTestValues();
+        createRepeatUserEmail.setEmail(createUser.getEmail());
+        userService.create(createUser);
+    }
+
+    /**
      * Verify that {@link UserService#create} is working correctly when a request for a {@link User} that contains a value
      * which exceeds the database configuration is made.
      */
