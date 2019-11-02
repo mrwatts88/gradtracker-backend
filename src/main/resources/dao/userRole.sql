@@ -9,6 +9,17 @@ INSERT INTO user_roles (
   :created_date
 );
 
+--STATEMENT createUserRolesByRoleName
+INSERT INTO user_roles (
+  user_id,
+  role_id,
+  created_date
+)  VALUES (
+   :user_id,
+   (SELECT roles.id FROM roles WHERE roles.name = :role_name),
+   :created_date
+)
+
 --STATEMENT readUserRole
 SELECT * FROM user_roles WHERE id = :id;
 
