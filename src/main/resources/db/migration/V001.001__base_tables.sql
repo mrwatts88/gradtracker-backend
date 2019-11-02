@@ -75,7 +75,7 @@ CREATE TABLE user_roles(
     FOREIGN KEY (role_id) REFERENCES roles(id)
 );
 
-CREATE TABLE user_authorities(
+CREATE TABLE role_authorities(
     id BIGINT(20) AUTO_INCREMENT,
     role_id BIGINT(20) NOT NULL,
     authority VARCHAR(255) NOT NULL,
@@ -84,3 +84,4 @@ CREATE TABLE user_authorities(
     PRIMARY KEY (id),
     FOREIGN KEY (role_id) REFERENCES roles(id)
 );
+
