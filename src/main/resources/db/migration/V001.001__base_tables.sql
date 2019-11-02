@@ -18,6 +18,15 @@ CREATE TABLE form_defs(
     PRIMARY KEY (id)
 );
 
+CREATE TABLE roles(
+    id BIGINT(20) AUTO_INCREMENT,
+    name VARCHAR(32) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    created_date BIGINT(25)   NOT NULL,
+    updated_date BIGINT(25) DEFAULT NULL,
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE field_defs(
     id BIGINT(20) AUTO_INCREMENT,
     form_def_id BIGINT(20) NOT NULL,
@@ -53,4 +62,25 @@ CREATE TABLE fields(
     PRIMARY KEY (id),
     FOREIGN KEY (field_def_id) REFERENCES field_defs(id),
     FOREIGN KEY (form_id) REFERENCES forms(id)
+);
+
+CREATE TABLE user_roles(
+    id BIGINT(20) AUTO_INCREMENT,
+    user_id BIGINT(20) NOT NULL,
+    role_id BIGINT(20) NOT NULL,
+    created_date BIGINT(25)   NOT NULL,
+    updated_date BIGINT(25) DEFAULT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (role_id) REFERENCES roles(id)
+);
+
+CREATE TABLE user_authorities(
+    id BIGINT(20) AUTO_INCREMENT,
+    role_id BIGINT(20) NOT NULL,
+    authority VARCHAR(255) NOT NULL,
+    created_date BIGINT(25)   NOT NULL,
+    updated_date BIGINT(25) DEFAULT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (role_id) REFERENCES roles(id)
 );
