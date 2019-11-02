@@ -9,17 +9,35 @@ INSERT INTO roles (
   :created_date
 );
 
---STATEMENT readRole
-SELECT * FROM roles WHERE id = :id;
-
---STATEMENT readAllRole
-SELECT * FROM roles;
+--STATEMENT readRoleById
+SELECT roles.*, role_authorities.authority
+FROM roles
+INNER JOIN role_authorities
+    ON role_authorities.role_id = roles.id
+WHERE roles.id = :id
+ORDER BY role_authorities.authority
 
 --STATEMENT readRoleByName
-SELECT * FROM roles WHERE name = :name;
+SELECT roles.*, role_authorities.authority
+FROM roles
+INNER JOIN role_authorities
+    ON role_authorities.role_id = roles.id
+WHERE roles.name = :name
+ORDER BY role_authorities.authority
+
+--STATEMENT readAllRoles
+SELECT roles.*, role_authorities.authority
+FROM roles
+INNER JOIN role_authorities
+    ON role_authorities.role_id = roles.id
+ORDER BY roles.name, role_authorities.authority
 
 --STATEMENT deleteRole
-DELETE FROM roles WHERE id = :id;
+DELETE
+FROM roles
+INNER JOIN role_authorities
+    ON role_authorities.role_id = roles.id
+WHERE roles.id = :id OR role_authorities.role_id = :id;
 
 --STATEMENT updateRole
 UPDATE roles SET
