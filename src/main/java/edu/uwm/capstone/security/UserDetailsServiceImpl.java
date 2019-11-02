@@ -22,6 +22,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-        return new UserDetailsImpl(user);
+
+//        user.setAuthorityNames(Collections.singletonList("Test"));
+
+        user.setCreatedDate(null);
+        user.setUpdatedDate(null);
+
+        return user;
     }
 }

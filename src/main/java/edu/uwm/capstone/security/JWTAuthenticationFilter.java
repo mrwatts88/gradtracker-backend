@@ -53,20 +53,27 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
-        User user = userDetails.getUser();
+        User user = (User) auth.getPrincipal();
 
-        String token = JWT.create()
-                .withSubject(userDetails.getUsername())
-                .withClaim(JWT_CLAIM_ID, user.getId())
-                .withClaim(JWT_CLAIM_FIRST_NAME, user.getFirstName())
-                .withClaim(JWT_CLAIM_LAST_NAME, user.getLastName())
-                .withClaim(JWT_CLAIM_PANTHER_ID, user.getPantherId())
-                .withClaim(JWT_CLAIM_EMAIL, user.getEmail())
-                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .sign(HMAC512(SECRET.getBytes()));
+//        SimpleFilterProvider filters = new SimpleFilterProvider().addFilter("jwtFilter", SimpleBeanPropertyFilter.filterOutAllExcept("createdDate", "updateDate", "password"));
+//        filters.setFailOnUnknownId(false);
 
-        res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
+        // TODO
+
+//            FilterProvider filters = new SimpleFilterProvider()
+//                    .addFilter("filterDatesAndPassword", SimpleBeanPropertyFilter.serializeAllExcept("createdDate", "updateDate", "password"));
+
+            ObjectMapper om = new ObjectMapper();
+//            om.setFilters(filters);
+
+            String token = JWT.create()
+                    .withSubject(om.writeValueAsString(user))
+                    .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                    .sign(HMAC512(SECRET.getBytes()));
+
+//            System.out.println(token);
+
+            res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
+
     }
-
 }

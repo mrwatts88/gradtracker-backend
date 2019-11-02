@@ -27,4 +27,6 @@ public class SecurityConstants {
 
     public static final String DEFAULT_USER_CREDENTIALS = "{ \"email\": \"" + DEFAULT_USER_EMAIL + "\", \"password\": \"" + DEFAULT_USER_PASSWORD + "\" }";
 
+    public static final String[] authorityNames = new String[]{}; // TODO create authorities
+
 }

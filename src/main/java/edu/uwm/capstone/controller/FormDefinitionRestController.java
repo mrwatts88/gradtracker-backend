@@ -63,6 +63,7 @@ public class FormDefinitionRestController {
      */
     @ApiOperation(value = "Read All Form Definitions")
     @GetMapping(value = FORM_DEF_PATH)
+//    @PreAuthorize("hasAuthority('Test')")
     public List<FormDefinition> readAll() {
         return formDefinitionService.readAll();
     }
