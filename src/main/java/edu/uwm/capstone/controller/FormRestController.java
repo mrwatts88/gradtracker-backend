@@ -69,6 +69,18 @@ public class FormRestController {
     }
 
     /**
+     * Gets all {@link Form}s belonging to the {@link User} with the given Panther ID.
+     * @param pantherId
+     * @return
+     */
+    @ApiOperation(value = "Read All Forms by User's PantherID")
+    @GetMapping(value = FORM_PATH + "panther_id/{pantherId}")
+    public List<Form> readAllByPantherId(@PathVariable String pantherId) {
+        return formService.readAllByPantherId(pantherId);
+    }
+
+
+    /**
      * Gets all {@link Form}s that have a {@link Form#getFormDefId()} = formDefId.
      *
      * @param formDefId id of the {@link FormDefinition}

@@ -104,6 +104,15 @@ public class FormDao extends BaseDao<Long, Form>{
         return forms;
     }
 
+    public List<Form> readAllByPantherId(String pantherId) {
+        LOG.trace("Reading all forms by user's Panther ID.");
+        List<Form> forms = this.jdbcTemplate.query(sql("readAllFormsByPantherId"), new MapSqlParameterSource("panther_id", pantherId), rowMapper);
+        for (Form fd : forms) {
+            fd.setFields(fieldDao.readFieldsByFormId(fd.getId()));
+        }
+        return forms;
+    }
+
     @Override
     public Form update(Form form) {
         if (form == null) {

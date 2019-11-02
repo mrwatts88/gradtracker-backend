@@ -103,6 +103,15 @@ public class FormService {
     }
 
     /**
+     * Retrieves all {@link Form} objects associated with the user whose {@link Form#pantherId} = pantherId.
+     * @param pantherId
+     * @return
+     */
+    public List<Form> readAllByPantherId(String pantherId) {
+        return formDao.readAllByPantherId(pantherId);
+    }
+
+    /**
      * Updates the given {@link Form}.
      *
      * @param form
