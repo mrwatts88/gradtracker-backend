@@ -85,3 +85,54 @@ CREATE TABLE role_authorities(
     FOREIGN KEY (role_id) REFERENCES roles(id)
 );
 
+-- Test data used for persisting a user, role, user_role, and role_authorities
+
+-- INSERT INTO users (
+--   first_name,
+--   last_name,
+--   password,
+--   panther_id,
+--   email,
+--   created_date
+-- ) VALUES (
+--   'fname',
+--   'lname',
+--   '$2a$10$bWmltslQK8lyy.lQJ9JOV.2auLDczsfWhrQb4Jg.mrC8j8zVuepPa',
+--   'p_id',
+--   'email',
+--   1
+-- );
+--
+-- INSERT INTO roles (
+--   name,
+--   description,
+--   created_date
+-- ) VALUES (
+--   'test role',
+--   'role description',
+--   1
+-- );
+--
+-- INSERT INTO user_roles (
+--   user_id,
+--   role_id,
+--   created_date
+-- ) VALUES (
+--   1,
+--   1,
+--   1
+-- );
+--
+-- INSERT INTO role_authorities (
+--   authority,
+--   role_id,
+--   created_date
+-- ) VALUES (
+--   'TEST',
+--   1,
+--   1
+-- ),(
+--   'TEST2',
+--   1,
+--   1
+-- );

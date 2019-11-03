@@ -1,5 +1,6 @@
 package edu.uwm.capstone.security;
 
+import com.google.common.collect.Sets;
 import edu.uwm.capstone.db.UserDao;
 import edu.uwm.capstone.model.User;
 import org.slf4j.Logger;
@@ -78,6 +79,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .email(DEFAULT_USER_EMAIL)
                 .pantherId(DEFAULT_USER_PANTHER_ID)
                 .password(passwordEncoder.encode(DEFAULT_USER_PASSWORD))
+                .enabled(true)
+                .authorities(Sets.newHashSet(Authorities.values()))
                 .build();
 
         LOGGER.info("Persisting default user {}", defaultUser);

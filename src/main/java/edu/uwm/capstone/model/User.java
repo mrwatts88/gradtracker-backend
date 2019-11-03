@@ -2,24 +2,21 @@ package edu.uwm.capstone.model;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import edu.uwm.capstone.security.Authorities;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"authorities", "credentialsNonExpired", "accountNonExpired", "accountNonLocked", "username"})
+@JsonIgnoreProperties({"credentialsNonExpired", "accountNonExpired", "accountNonLocked", "username"})
 public class User extends BaseEntity implements UserDetails {
 
     @JsonFilter("JWTFilter")
@@ -32,13 +29,10 @@ public class User extends BaseEntity implements UserDetails {
     private String pantherId;
     private String email;
     private Boolean enabled = true; // TODO need to add this column to users table
-    private List<String> roleNames;
+    private Set<String> roleNames;
 
     @ApiModelProperty(hidden = true)
-    private List<String> authorityNames;
-
-    @ApiModelProperty(hidden = true)
-    private List<GrantedAuthority> authorities;
+    private Set<Authorities> authorities;
 
     @ApiModelProperty(hidden = true)
     private boolean credentialsNonExpired;
@@ -58,31 +52,18 @@ public class User extends BaseEntity implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (authorities == null) {
-            authorities = new ArrayList<>();
-            if (authorityNames != null) {
-                for (String authName : authorityNames) {
-                    authorities.add(new SimpleGrantedAuthority(authName));
-                }
-            }
-        }
-        return authorities;
-    }
-
-    @Override
     public boolean isAccountNonExpired() {
-        return !enabled; // TODO do we want to use enabled for this?
+        return enabled; // TODO do we want to use enabled for this?
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return !enabled; // TODO do we want to use enabled for this?
+        return enabled; // TODO do we want to use enabled for this?
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return !enabled; // TODO do we want to use enabled for this?
+        return enabled; // TODO do we want to use enabled for this?
     }
 
     @Override

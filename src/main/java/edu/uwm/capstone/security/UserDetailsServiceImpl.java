@@ -23,10 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
 
-//        user.setAuthorityNames(Collections.singletonList("Test"));
-
-        user.setCreatedDate(null);
-        user.setUpdatedDate(null);
+//        user.setAuthorities(Collections.singletonList(Authorities.TEST));
 
         return user;
     }

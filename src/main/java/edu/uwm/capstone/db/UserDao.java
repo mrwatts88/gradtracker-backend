@@ -1,6 +1,7 @@
 package edu.uwm.capstone.db;
 
 import edu.uwm.capstone.model.User;
+import edu.uwm.capstone.security.Authorities;
 import edu.uwm.capstone.sql.dao.BaseDao;
 import edu.uwm.capstone.sql.dao.BaseRowMapper;
 import edu.uwm.capstone.sql.exception.DaoException;
@@ -12,6 +13,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,6 +48,9 @@ public class UserDao extends BaseDao<Long, User> {
 
         Long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
         user.setId(id);
+
+        // TODO create entries in user_roles table for each role the user has (use jdbc.batchUpdate)
+
         return user;
     }
 
@@ -59,7 +64,11 @@ public class UserDao extends BaseDao<Long, User> {
     public User read(Long userId) {
         LOG.trace("Reading user {}", userId);
         try {
-            return (User) this.jdbcTemplate.queryForObject(sql("readUser"), new MapSqlParameterSource("id", userId), rowMapper);
+            User user = (User) this.jdbcTemplate.queryForObject(sql("readUser"), new MapSqlParameterSource("id", userId), rowMapper);
+
+            setUserRolesAndAuthorities(user);
+            return user;
+
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -73,6 +82,9 @@ public class UserDao extends BaseDao<Long, User> {
     public List<User> readAll() {
         LOG.trace("Reading all users");
         return this.jdbcTemplate.query(sql("readAllUsers"), rowMapper);
+
+        // TODO get roles and authorities for all users (may want to create a new sql statement)
+
     }
 
     /**
@@ -84,10 +96,29 @@ public class UserDao extends BaseDao<Long, User> {
     public User readByEmail(String email) {
         LOG.trace("Reading user with email {}", email);
         try {
-            return (User) this.jdbcTemplate.queryForObject(sql("readUserByEmail"), new MapSqlParameterSource("email", email), rowMapper);
+            User user = (User) this.jdbcTemplate.queryForObject(sql("readUserByEmail"), new MapSqlParameterSource("email", email), rowMapper);
+
+            setUserRolesAndAuthorities(user);
+            return user;
+
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
+    }
+
+    private void setUserRolesAndAuthorities(User user) {
+        HashSet<String> roleNames = new HashSet<>();
+        HashSet<Authorities> authorities = new HashSet<>();
+
+        this.jdbcTemplate.query(sql("readRoleAuthoritiesByUserId"),
+                new MapSqlParameterSource("user_id", user.getId()),
+                (rs) -> {
+                    // TODO may not want to hardcode these column names
+                    roleNames.add(rs.getString("name"));
+                    authorities.add(Authorities.valueOf(rs.getString("authority")));
+                });
+        user.setRoleNames(roleNames);
+        user.setAuthorities(authorities);
     }
 
     /**
@@ -111,6 +142,9 @@ public class UserDao extends BaseDao<Long, User> {
         if (result != 1) {
             throw new DaoException(String.format("Failed attempt to update user %s - affected %s rows", user.toString(), result));
         }
+
+        // TODO update entries in user_roles table for each role the user has
+
         return user;
     }
 
@@ -123,6 +157,7 @@ public class UserDao extends BaseDao<Long, User> {
     @Override
     public void delete(Long userId) {
         LOG.trace("Deleting user {}", userId);
+        this.jdbcTemplate.update(sql("deleteUserRolesByUserId"), new MapSqlParameterSource("user_id", userId));
         int result = this.jdbcTemplate.update(sql("deleteUser"), new MapSqlParameterSource("id", userId));
         if (result != 1) {
             throw new DaoException(String.format("Failed attempt to delete user %s affected %s rows", userId, result));

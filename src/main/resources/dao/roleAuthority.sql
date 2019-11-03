@@ -1,5 +1,5 @@
 --STATEMENT createUserAuthority
-INSERT INTO user_authorities (
+INSERT INTO role_authorities (
   authority,
   role_id,
   created_date
@@ -10,21 +10,16 @@ INSERT INTO user_authorities (
 );
 
 --STATEMENT readRoleAuthority
-SELECT *
-FROM role_authorities
-WHERE id = :id;
+SELECT * FROM role_authorities WHERE id = :id;
 
 --STATEMENT readAllRoleAuthority
-SELECT *
-FROM role_authorities;
+SELECT * FROM role_authorities;
 
 --STATEMENT readRoleAuthoritiesByRoleId
-SELECT *
-FROM role_authorities
-WHERE role_id = :role_id;
+SELECT * FROM role_authorities WHERE role_id = :role_id;
 
 --STATEMENT readRoleAuthoritiesByUserId
-SELECT roles.*, role_authorities.authority
+SELECT roles.name, role_authorities.authority
 FROM role_authorities
 INNER JOIN roles
     ON roles.id = role_authorities.role_id
@@ -33,8 +28,7 @@ INNER JOIN user_roles
 WHERE user_roles.user_id = :user_id;
 
 --STATEMENT deleteRoleAuthority
-DELETE FROM role_authorities
-WHERE id = :id;
+DELETE FROM role_authorities WHERE id = :id;
 
 --STATEMENT updateRoleAuthority
 UPDATE role_authorities SET

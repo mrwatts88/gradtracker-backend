@@ -63,7 +63,7 @@ public class FormDefinitionRestController {
      */
     @ApiOperation(value = "Read All Form Definitions")
     @GetMapping(value = FORM_DEF_PATH)
-//    @PreAuthorize("hasAuthority('Test')")
+//    @PreAuthorize("hasAuthority('TEST')") // TODO figure out how we can use the Authorities enum here
     public List<FormDefinition> readAll() {
         return formDefinitionService.readAll();
     }
