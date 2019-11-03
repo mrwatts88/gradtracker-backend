@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import edu.uwm.capstone.model.User;
-import edu.uwm.capstone.model.UserLoginRequest;
 import edu.uwm.capstone.security.exception.JWTAuthenticationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,27 +24,27 @@ import static edu.uwm.capstone.security.SecurityConstants.*;
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
     private ObjectMapper jwtUserSubjectMapper;
-    private ObjectMapper userCredentialsObjectMapper;
 
     public JWTAuthenticationFilter(String processUrl, AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
         setFilterProcessesUrl(processUrl);
 
         // create object mapper with mixin
-        jwtUserSubjectMapper = new ObjectMapper().addMixIn(User.class, User.UserMixIn.class);
+        jwtUserSubjectMapper = new ObjectMapper().addMixIn(User.class, User.UserJWTMixIn.class);
 
-        // set filter provider to JWTFilter provider
+        // set filter provider (for serialization) to JWTFilter
         jwtUserSubjectMapper.setFilterProvider(new SimpleFilterProvider().addFilter("JWTFilter",
                 SimpleBeanPropertyFilter.filterOutAllExcept("firstName", "lastName", "pantherId", "email", "enabled", "roleNames", "authorities")));
 
-        userCredentialsObjectMapper = new ObjectMapper();
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) {
         try {
-            UserLoginRequest userCredentials = userCredentialsObjectMapper.readValue(req.getInputStream(), UserLoginRequest.class);
+
+            // TODO use basic authorization in authorization header instead of sending credentials in body?
+            User userCredentials = jwtUserSubjectMapper.readValue(req.getInputStream(), User.class);
 
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -54,6 +53,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                             new ArrayList<>())
             );
         } catch (IOException e) {
+//            e.printStackTrace();
             throw new JWTAuthenticationException(e);
         }
     }

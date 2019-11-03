@@ -16,11 +16,12 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"credentialsNonExpired", "accountNonExpired", "accountNonLocked", "username"})
+@JsonIgnoreProperties(value = {"credentialsNonExpired", "accountNonExpired", "accountNonLocked", "username"}, ignoreUnknown = true)
 public class User extends BaseEntity implements UserDetails {
 
     @JsonFilter("JWTFilter")
-    public static class UserMixIn {
+    // filters out properties for serialization except for "firstName", "lastName", "pantherId", "email", "enabled", "roleNames", "authorities"
+    public static class UserJWTMixIn {
     }
 
     private String firstName;

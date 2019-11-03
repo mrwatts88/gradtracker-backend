@@ -17,7 +17,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = userDao.readByEmail(username);
+        User user = userDao.readByEmail(username); // this will get the user with their authorities
 
         if (user == null) {
             throw new UsernameNotFoundException(username);
