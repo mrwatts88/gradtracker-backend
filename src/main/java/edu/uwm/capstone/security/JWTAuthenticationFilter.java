@@ -2,6 +2,8 @@ package edu.uwm.capstone.security;
 
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.model.UserLoginRequest;
 import edu.uwm.capstone.security.exception.JWTAuthenticationException;
@@ -11,7 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,23 +24,33 @@ import static edu.uwm.capstone.security.SecurityConstants.*;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
+    private ObjectMapper jwtUserSubjectMapper;
+    private ObjectMapper userCredentialsObjectMapper;
 
     public JWTAuthenticationFilter(String processUrl, AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
         setFilterProcessesUrl(processUrl);
+
+        // create object mapper with mixin
+        jwtUserSubjectMapper = new ObjectMapper().addMixIn(User.class, User.UserMixIn.class);
+
+        // set filter provider to JWTFilter provider
+        jwtUserSubjectMapper.setFilterProvider(new SimpleFilterProvider().addFilter("JWTFilter",
+                SimpleBeanPropertyFilter.filterOutAllExcept("firstName", "lastName", "pantherId", "email", "enabled", "roleNames", "authorityNames")));
+
+        userCredentialsObjectMapper = new ObjectMapper();
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) {
         try {
-            UserLoginRequest creds = new ObjectMapper()
-                    .readValue(req.getInputStream(), UserLoginRequest.class);
+            UserLoginRequest userCredentials = userCredentialsObjectMapper.readValue(req.getInputStream(), UserLoginRequest.class);
 
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            creds.getEmail(),
-                            creds.getPassword(),
+                            userCredentials.getEmail(),
+                            userCredentials.getPassword(),
                             new ArrayList<>())
             );
         } catch (IOException e) {
@@ -51,29 +62,15 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest req,
                                             HttpServletResponse res,
                                             FilterChain chain,
-                                            Authentication auth) throws IOException, ServletException {
+                                            Authentication auth) throws IOException {
 
         User user = (User) auth.getPrincipal();
 
-//        SimpleFilterProvider filters = new SimpleFilterProvider().addFilter("jwtFilter", SimpleBeanPropertyFilter.filterOutAllExcept("createdDate", "updateDate", "password"));
-//        filters.setFailOnUnknownId(false);
+        String token = JWT.create()
+                .withSubject(jwtUserSubjectMapper.writeValueAsString(user))
+                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .sign(HMAC512(SECRET.getBytes()));
 
-        // TODO
-
-//            FilterProvider filters = new SimpleFilterProvider()
-//                    .addFilter("filterDatesAndPassword", SimpleBeanPropertyFilter.serializeAllExcept("createdDate", "updateDate", "password"));
-
-            ObjectMapper om = new ObjectMapper();
-//            om.setFilters(filters);
-
-            String token = JWT.create()
-                    .withSubject(om.writeValueAsString(user))
-                    .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                    .sign(HMAC512(SECRET.getBytes()));
-
-//            System.out.println(token);
-
-            res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
-
+        res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
     }
 }

@@ -1,5 +1,6 @@
 package edu.uwm.capstone.model;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -19,8 +20,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties({"authorities", "credentialsNonExpired", "accountNonExpired", "accountNonLocked", "username"})
-//@JsonFilter("filterDatesAndPassword")
 public class User extends BaseEntity implements UserDetails {
+
+    @JsonFilter("JWTFilter")
+    public static class UserMixIn {
+    }
 
     private String firstName;
     private String lastName;
@@ -35,6 +39,18 @@ public class User extends BaseEntity implements UserDetails {
 
     @ApiModelProperty(hidden = true)
     private List<GrantedAuthority> authorities;
+
+    @ApiModelProperty(hidden = true)
+    private boolean credentialsNonExpired;
+
+    @ApiModelProperty(hidden = true)
+    private boolean accountNonExpired;
+
+    @ApiModelProperty(hidden = true)
+    private boolean accountNonLocked;
+
+    @ApiModelProperty(hidden = true)
+    private String username;
 
     @Override
     public String getUsername() {
@@ -56,17 +72,17 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true; // TODO
+        return !enabled; // TODO do we want to use enabled for this?
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !enabled; // TODO do we want to use enabled for this?
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return !enabled; // TODO do we want to use enabled for this?
     }
 
     @Override

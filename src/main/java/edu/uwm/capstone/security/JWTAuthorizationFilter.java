@@ -19,8 +19,11 @@ import static edu.uwm.capstone.security.SecurityConstants.*;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
+    private ObjectMapper jwtUserSubjectMapper;
+
     public JWTAuthorizationFilter(AuthenticationManager authManager) {
         super(authManager);
+        jwtUserSubjectMapper = new ObjectMapper();
     }
 
     @Override
@@ -51,19 +54,13 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                         .getSubject();
 
                 if (userJSON != null) {
-//                    FilterProvider filters = new SimpleFilterProvider()
-//                            .addFilter("filterDatesAndPassword", SimpleBeanPropertyFilter.serializeAllExcept("createdDate", "updateDate", "password"));
-
-                    ObjectMapper om = new ObjectMapper();
-//                    om.setFilters(filters);
-
-                    User user = om.readValue(userJSON, User.class);
+                    User user = jwtUserSubjectMapper.readValue(userJSON, User.class);
                     return new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities());
                 }
                 return null;
 
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (IOException e) {
+//                e.printStackTrace();
                 return null;
             }
         }
