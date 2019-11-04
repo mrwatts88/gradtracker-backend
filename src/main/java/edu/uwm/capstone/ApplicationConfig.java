@@ -101,6 +101,15 @@ public class ApplicationConfig {
     }
 
     @Bean
+    public RoleDao roleDao() {
+        RoleDao roleDao = new RoleDao();
+        roleDao.setDataSource(dataSource());
+        roleDao.setSqlStatementsFileLoader(sqlStatementsFileLoader());
+        roleDao.setRowMapper(roleDaoRowMapper());
+        return roleDao;
+    }
+
+    @Bean
     public FormDefinitionDao formDefinitionDao() {
         FormDefinitionDao formDefinitionDao = new FormDefinitionDao();
         formDefinitionDao.setDataSource(dataSource());
@@ -139,6 +148,11 @@ public class ApplicationConfig {
     @Bean
     public UserDaoRowMapper userDaoRowMapper() {
         return new UserDaoRowMapper();
+    }
+
+    @Bean
+    public RoleDaoRowMapper roleDaoRowMapper() {
+        return new RoleDaoRowMapper();
     }
 
     @Bean

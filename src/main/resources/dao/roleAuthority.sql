@@ -16,7 +16,7 @@ SELECT * FROM role_authorities WHERE id = :id;
 SELECT * FROM role_authorities;
 
 --STATEMENT readRoleAuthoritiesByRoleId
-SELECT * FROM role_authorities WHERE role_id = :role_id;
+SELECT role_authorities.authority FROM role_authorities WHERE role_id = :role_id;
 
 --STATEMENT readRoleAuthoritiesByUserId
 SELECT roles.name, role_authorities.authority
@@ -29,6 +29,9 @@ WHERE user_roles.user_id = :user_id;
 
 --STATEMENT deleteRoleAuthority
 DELETE FROM role_authorities WHERE id = :id;
+
+--STATEMENT deleteRoleAuthoritiesByRoleId
+DELETE FROM role_authorities WHERE role_id = :role_id;
 
 --STATEMENT updateRoleAuthority
 UPDATE role_authorities SET

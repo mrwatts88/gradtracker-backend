@@ -25,7 +25,7 @@ public class FieldDao extends BaseDao<Long, Field>{
         } else if (field.getFormId() == null) {
             throw new DaoException("When creating a new field, the form id should not be null");
         } else if (field.getFieldDefId() == null) {
-            throw new DaoException("When creating a new field, the field definition is should not be null");
+            throw new DaoException("When creating a new field, the field definition should not be null");
         }
 
         LOG.trace("Creating field {}", field);

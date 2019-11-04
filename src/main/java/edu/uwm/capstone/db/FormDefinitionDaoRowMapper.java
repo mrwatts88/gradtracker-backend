@@ -16,7 +16,6 @@ public class FormDefinitionDaoRowMapper extends BaseRowMapper<FormDefinition> {
     public enum FormDefColumnType {
         NAME();
 
-
         private String columnName;
 
         FormDefColumnType() {
