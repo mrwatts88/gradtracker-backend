@@ -83,7 +83,6 @@ public class UserDao extends BaseDao<Long, User> {
         LOG.trace("Reading all users");
         List<User> users = this.jdbcTemplate.query(sql("readAllUsers"), rowMapper);
 
-        // TODO may want to make this more efficient
         for (User user : users) {
             setUserRolesAndAuthorities(user);
         }

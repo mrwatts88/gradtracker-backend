@@ -86,11 +86,10 @@ public class RoleDao extends BaseDao<Long, Role> {
         LOG.trace("Reading all roles");
         List<Role> roles = this.jdbcTemplate.query(sql("readAllRoles"), rowMapper);
 
-        // TODO may want to make this more efficient
         for (Role role : roles) {
             role.setAuthorities(jdbcTemplate.queryForList(sql("readRoleAuthoritiesByRoleId"),
-                    new MapSqlParameterSource("role_id", role.getId()), Authorities.class)
-            );
+                    new MapSqlParameterSource("role_id", role.getId()),
+                    Authorities.class));
         }
 
         return roles;
@@ -108,7 +107,8 @@ public class RoleDao extends BaseDao<Long, Role> {
             Role role = (Role) this.jdbcTemplate.queryForObject(sql("readRoleByName"), new MapSqlParameterSource("role_name", name), rowMapper);
 
             role.setAuthorities(jdbcTemplate.queryForList(sql("readRoleAuthoritiesByRoleId"),
-                    new MapSqlParameterSource("role_id", role.getId()), Authorities.class)
+                    new MapSqlParameterSource("role_id", role.getId()),
+                    Authorities.class)
             );
             return role;
 
@@ -140,8 +140,7 @@ public class RoleDao extends BaseDao<Long, Role> {
         }
 
         // TODO update role's authorities in role_authorities table
-        //  Note: Role#authorities is a list which may contain duplicates which we don't want in the db,
-        //  so we first have to create a set of authorities from the list
+        //  Note: Role#authorities is a list which may contain duplicates which we don't want in the db
 
         return role;
     }
@@ -155,7 +154,6 @@ public class RoleDao extends BaseDao<Long, Role> {
     @Override
     public void delete(Long roleId) {
         LOG.trace("Deleting role {}", roleId);
-        this.jdbcTemplate.update(sql("deleteUserRolesByRoleId"), new MapSqlParameterSource("role_id", roleId));
         this.jdbcTemplate.update(sql("deleteRoleAuthoritiesByRoleId"), new MapSqlParameterSource("role_id", roleId));
         int result = this.jdbcTemplate.update(sql("deleteRole"), new MapSqlParameterSource("id", roleId));
         if (result != 1) {
