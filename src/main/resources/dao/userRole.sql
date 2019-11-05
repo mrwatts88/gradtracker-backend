@@ -35,6 +35,9 @@ DELETE FROM user_roles WHERE id = :id;
 --STATEMENT deleteUserRolesByUserId
 DELETE FROM user_roles WHERE user_id = :user_id;
 
+--STATEMENT deleteUserRolesByRoleId
+DELETE FROM user_roles WHERE role_id = :role_id;
+
 --STATEMENT updateUserRole
 UPDATE user_roles SET
   user_id = :user_id,

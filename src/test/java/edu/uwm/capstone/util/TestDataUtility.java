@@ -6,10 +6,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class TestDataUtility {
 
@@ -31,6 +28,8 @@ public class TestDataUtility {
         user.setPassword(randomAlphabetic(randomInt(10, 100)));
         user.setPantherId(randomAlphabetic(randomInt(9, 10)));
         user.setEmail(randomAlphabetic(randomInt(1, 50)) + "@" + randomAlphabetic(randomInt(1, 50)));
+        user.setAuthorities(new HashSet<>());
+        user.setRoleNames(new HashSet<>());
         return user;
     }
 

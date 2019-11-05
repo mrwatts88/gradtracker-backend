@@ -1,7 +1,8 @@
 package edu.uwm.capstone.security;
 
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uwm.capstone.Application;
 import edu.uwm.capstone.db.UserDao;
 import edu.uwm.capstone.model.User;
@@ -21,9 +22,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static edu.uwm.capstone.security.SecurityConstants.*;
 import static edu.uwm.capstone.util.TestDataUtility.userWithTestValues;
@@ -77,6 +78,28 @@ public class AuthenticationComponentTest {
 
         String token = response.header("Authorization").replaceFirst("Bearer ", "").trim();
         assertNotNull(token);
+
+        String userJSON = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
+                .build()
+                .verify(token.replace(TOKEN_PREFIX, ""))
+                .getSubject();
+
+        assertNotNull(userJSON);
+
+        try {
+            User userSubject = new ObjectMapper().readValue(userJSON, User.class);
+
+            assertEquals(DEFAULT_USER_FIRST_NAME, userSubject.getFirstName());
+            assertEquals(DEFAULT_USER_LAST_NAME, userSubject.getLastName());
+            assertEquals(DEFAULT_USER_EMAIL, userSubject.getEmail());
+            assertEquals(DEFAULT_USER_PANTHER_ID, userSubject.getPantherId());
+
+            // TODO check userSubject roles and authorities
+
+        } catch (IOException e) {
+            fail("Mapping JWT subject to User class failed");
+            e.getStackTrace();
+        }
     }
 
     @Test
@@ -98,6 +121,28 @@ public class AuthenticationComponentTest {
 
         String token = response.header("Authorization").replaceFirst("Bearer ", "").trim();
         assertNotNull(token);
+
+        String userJSON = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
+                .build()
+                .verify(token.replace(TOKEN_PREFIX, ""))
+                .getSubject();
+
+        assertNotNull(userJSON);
+
+        try {
+            User userSubject = new ObjectMapper().readValue(userJSON, User.class);
+
+            assertEquals(user.getFirstName(), userSubject.getFirstName());
+            assertEquals(user.getLastName(), userSubject.getLastName());
+            assertEquals(user.getEmail(), userSubject.getEmail());
+            assertEquals(user.getPantherId(), userSubject.getPantherId());
+
+            // TODO check userSubject roles and authorities
+
+        } catch (IOException e) {
+            fail("Mapping JWT subject to User class failed");
+            e.getStackTrace();
+        }
     }
 
     @Test
@@ -115,54 +160,5 @@ public class AuthenticationComponentTest {
 
         String token = response.header("Authorization");
         assertNull(token);
-    }
-
-    @Test
-    public void defaultUserJWTClaims() {
-        // exercise authentication endpoint
-        ExtractableResponse<Response> response = given()
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .body(DEFAULT_USER_CREDENTIALS)
-                .when()
-                .post(AUTHENTICATE_URL)
-                .then().log().ifValidationFails()
-                .statusCode(HttpStatus.OK.value()).extract();
-
-        String token = response.header("Authorization").replaceFirst("Bearer ", "").trim();
-        assertNotNull(token);
-
-        Map<String, Claim> claimsMap = JWT.decode(token).getClaims();
-        assertEquals(DEFAULT_USER_FIRST_NAME, claimsMap.get(JWT_CLAIM_FIRST_NAME).asString());
-        assertEquals(DEFAULT_USER_LAST_NAME, claimsMap.get(JWT_CLAIM_LAST_NAME).asString());
-        assertEquals(DEFAULT_USER_PANTHER_ID, claimsMap.get(JWT_CLAIM_PANTHER_ID).asString());
-        assertEquals(DEFAULT_USER_EMAIL, claimsMap.get(JWT_CLAIM_EMAIL).asString());
-    }
-
-    @Test
-    public void existentUserJWTClaims() {
-        User user = userWithTestValues();
-        String credentials = "{ \"email\" : \"" + user.getEmail() + "\", \"password\" : \"" + user.getPassword() + "\" }";
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userDao.create(user);
-        usersToCleanup.add(user);
-
-        // exercise authentication endpoint
-        ExtractableResponse<Response> response = given()
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .body(credentials)
-                .when()
-                .post(AUTHENTICATE_URL)
-                .then().log().ifValidationFails()
-                .statusCode(HttpStatus.OK.value()).extract();
-
-        String token = response.header("Authorization").replaceFirst("Bearer ", "").trim();
-        assertNotNull(token);
-
-        Map<String, Claim> claimsMap = JWT.decode(token).getClaims();
-        assertEquals(user.getId(), claimsMap.get(JWT_CLAIM_ID).asLong());
-        assertEquals(user.getFirstName(), claimsMap.get(JWT_CLAIM_FIRST_NAME).asString());
-        assertEquals(user.getLastName(), claimsMap.get(JWT_CLAIM_LAST_NAME).asString());
-        assertEquals(user.getPantherId(), claimsMap.get(JWT_CLAIM_PANTHER_ID).asString());
-        assertEquals(user.getEmail(), claimsMap.get(JWT_CLAIM_EMAIL).asString());
     }
 }

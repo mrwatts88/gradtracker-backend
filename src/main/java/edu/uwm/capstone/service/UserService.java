@@ -143,5 +143,7 @@ public class UserService {
         Assert.notNull(user.getFirstName(), "User last name must not be null");
         Assert.notNull(user.getFirstName(), "User panther id must not be null");
         Assert.isNull(userDao.readByEmail(user.getEmail()), "User email must not exist in the DB when creating");
+
+        // TODO check that user's roles exist in db
     }
 }
