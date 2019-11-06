@@ -126,7 +126,7 @@ public class UserRestControllerComponentTest {
     }
 
     @Test
-    public void createPreconditionFailedEmail() throws Exception {
+    public void createPreconditionFailedNullEmail() throws Exception {
         User user = TestDataUtility.userWithTestValues();
         user.setEmail(null);
 
@@ -141,7 +141,58 @@ public class UserRestControllerComponentTest {
     }
 
     @Test
-    public void createPreconditionFailedPassword() throws Exception {
+    public void createPreconditionFailedNullPantherId() throws Exception {
+        User user = TestDataUtility.userWithTestValues();
+        user.setPantherId(null);
+
+        // exercise endpoint
+        given().header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .body(mapper.writeValueAsString(user))
+                .when()
+                .post(UserRestController.USER_PATH)
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("User panther id must not be null"));
+    }
+
+    @Test
+    public void createPreconditionFailedExistentEmail() throws Exception {
+        User user = TestDataUtility.userWithTestValues();
+        usersToCleanup.add(userDao.create(user));
+
+        User createUser = TestDataUtility.userWithTestValues();
+        createUser.setEmail(user.getEmail());
+
+        // exercise endpoint
+        given().header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .body(mapper.writeValueAsString(createUser))
+                .when()
+                .post(UserRestController.USER_PATH)
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("User already registered with email " + createUser.getEmail()));
+    }
+
+    @Test
+    public void createPreconditionFailedExistentPantherId() throws Exception {
+        User user = TestDataUtility.userWithTestValues();
+        usersToCleanup.add(userDao.create(user));
+
+        User createUser = TestDataUtility.userWithTestValues();
+        createUser.setPantherId(user.getPantherId());
+
+        // exercise endpoint
+        given().header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .body(mapper.writeValueAsString(createUser))
+                .when()
+                .post(UserRestController.USER_PATH)
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("User already registered with panther id " + createUser.getPantherId()));
+    }
+
+    @Test
+    public void createPreconditionFailedNullPassword() throws Exception {
         User user = TestDataUtility.userWithTestValues();
         user.setPassword(null);
 
@@ -196,7 +247,7 @@ public class UserRestControllerComponentTest {
     }
 
     @Test
-    public void updatePreconditionFailedEmail() throws Exception {
+    public void updatePreconditionFailedNullEmail() throws Exception {
         User user = TestDataUtility.userWithTestValues();
         usersToCleanup.add(userDao.create(user));
 
@@ -214,7 +265,63 @@ public class UserRestControllerComponentTest {
     }
 
     @Test
-    public void updatePreconditionFailedPassword() throws Exception {
+    public void updatePreconditionFailedNullPantherId() throws Exception {
+        User user = TestDataUtility.userWithTestValues();
+        usersToCleanup.add(userDao.create(user));
+
+        User userToUpdate = TestDataUtility.userWithTestValues();
+        userToUpdate.setPantherId(null);
+
+        // exercise endpoint
+        given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .header(new Header("Authorization", authorizationToken))
+                .body(mapper.writeValueAsString(userToUpdate))
+                .when()
+                .put(UserRestController.USER_PATH + user.getId())
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("User panther id must not be null"));
+    }
+
+    @Test
+    public void updatePreconditionFailedExistentEmail() throws Exception {
+        User user = TestDataUtility.userWithTestValues();
+        usersToCleanup.add(userDao.create(user));
+
+        User userToUpdate = TestDataUtility.userWithTestValues();
+        userToUpdate.setId(user.getId());
+        userToUpdate.setEmail(user.getEmail());
+
+        // exercise endpoint
+        given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .header(new Header("Authorization", authorizationToken))
+                .body(mapper.writeValueAsString(userToUpdate))
+                .when()
+                .put(UserRestController.USER_PATH + userToUpdate.getId())
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("User already registered with email " + user.getEmail()));
+    }
+
+    @Test
+    public void updatePreconditionFailedExistentPantherId() throws Exception {
+        User user = TestDataUtility.userWithTestValues();
+        usersToCleanup.add(userDao.create(user));
+
+        User userToUpdate = TestDataUtility.userWithTestValues();
+        userToUpdate.setId(user.getId());
+        userToUpdate.setPantherId(user.getPantherId());
+
+        // exercise endpoint
+        given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .header(new Header("Authorization", authorizationToken))
+                .body(mapper.writeValueAsString(userToUpdate))
+                .when()
+                .put(UserRestController.USER_PATH + userToUpdate.getId())
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value()).body("message", equalTo("User already registered with panther id " + user.getPantherId()));
+    }
+
+    @Test
+    public void updatePreconditionFailedNullPassword() throws Exception {
         User user = TestDataUtility.userWithTestValues();
         usersToCleanup.add(userDao.create(user));
 
@@ -250,6 +357,42 @@ public class UserRestControllerComponentTest {
     }
 
     @Test
+    public void readByPantherId() {
+        User user = TestDataUtility.userWithTestValues();
+        usersToCleanup.add(userDao.create(user));
+
+        // exercise endpoint
+        ExtractableResponse<Response> response = given()
+                .header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .when()
+                .get(UserRestController.USER_PATH + "panther_id/" + user.getPantherId())
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        User receivedUser = response.body().as(User.class);
+        assertEquals(user, receivedUser);
+    }
+
+    @Test
+    public void readByEmail() {
+        User user = TestDataUtility.userWithTestValues();
+        usersToCleanup.add(userDao.create(user));
+
+        // exercise endpoint
+        ExtractableResponse<Response> response = given()
+                .header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .when()
+                .get(UserRestController.USER_PATH + "email/" + user.getEmail())
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        User receivedUser = response.body().as(User.class);
+        assertEquals(user, receivedUser);
+    }
+
+    @Test
     public void readByIdNotFound() {
         Long userId = TestDataUtility.randomLong();
 
@@ -260,6 +403,32 @@ public class UserRestControllerComponentTest {
                 .get(UserRestController.USER_PATH + userId)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("User with ID: " + userId + " not found."));
+    }
+
+    @Test
+    public void readByPantherIdNotFound() {
+        String pantherId = TestDataUtility.randomAlphabetic(9);
+
+        // exercise endpoint
+        given().header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .when()
+                .get(UserRestController.USER_PATH + "panther_id/" + pantherId)
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("User with panther id: " + pantherId + " not found."));
+    }
+
+    @Test
+    public void readByEmailNotFound() {
+        String email = TestDataUtility.randomAlphabetic(9);
+
+        // exercise endpoint
+        given().header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .when()
+                .get(UserRestController.USER_PATH + "email/" + email)
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("User with email: " + email + " not found."));
     }
 
     @Test

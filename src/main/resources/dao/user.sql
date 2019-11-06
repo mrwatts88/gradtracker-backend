@@ -24,6 +24,9 @@ SELECT * FROM users;
 --STATEMENT readUserByEmail
 SELECT * FROM users WHERE email = :email;
 
+--STATEMENT readUserByPantherId
+SELECT * FROM users WHERE panther_id = :panther_id;
+
 --STATEMENT deleteUser
 DELETE FROM users WHERE id = :id;
 

@@ -1,6 +1,8 @@
 package edu.uwm.capstone.service;
 
+import edu.uwm.capstone.db.RoleDao;
 import edu.uwm.capstone.db.UserDao;
+import edu.uwm.capstone.model.Role;
 import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.service.exception.EntityNotFoundException;
 import org.slf4j.Logger;
@@ -10,7 +12,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service("userService")
 public class UserService {
@@ -20,11 +25,13 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final UserDao userDao;
+    private final RoleDao roleDao;
 
     @Autowired
-    public UserService(PasswordEncoder passwordEncoder, UserDao userDao) {
+    public UserService(PasswordEncoder passwordEncoder, UserDao userDao, RoleDao roleDao) {
         this.passwordEncoder = passwordEncoder;
         this.userDao = userDao;
+        this.roleDao = roleDao;
     }
 
     /**
@@ -37,10 +44,6 @@ public class UserService {
         LOG.trace("Creating user {}", user);
 
         checkValidUser(user, true);
-
-        // TODO check if email is legit
-        //  check if email already exists in db,
-        //  check if panther id already exits in db
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userDao.create(user);
@@ -76,6 +79,23 @@ public class UserService {
 
         if (user == null) {
             throw new EntityNotFoundException("User with email: " + email + " not found.");
+        }
+        return user;
+    }
+
+    /**
+     * Retrieve a {@link User} object by its email.
+     *
+     * @param pantherId
+     * @return {@link User}
+     */
+    public User readByPantherId(String pantherId) {
+        LOG.trace("Reading user by panther id {}", pantherId);
+
+        User user = userDao.readByPantherId(pantherId);
+
+        if (user == null) {
+            throw new EntityNotFoundException("User with panther id: " + pantherId + " not found.");
         }
         return user;
     }
@@ -140,11 +160,16 @@ public class UserService {
         Assert.notNull(user.getEmail(), "User email must not be null");
         Assert.notNull(user.getPassword(), "User password must not be null");
         Assert.notNull(user.getFirstName(), "User first name must not be null");
-        Assert.notNull(user.getFirstName(), "User last name must not be null");
-        Assert.notNull(user.getFirstName(), "User panther id must not be null");
-        Assert.isNull(userDao.readByEmail(user.getEmail()), "User email must not exist in the DB when creating");
+        Assert.notNull(user.getLastName(), "User last name must not be null");
+        Assert.notNull(user.getPantherId(), "User panther id must not be null");
 
-        // TODO check that user's role exist in db
+        Assert.isNull(userDao.readByEmail(user.getEmail()), "User already registered with email " + user.getEmail());
+        Assert.isNull(userDao.readByPantherId(user.getPantherId()), "User already registered with panther id " + user.getPantherId());
+
+        Set<String> roleNamesInDb = roleDao.readAll().stream().map(Role::getName).collect(Collectors.toCollection(HashSet::new));
+        for (String roleName : user.getRoleNames()) {
+            Assert.isTrue(roleNamesInDb.contains(roleName), "User roles must exist in the database. Found role " + roleName + " which doesn't exist");
+        }
 
     }
 }

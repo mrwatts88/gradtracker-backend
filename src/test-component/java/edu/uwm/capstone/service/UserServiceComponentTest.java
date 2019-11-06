@@ -115,6 +115,26 @@ public class UserServiceComponentTest {
     }
 
     /**
+     * Verify that {@link UserService#create} is working correctly when a request for a {@link User} with a email already exist in the DB.
+     */
+    @Test(expected = RuntimeException.class)
+    public void createExistUserPantherId() {
+        User createUser = TestDataUtility.userWithTestValues();
+        usersToCleanup.add(createUser);
+
+        String passwordBefore = createUser.getPassword();
+        userService.create(createUser);
+
+        assertNotNull(createUser.getId());
+        assertNotNull(createUser.getCreatedDate());
+        assertNotEquals(createUser.getPassword(), passwordBefore);
+
+        User createRepeatUserPantherId = TestDataUtility.userWithTestValues();
+        createRepeatUserPantherId.setPantherId(createUser.getPantherId());
+        userService.create(createUser);
+    }
+
+    /**
      * Verify that {@link UserService#create} is working correctly when a request for a {@link User} that contains a value
      * which exceeds the database configuration is made.
      */
@@ -153,6 +173,22 @@ public class UserServiceComponentTest {
         assertNotNull(createUser.getId());
 
         User readUser = userService.readByEmail(createUser.getEmail());
+        assertNotNull(readUser);
+        assertEquals(createUser, readUser);
+    }
+
+    /**
+     * Verify that {@link UserService#read} is working correctly.
+     */
+    @Test
+    public void readByPantherId() {
+        User createUser = TestDataUtility.userWithTestValues();
+        usersToCleanup.add(createUser);
+
+        userService.create(createUser);
+        assertNotNull(createUser.getId());
+
+        User readUser = userService.readByPantherId(createUser.getPantherId());
         assertNotNull(readUser);
         assertEquals(createUser, readUser);
     }
@@ -231,6 +267,42 @@ public class UserServiceComponentTest {
         // create a random user id that will not be in our local database
         User updateUser = TestDataUtility.userWithTestValues();
         updateUser.setId(TestDataUtility.randomLong());
+        userService.update(updateUser);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void updateExistentUserEmail() {
+        User createUser = TestDataUtility.userWithTestValues();
+        usersToCleanup.add(createUser);
+
+        userService.create(createUser);
+        assertNotNull(createUser.getId());
+
+        User updateUser = TestDataUtility.userWithTestValues();
+        usersToCleanup.add(updateUser);
+
+        userService.create(updateUser);
+        assertNotNull(updateUser.getId());
+
+        updateUser.setEmail(createUser.getEmail());
+        userService.update(updateUser);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void updateExistentUserPantherId() {
+        User createUser = TestDataUtility.userWithTestValues();
+        usersToCleanup.add(createUser);
+
+        userService.create(createUser);
+        assertNotNull(createUser.getId());
+
+        User updateUser = TestDataUtility.userWithTestValues();
+        usersToCleanup.add(updateUser);
+
+        userService.create(updateUser);
+        assertNotNull(updateUser.getId());
+
+        updateUser.setPantherId(createUser.getPantherId());
         userService.update(updateUser);
     }
 

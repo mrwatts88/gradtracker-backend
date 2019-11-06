@@ -103,17 +103,6 @@ public class UserDaoComponentTest {
     }
 
     /**
-     * Verify that {@link UserDao#read} is working correctly when a request for a non-existent {@link User #id} is made.
-     */
-    @Test
-    public void readNonExistentUser() {
-        // create a random user id that will not be in our local database
-        Long id = TestDataUtility.randomLong();
-        User user = userDao.read(id);
-        assertNull(user);
-    }
-
-    /**
      * Verify that {@link UserDao#readByEmail} is working correctly.
      */
     @Test
@@ -129,6 +118,32 @@ public class UserDaoComponentTest {
     }
 
     /**
+     * Verify that {@link UserDao#readByPantherId} is working correctly.
+     */
+    @Test
+    public void readByPantherId() {
+        User createUser = TestDataUtility.userWithTestValues();
+        userDao.create(createUser);
+        assertNotNull(createUser.getId());
+        usersToCleanup.add(createUser);
+
+        User readUser = userDao.readByPantherId(createUser.getPantherId());
+        assertNotNull(readUser);
+        assertEquals(createUser, readUser);
+    }
+
+    /**
+     * Verify that {@link UserDao#read} is working correctly when a request for a non-existent {@link User #id} is made.
+     */
+    @Test
+    public void readNonExistentUserById() {
+        // create a random user id that will not be in our local database
+        Long id = TestDataUtility.randomLong();
+        User user = userDao.read(id);
+        assertNull(user);
+    }
+
+    /**
      * Verify that {@link UserDao#read} is working correctly when a request for a non-existent {@link User #email} is made.
      */
     @Test
@@ -136,6 +151,16 @@ public class UserDaoComponentTest {
         // create a random email that will not be in our local database
         String email = TestDataUtility.randomAlphanumeric(20);
         User user = userDao.readByEmail(email);
+        assertNull(user);
+    }
+
+    /**
+     * Verify that {@link UserDao#read} is working correctly when a request for a non-existent {@link User #email} is made.
+     */
+    @Test
+    public void readNonExistentUserByPantherId() {
+        String pantherId = TestDataUtility.randomAlphanumeric(20);
+        User user = userDao.readByPantherId(pantherId);
         assertNull(user);
     }
 

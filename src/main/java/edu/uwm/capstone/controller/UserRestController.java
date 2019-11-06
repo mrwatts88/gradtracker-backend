@@ -57,6 +57,35 @@ public class UserRestController {
     }
 
     /**
+     * Get a {@link User} by its Panther Id.
+     *
+     * @param pantherId id of the {@link User} to read
+     * @param response  {@link HttpServletResponse} that is sent back
+     * @return {@link User} retrieved from the database
+     * @throws IOException if error response cannot be created
+     */
+    @ApiOperation(value = "Read User by ID")
+    @GetMapping(value = USER_PATH + "/panther_id/{pantherId}")
+    public User readByPantherId(@PathVariable String pantherId, @ApiIgnore HttpServletResponse response) throws IOException {
+        // TODO handle special URL characters in pantherId
+        return RestControllerUtil.runCallable(() -> userService.readByPantherId(pantherId), response, LOG);
+    }
+
+    /**
+     * Get a {@link User} by its Email.
+     *
+     * @param email    id of the {@link User} to read
+     * @param response {@link HttpServletResponse} that is sent back
+     * @return {@link User} retrieved from the database
+     * @throws IOException if error response cannot be created
+     */
+    @ApiOperation(value = "Read User by ID")
+    @GetMapping(value = USER_PATH + "/email/{email}")
+    public User readByEmail(@PathVariable String email, @ApiIgnore HttpServletResponse response) throws IOException {
+        return RestControllerUtil.runCallable(() -> userService.readByEmail(email), response, LOG);
+    }
+
+    /**
      * Gets all the {@link User}s
      *
      * @return list of {@link User}s retrieved from the database

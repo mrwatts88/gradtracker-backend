@@ -109,6 +109,25 @@ public class UserDao extends BaseDao<Long, User> {
         }
     }
 
+    /**
+     * Retrieve a {@link User} object by its panther id.
+     *
+     * @param pantherId
+     * @return {@link User}
+     */
+    public User readByPantherId(String pantherId) {
+        LOG.trace("Reading user with panther id {}", pantherId);
+        try {
+            User user = (User) this.jdbcTemplate.queryForObject(sql("readUserByPantherId"), new MapSqlParameterSource("panther_id", pantherId), rowMapper);
+
+            setUserRolesAndAuthorities(user);
+            return user;
+
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
     private void setUserRolesAndAuthorities(User user) {
         HashSet<String> roleNames = new HashSet<>();
         HashSet<Authorities> authorities = new HashSet<>();
