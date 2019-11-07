@@ -79,8 +79,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         if (defaultUser != null) return;
 
         LOGGER.info("Persisting default user {}", DEFAULT_USER);
-        DEFAULT_USER.setPassword(passwordEncoder.encode(DEFAULT_USER.getPassword()));
-        DEFAULT_USER = userDao.create(DEFAULT_USER);
+        String rawPassword = DEFAULT_USER.getPassword();
+        DEFAULT_USER.setPassword(passwordEncoder.encode(rawPassword));
+        userDao.create(DEFAULT_USER);
+        DEFAULT_USER.setPassword(rawPassword);
+        DEFAULT_USER.setId(null);
     }
 
     private void persistDefaultRole() {
@@ -88,7 +91,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
         if (defaultRole != null) return;
 
-        LOGGER.info("Persisting default user {}", DEFAULT_ROLE);
+        LOGGER.info("Persisting default role {}", DEFAULT_ROLE);
         roleDao.create(DEFAULT_ROLE);
+        DEFAULT_ROLE.setId(null);
     }
 }
