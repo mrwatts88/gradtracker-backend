@@ -89,12 +89,14 @@ public class AuthenticationComponentTest {
         try {
             User userSubject = new ObjectMapper().readValue(userJSON, User.class);
 
-            assertEquals(DEFAULT_USER_FIRST_NAME, userSubject.getFirstName());
-            assertEquals(DEFAULT_USER_LAST_NAME, userSubject.getLastName());
-            assertEquals(DEFAULT_USER_EMAIL, userSubject.getEmail());
-            assertEquals(DEFAULT_USER_PANTHER_ID, userSubject.getPantherId());
+            assertEquals(DEFAULT_USER.getFirstName(), userSubject.getFirstName());
+            assertEquals(DEFAULT_USER.getLastName(), userSubject.getLastName());
+            assertEquals(DEFAULT_USER.getEmail(), userSubject.getEmail());
+            assertEquals(DEFAULT_USER.getPantherId(), userSubject.getPantherId());
 
-            // TODO check userSubject roles and authorities
+            // TODO uncomment these lines once UserDao and RoleDao are done and default role, "Admin" is persisted with all authorities
+//            assertEquals(DEFAULT_USER.getRoleNames(), userSubject.getRoleNames());
+//            assertEquals(Sets.newHashSet(Authorities.values()), userSubject.getAuthorities());
 
         } catch (IOException e) {
             fail("Mapping JWT subject to User class failed");
@@ -136,8 +138,8 @@ public class AuthenticationComponentTest {
             assertEquals(user.getLastName(), userSubject.getLastName());
             assertEquals(user.getEmail(), userSubject.getEmail());
             assertEquals(user.getPantherId(), userSubject.getPantherId());
-
-            // TODO check userSubject roles and authorities
+            assertTrue(userSubject.getRoleNames().isEmpty());
+            assertTrue(userSubject.getAuthorities().isEmpty());
 
         } catch (IOException e) {
             fail("Mapping JWT subject to User class failed");

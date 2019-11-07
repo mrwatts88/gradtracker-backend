@@ -67,9 +67,6 @@ public class RoleRestController {
     @ApiOperation(value = "Read Role by Name")
     @GetMapping(value = ROLE_PATH + "name/{roleName}")
     public Role readByName(@PathVariable String roleName, @ApiIgnore HttpServletResponse response) throws IOException {
-
-        // TODO this operation doesn't work if role name has spaces and/or special url characters
-
         return RestControllerUtil.runCallable(() -> roleService.readByName(roleName), response, LOG);
     }
 

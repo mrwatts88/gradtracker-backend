@@ -434,7 +434,7 @@ public class UserRestControllerComponentTest {
     @Test
     public void readAll() {
         List<User> persistedUsers = new ArrayList<>();
-        persistedUsers.add(userDao.readByEmail(DEFAULT_USER_EMAIL)); // need default user in here
+        persistedUsers.add(userDao.readByEmail(DEFAULT_USER.getEmail())); // need default user in here
         int randInt = TestDataUtility.randomInt(10, 30);
         for (int i = 0; i < randInt; i++) {
             User user = TestDataUtility.userWithTestValues();

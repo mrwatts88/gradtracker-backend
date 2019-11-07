@@ -154,6 +154,7 @@ public class RoleDao extends BaseDao<Long, Role> {
     @Override
     public void delete(Long roleId) {
         LOG.trace("Deleting role {}", roleId);
+        this.jdbcTemplate.update(sql("deleteUserRolesByRoleId"), new MapSqlParameterSource("role_id", roleId));
         this.jdbcTemplate.update(sql("deleteRoleAuthoritiesByRoleId"), new MapSqlParameterSource("role_id", roleId));
         int result = this.jdbcTemplate.update(sql("deleteRole"), new MapSqlParameterSource("id", roleId));
         if (result != 1) {

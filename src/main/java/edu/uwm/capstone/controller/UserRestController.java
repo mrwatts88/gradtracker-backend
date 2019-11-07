@@ -67,7 +67,6 @@ public class UserRestController {
     @ApiOperation(value = "Read User by ID")
     @GetMapping(value = USER_PATH + "/panther_id/{pantherId}")
     public User readByPantherId(@PathVariable String pantherId, @ApiIgnore HttpServletResponse response) throws IOException {
-        // TODO handle special URL characters in pantherId
         return RestControllerUtil.runCallable(() -> userService.readByPantherId(pantherId), response, LOG);
     }
 

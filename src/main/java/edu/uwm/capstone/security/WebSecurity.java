@@ -1,7 +1,8 @@
 package edu.uwm.capstone.security;
 
-import com.google.common.collect.Sets;
+import edu.uwm.capstone.db.RoleDao;
 import edu.uwm.capstone.db.UserDao;
+import edu.uwm.capstone.model.Role;
 import edu.uwm.capstone.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +59,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
         PasswordEncoder pe = passwordEncoder();
 
+        persistDefaultRole();
         persistDefaultUser(pe);
 
         auth.userDetailsService(userDetailsService())
@@ -68,22 +70,25 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private RoleDao roleDao;
+
     private void persistDefaultUser(PasswordEncoder passwordEncoder) {
-        User defaultUser = userDao.readByEmail(DEFAULT_USER_EMAIL);
+        User defaultUser = userDao.readByEmail(DEFAULT_USER.getEmail());
 
         if (defaultUser != null) return;
 
-        defaultUser = User.builder()
-                .firstName(DEFAULT_USER_FIRST_NAME)
-                .lastName(DEFAULT_USER_LAST_NAME)
-                .email(DEFAULT_USER_EMAIL)
-                .pantherId(DEFAULT_USER_PANTHER_ID)
-                .password(passwordEncoder.encode(DEFAULT_USER_PASSWORD))
-                .enabled(true)
-                .authorities(Sets.newHashSet(Authorities.values()))
-                .build();
+        LOGGER.info("Persisting default user {}", DEFAULT_USER);
+        DEFAULT_USER.setPassword(passwordEncoder.encode(DEFAULT_USER.getPassword()));
+        DEFAULT_USER = userDao.create(DEFAULT_USER);
+    }
 
-        LOGGER.info("Persisting default user {}", defaultUser);
-        userDao.create(defaultUser);
+    private void persistDefaultRole() {
+        Role defaultRole = roleDao.readByName(DEFAULT_ROLE.getName());
+
+        if (defaultRole != null) return;
+
+        LOGGER.info("Persisting default user {}", DEFAULT_ROLE);
+        roleDao.create(DEFAULT_ROLE);
     }
 }

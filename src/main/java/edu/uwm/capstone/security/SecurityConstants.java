@@ -1,5 +1,11 @@
 package edu.uwm.capstone.security;
 
+import edu.uwm.capstone.model.Role;
+import edu.uwm.capstone.model.User;
+
+import java.util.Arrays;
+import java.util.Collections;
+
 public class SecurityConstants {
 
     private SecurityConstants() {
@@ -11,20 +17,32 @@ public class SecurityConstants {
     static final String HEADER_STRING = "Authorization";
     public static final String AUTHENTICATE_URL = "/auth";
 
-    /* custom JWT claim names for User authentication */
-    static final String JWT_CLAIM_ID = "id";
-    static final String JWT_CLAIM_FIRST_NAME = "first name";
-    static final String JWT_CLAIM_LAST_NAME = "last name";
-    static final String JWT_CLAIM_PANTHER_ID = "panther id";
-    static final String JWT_CLAIM_EMAIL = "email";
+    /* default role information */
+    public static Role DEFAULT_ROLE;
+
+    static {
+        DEFAULT_ROLE = Role.builder()
+                .name("Admin")
+                .description("The default admin role")
+                .authorities(Arrays.asList(Authorities.values()))
+                .build();
+    }
 
     /* default user information */
-    static final String DEFAULT_USER_FIRST_NAME = "default_first_name";
-    static final String DEFAULT_USER_LAST_NAME = "default_last_name";
-    public static final String DEFAULT_USER_EMAIL = "default@uwm.edu";
-    static final String DEFAULT_USER_PANTHER_ID = "123456789";
-    static final String DEFAULT_USER_PASSWORD = "password";  // TODO do not hard code this
+    public static User DEFAULT_USER;
 
-    public static final String DEFAULT_USER_CREDENTIALS = "{ \"email\": \"" + DEFAULT_USER_EMAIL + "\", \"password\": \"" + DEFAULT_USER_PASSWORD + "\" }";
+    static {
+        DEFAULT_USER = User.builder()
+                .firstName("default_first_name")
+                .lastName("default_last_name")
+                .email("default@uwm.edu")
+                .pantherId("123456789")
+                .password("password")
+                .enabled(true)
+                .roleNames(Collections.singleton(DEFAULT_ROLE.getName()))
+                .build();
+    }
+
+    public static final String DEFAULT_USER_CREDENTIALS = "{ \"email\": \"" + DEFAULT_USER.getEmail() + "\", \"password\": \"" + DEFAULT_USER.getPassword() + "\" }";
 
 }
