@@ -1,5 +1,6 @@
 package edu.uwm.capstone.security;
 
+import com.google.common.collect.Sets;
 import edu.uwm.capstone.model.Role;
 import edu.uwm.capstone.model.User;
 
@@ -24,7 +25,7 @@ public class SecurityConstants {
         DEFAULT_ROLE = Role.builder()
                 .name("Admin")
                 .description("The default admin role")
-                .authorities(Arrays.asList(Authorities.values()))
+                .authorities(Sets.newHashSet(Authorities.values()))
                 .build();
     }
 

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -16,6 +17,6 @@ public class Role extends BaseEntity {
 
     private String name;
     private String description;
-    private List<Authorities> authorities;
+    private Set<Authorities> authorities;
 
 }

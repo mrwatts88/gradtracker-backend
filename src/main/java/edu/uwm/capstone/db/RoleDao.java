@@ -1,5 +1,6 @@
 package edu.uwm.capstone.db;
 
+import com.google.common.collect.Sets;
 import edu.uwm.capstone.model.Role;
 import edu.uwm.capstone.security.Authorities;
 import edu.uwm.capstone.sql.dao.BaseDao;
@@ -66,9 +67,9 @@ public class RoleDao extends BaseDao<Long, Role> {
         try {
             Role role = (Role) this.jdbcTemplate.queryForObject(sql("readRoleById"), new MapSqlParameterSource("id", roleId), rowMapper);
 
-            role.setAuthorities(jdbcTemplate.queryForList(sql("readRoleAuthoritiesByRoleId"),
+            role.setAuthorities(Sets.newHashSet(jdbcTemplate.queryForList(sql("readRoleAuthoritiesByRoleId"),
                     new MapSqlParameterSource("role_id", role.getId()),
-                    Authorities.class)
+                    Authorities.class))
             );
             return role;
 
@@ -87,9 +88,9 @@ public class RoleDao extends BaseDao<Long, Role> {
         List<Role> roles = this.jdbcTemplate.query(sql("readAllRoles"), rowMapper);
 
         for (Role role : roles) {
-            role.setAuthorities(jdbcTemplate.queryForList(sql("readRoleAuthoritiesByRoleId"),
+            role.setAuthorities(Sets.newHashSet(jdbcTemplate.queryForList(sql("readRoleAuthoritiesByRoleId"),
                     new MapSqlParameterSource("role_id", role.getId()),
-                    Authorities.class));
+                    Authorities.class)));
         }
 
         return roles;
@@ -106,9 +107,9 @@ public class RoleDao extends BaseDao<Long, Role> {
         try {
             Role role = (Role) this.jdbcTemplate.queryForObject(sql("readRoleByName"), new MapSqlParameterSource("role_name", name), rowMapper);
 
-            role.setAuthorities(jdbcTemplate.queryForList(sql("readRoleAuthoritiesByRoleId"),
+            role.setAuthorities(Sets.newHashSet(jdbcTemplate.queryForList(sql("readRoleAuthoritiesByRoleId"),
                     new MapSqlParameterSource("role_id", role.getId()),
-                    Authorities.class)
+                    Authorities.class))
             );
             return role;
 
