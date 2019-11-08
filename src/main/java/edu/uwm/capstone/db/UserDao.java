@@ -1,6 +1,5 @@
 package edu.uwm.capstone.db;
 
-import com.fasterxml.jackson.databind.util.Named;
 import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.security.Authorities;
 import edu.uwm.capstone.sql.dao.BaseDao;
@@ -8,19 +7,18 @@ import edu.uwm.capstone.sql.dao.BaseRowMapper;
 import edu.uwm.capstone.sql.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+
+import static edu.uwm.capstone.sql.dao.BaseRowMapper.javaTimeFromDate;
 
 public class UserDao extends BaseDao<Long, User> {
 
@@ -54,21 +52,11 @@ public class UserDao extends BaseDao<Long, User> {
         Long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
         user.setId(id);
 
-        // Create user_roles for each user using batchUpdate()
         try {
-            List<MapSqlParameterSource> batchArgs = new ArrayList<>();
-            for(String roleName : user.getRoleNames()) {
-                MapSqlParameterSource src = new MapSqlParameterSource();
-                src.addValue("user_id", user.getId());
-                src.addValue("role_name", roleName);
-                src.addValue("created_date", user.getCreatedDate());
-                batchArgs.add(src);
-            }
-
-            jdbcTemplate.batchUpdate(sql("createUserRolesByRoleName"),
-                    batchArgs.toArray(new MapSqlParameterSource[user.getRoleNames().size()]));
-        }catch(Exception e) {
-            throw new DaoException("Failed while creating user roles.");
+            // Create user_roles for each user using batchUpdate()
+            persistUserRoles(user);
+        } catch (Exception e) {
+            throw new DaoException("Failed to create user roles", e);
         }
         return user;
     }
@@ -154,12 +142,26 @@ public class UserDao extends BaseDao<Long, User> {
         this.jdbcTemplate.query(sql("readRoleAuthoritiesByUserId"),
                 new MapSqlParameterSource("user_id", user.getId()),
                 (rs) -> {
-                    // TODO may not want to hardcode these column names
+                    // TODO may not want to hardcode these column names here
                     roleNames.add(rs.getString("name"));
                     authorities.add(Authorities.valueOf(rs.getString("authority")));
                 });
         user.setRoleNames(roleNames);
         user.setAuthorities(authorities);
+    }
+
+    private void persistUserRoles(User user) throws RuntimeException {
+        List<MapSqlParameterSource> batchArgs = new ArrayList<>();
+        for (String roleName : user.getRoleNames()) {
+            MapSqlParameterSource src = new MapSqlParameterSource();
+            src.addValue("user_id", user.getId());
+            src.addValue("role_name", roleName);
+            src.addValue("created_date", javaTimeFromDate(user.getCreatedDate()));
+            batchArgs.add(src);
+        }
+
+        jdbcTemplate.batchUpdate(sql("createUserRolesByRoleName"),
+                batchArgs.toArray(new MapSqlParameterSource[user.getRoleNames().size()]));
     }
 
     /**
@@ -184,24 +186,15 @@ public class UserDao extends BaseDao<Long, User> {
             throw new DaoException(String.format("Failed attempt to update user %s - affected %s rows", user.toString(), result));
         }
 
-        // Delete all user roles, then add them again.
         try {
+            // Delete all user roles, then add them again.
+            // TODO updated date is never set doing this - we may want to get rid of created & updated date all together for user_roles ?
             this.jdbcTemplate.update(sql("deleteUserRolesByUserId"),
                     new MapSqlParameterSource("user_id", user.getId()));
 
-            List<MapSqlParameterSource> batchArgs = new ArrayList<>();
-            for(String roleName : user.getRoleNames()) {
-                MapSqlParameterSource src = new MapSqlParameterSource();
-                src.addValue("user_id", user.getId());
-                src.addValue("role_name", roleName);
-                src.addValue("created_date", user.getCreatedDate());
-                batchArgs.add(src);
-            }
-
-            jdbcTemplate.batchUpdate(sql("createUserRolesByRoleName"),
-                    batchArgs.toArray(new MapSqlParameterSource[user.getRoleNames().size()]));
-        }catch(Exception e) {
-            throw new DaoException("Failed while updating user roles.");
+            persistUserRoles(user);
+        } catch (Exception e) {
+            throw new DaoException("Failed to update user roles.", e);
         }
         return user;
     }
