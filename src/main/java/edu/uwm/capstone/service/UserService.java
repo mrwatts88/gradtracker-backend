@@ -55,10 +55,12 @@ public class UserService {
      * @param userId
      * @return {@link User}
      */
+    //TODO: Check that users who can't read all only read their own IDs
     public User read(Long userId) {
         LOG.trace("Reading user {}", userId);
 
         User user = userDao.read(userId);
+
 
         if (user == null) {
             throw new EntityNotFoundException("User with ID: " + userId + " not found.");
