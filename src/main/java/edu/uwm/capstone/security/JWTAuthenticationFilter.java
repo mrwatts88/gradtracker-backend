@@ -34,7 +34,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // set filter provider (for serialization) to JWTFilter
         jwtUserSubjectMapper.setFilterProvider(new SimpleFilterProvider().addFilter("JWTFilter",
-                SimpleBeanPropertyFilter.filterOutAllExcept("firstName", "lastName", "pantherId", "email", "enabled", "roleNames", "authorities")));
+                SimpleBeanPropertyFilter.filterOutAllExcept("id", "firstName", "lastName", "pantherId", "email", "enabled", "roleNames", "authorities")));
 
     }
 

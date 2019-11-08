@@ -59,7 +59,7 @@ public class RoleDao extends BaseDao<Long, Role> {
 
         for (Authorities roleAuthority : role.getAuthorities()) {
             MapSqlParameterSource src = new MapSqlParameterSource();
-            src.addValue("authority", roleAuthority);
+            src.addValue("authority", roleAuthority.toString());
             src.addValue("role_id", role.getId());
             src.addValue("created_date", javaTimeFromDate(role.getCreatedDate()));
             batchArgs.add(src);
@@ -164,7 +164,7 @@ public class RoleDao extends BaseDao<Long, Role> {
 
         for (Authorities roleAuthority : role.getAuthorities()) {
             MapSqlParameterSource src = new MapSqlParameterSource();
-            src.addValue("authority", roleAuthority);
+            src.addValue("authority", roleAuthority.toString());
             src.addValue("role_id", role.getId());
             src.addValue("updated_date", javaTimeFromDate(role.getUpdatedDate()));
             batchArgs.add(src);

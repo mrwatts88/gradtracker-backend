@@ -30,11 +30,7 @@ SELECT * from roles WHERE name = :role_name
 -- ORDER BY role_authorities.authority
 
 --STATEMENT readAllRoles
-SELECT roles.*, role_authorities.authority
-FROM roles
-INNER JOIN role_authorities
-    ON role_authorities.role_id = roles.id
-ORDER BY roles.name, role_authorities.authority
+SELECT *FROM roles;
 
 --STATEMENT deleteRole
 DELETE FROM role WHERE id = :id;
