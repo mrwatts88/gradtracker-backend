@@ -1,4 +1,4 @@
---STATEMENT createUserAuthority
+--STATEMENT createRoleAuthority
 INSERT INTO role_authorities (
   authority,
   role_id,

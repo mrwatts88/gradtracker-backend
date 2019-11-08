@@ -14,8 +14,11 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static edu.uwm.capstone.sql.dao.BaseRowMapper.javaTimeFromDate;
 
 public class RoleDao extends BaseDao<Long, Role> {
 
@@ -51,6 +54,19 @@ public class RoleDao extends BaseDao<Long, Role> {
 
         // TODO persist role's authorities in role_authorities table
         //  Note: Role#authorities is a list which may contain duplicates which we don't want in the db
+
+        List<MapSqlParameterSource> batchArgs = new ArrayList<>();
+
+        for (Authorities roleAuthority : role.getAuthorities()) {
+            MapSqlParameterSource src = new MapSqlParameterSource();
+            src.addValue("authority", roleAuthority);
+            src.addValue("role_id", role.getId());
+            src.addValue("created_date", javaTimeFromDate(role.getCreatedDate()));
+            batchArgs.add(src);
+        }
+
+        jdbcTemplate.batchUpdate(sql("createRoleAuthority"),
+                batchArgs.toArray(new MapSqlParameterSource[role.getAuthorities().size()]));
 
         return role;
     }
@@ -142,6 +158,21 @@ public class RoleDao extends BaseDao<Long, Role> {
 
         // TODO update role's authorities in role_authorities table
         //  Note: Role#authorities is a list which may contain duplicates which we don't want in the db
+
+
+        List<MapSqlParameterSource> batchArgs = new ArrayList<>();
+
+        for (Authorities roleAuthority : role.getAuthorities()) {
+            MapSqlParameterSource src = new MapSqlParameterSource();
+            src.addValue("authority", roleAuthority);
+            src.addValue("role_id", role.getId());
+            src.addValue("updated_date", javaTimeFromDate(role.getUpdatedDate()));
+            batchArgs.add(src);
+        }
+
+        jdbcTemplate.batchUpdate(sql("updateRoleAuthority"),
+                batchArgs.toArray(new MapSqlParameterSource[role.getAuthorities().size()]));
+
 
         return role;
     }
