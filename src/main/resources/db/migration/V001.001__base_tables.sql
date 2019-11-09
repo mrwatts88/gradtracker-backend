@@ -48,7 +48,7 @@ CREATE TABLE forms(
     id BIGINT(20) AUTO_INCREMENT,
     form_def_id BIGINT(20) NOT NULL,
     user_id BIGINT(20) NOT NULL,
-    approved BOOLEAN DEFAULT FALSE,
+    approved BOOLEAN DEFAULT NULL,
     created_date BIGINT(25)   NOT NULL,
     updated_date BIGINT(25) DEFAULT NULL,
     PRIMARY KEY (id),
@@ -88,6 +88,26 @@ CREATE TABLE role_authorities(
     PRIMARY KEY (id),
     FOREIGN KEY (role_id) REFERENCES roles(id)
 );
+
+CREATE TABLE degree_programs(
+    id BIGINT(20) AUTO_INCREMENT,
+    name VARCHAR(255),
+    description VARCHAR (1024),
+    created_date BIGINT(25)   NOT NULL,
+    updated_date BIGINT(25) DEFAULT NULL,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE degree_program_states(
+    id BIGINT(20) AUTO_INCREMENT,
+    degree_program_id BIGINT(20),
+    name VARCHAR(255),
+    description VARCHAR (1024),
+    created_date BIGINT(25)   NOT NULL,
+    updated_date BIGINT(25) DEFAULT NULL,
+    PRIMARY KEY(id)
+);
+
 
 -- Test data used for persisting a user, role, user_role, and role_authorities
 
