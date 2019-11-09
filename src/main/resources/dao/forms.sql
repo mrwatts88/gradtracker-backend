@@ -54,3 +54,9 @@ UPDATE forms SET
   updated_date = :updated_date
 WHERE
   id = :id;
+
+--STATEMENT updateApproval
+UPDATE forms SET
+    approved = :approved
+WHERE
+    id = :id;

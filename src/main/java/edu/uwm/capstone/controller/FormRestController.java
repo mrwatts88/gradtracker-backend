@@ -142,9 +142,9 @@ public class FormRestController {
      * @throws IOException if error response cannot be created
      */
     @ApiOperation(value = "Approve/Reject form by ID")
-    @PutMapping(value = FORM_PATH + "{formId}")
-    public void approve(@PathVariable Long formId, @RequestParam(name = approve) boolean approved, @ApiIgnore HttpServletResponse response) throws IOException {
-        RestControllerUtil.runRunnable(() -> formService.delete(formId), response, LOG);
+    @PutMapping(value = FORM_PATH + "approve/{formId}")
+    public Form approve(@PathVariable Long formId, @RequestParam(name = "approve") boolean approve, @ApiIgnore HttpServletResponse response) throws IOException {
+        return RestControllerUtil.runCallable(() -> formService.approvalBehavior(formId, approve), response, LOG);
     }
 
 }

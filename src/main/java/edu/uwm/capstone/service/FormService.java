@@ -165,7 +165,14 @@ public class FormService {
         }
         formDao.delete(formId);
     }
-    public 
+    public Form approvalBehavior(Long formId, boolean isApproved){
+        LOG.trace(isApproved ? "Approving" : "Rejecting" + "form {}", formId);
+        if (formDao.read(formId) == null) {
+            throw new EntityNotFoundException("Could not change approval for form " + formId + " - record not found.");
+        }
+
+        return formDao.approvalBehavior(formId, isApproved);
+    }
 
     /**
      * Checks if the given {@link Form} form is valid.
