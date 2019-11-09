@@ -15,6 +15,9 @@ public class User extends BaseEntity {
     private String lastName;
     private String password;
     private String pantherId;
+    private boolean isAccountNonExpired;
+    private boolean isAccountNonLocked;
+    private boolean isCredentialsNonExpired;
     private String email;
 
 }

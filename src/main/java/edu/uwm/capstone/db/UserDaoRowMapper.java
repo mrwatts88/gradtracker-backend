@@ -18,7 +18,10 @@ public class UserDaoRowMapper extends BaseRowMapper<User> {
         LAST_NAME(),
         PASSWORD(),
         PANTHER_ID(),
-        EMAIL();
+        EMAIL(),
+        ISACCOUNTNONEXPIRED(),
+        ISACCOUNTNONLOCKED(),
+        ISCREDENTIALSNONEXPIRED();
 
         private String columnName;
 
@@ -40,6 +43,9 @@ public class UserDaoRowMapper extends BaseRowMapper<User> {
         map.put(PASSWORD.getColumnName(), object.getPassword());
         map.put(PANTHER_ID.getColumnName(), object.getPantherId());
         map.put(EMAIL.getColumnName(), object.getEmail());
+        map.put(ISACCOUNTNONEXPIRED.getColumnName(), object.getIsAccountNonExpired());
+        map.put(ISACCOUNTNONLOCKED.getColumnName(), object.getIsAccountNonLocked());
+        map.put(ISCREDENTIALSNONEXPIRED.getColumnName(), object.getIsCredentialsNonExpired());
         map.put(CREATED_DATE.getColumnName(), javaTimeFromDate(object.getCreatedDate()));
         map.put(UPDATED_DATE.getColumnName(), javaTimeFromDate(object.getUpdatedDate()));
         return map;
@@ -54,6 +60,9 @@ public class UserDaoRowMapper extends BaseRowMapper<User> {
         folder.setPassword(rs.getString(PASSWORD.getColumnName()));
         folder.setPantherId(rs.getString(PANTHER_ID.getColumnName()));
         folder.setEmail(rs.getString(EMAIL.getColumnName()));
+        folder.setAccountNonExpired(rs.getBoolean(ISACCOUNTNONEXPIRED.getColumnName()));
+        folder.setAccountNonLocked(rs.getBoolean(ISACCOUNTNONLOCKED.getColumnName()));
+        folder.setCredentialsNonExpired(rs.getBoolean(ISCREDENTIALSNONEXPIRED.getColumnName()));
         folder.setCreatedDate(dateFromJavaTime(rs.getObject(CREATED_DATE.getColumnName())));
         folder.setUpdatedDate(dateFromJavaTime(rs.getObject(UPDATED_DATE.getColumnName())));
         return folder;

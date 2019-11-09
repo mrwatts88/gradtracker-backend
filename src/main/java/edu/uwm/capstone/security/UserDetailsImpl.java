@@ -55,21 +55,17 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;  // TODO need to know if a user account is expired
+        return user.getisAccountNonExpired();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;  // TODO need to know if a user account is locked
+        return user.getisAccountNonLocked();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;  // TODO need to know if a user's credentials are expired
+        return user.getisCredentialsNonExpired();
     }
 
-    @Override
-    public boolean isEnabled() {
-        return true;  // TODO need to know if a user account is enabled
-    }
 }

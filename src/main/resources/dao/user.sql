@@ -5,14 +5,20 @@ INSERT INTO users (
   password,
   panther_id,
   email,
-  created_date
+  created_date,
+  isAccountNonExpired,
+  isAccountNonLocked,
+  isCredentialsNonExpired
 ) VALUES (
   :first_name,
   :last_name,
   :password,
   :panther_id,
   :email,
-  :created_date
+  :created_date,
+  :isAccountNonExpired,
+  :isAccountNonLocked,
+  :isCredentialsNonExpired
 );
 
 --STATEMENT readUser
@@ -34,6 +40,9 @@ UPDATE users SET
   password = :password,
   panther_id = :panther_id,
   email = :email,
+  isAccountNonExpired = :isAccountNonExpired,
+  isAccountNonLocked = :isAccountNonLocked,
+  isCredentialsNonExpired = :isCredentialsNonExpired,
   updated_date = :updated_date
 WHERE
   id = :id;
