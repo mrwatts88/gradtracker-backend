@@ -165,6 +165,7 @@ public class FormService {
         }
         formDao.delete(formId);
     }
+    public 
 
     /**
      * Checks if the given {@link Form} form is valid.

@@ -132,4 +132,19 @@ public class FormRestController {
     public void deleteById(@PathVariable Long formId, @ApiIgnore HttpServletResponse response) throws IOException {
         RestControllerUtil.runRunnable(() -> formService.delete(formId), response, LOG);
     }
+
+    /**
+     * Approve or Reject a form submission
+     *
+     * @param formId   id of the {@link Form} to update
+     * @param approve form is approved, true or false
+     * @param response {@link HttpServletResponse} that is sent back
+     * @throws IOException if error response cannot be created
+     */
+    @ApiOperation(value = "Approve/Reject form by ID")
+    @PutMapping(value = FORM_PATH + "{formId}")
+    public void approve(@PathVariable Long formId, @RequestParam(name = approve) boolean approved, @ApiIgnore HttpServletResponse response) throws IOException {
+        RestControllerUtil.runRunnable(() -> formService.delete(formId), response, LOG);
+    }
+
 }
