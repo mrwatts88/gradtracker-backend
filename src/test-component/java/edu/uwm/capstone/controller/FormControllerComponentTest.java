@@ -219,7 +219,7 @@ public class FormControllerComponentTest {
 
         given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .header(new Header("Authorization", authorizationToken))
-                .body(mapper.writeValueAsString(formToUpdate))
+                .body(mapper.writeValueAsString(formToUpdate.getFields()))
                 .when()
                 .put(FormRestController.FORM_PATH + createForm.getId())
                 .then().log().ifValidationFails()
@@ -248,7 +248,7 @@ public class FormControllerComponentTest {
 
         given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .header(new Header("Authorization", authorizationToken))
-                .body(mapper.writeValueAsString(createForm))
+                .body(mapper.writeValueAsString(createForm.getFields()))
                 .when()
                 .put(FormRestController.FORM_PATH + randomFormId)
                 .then().log().ifValidationFails()
@@ -277,7 +277,7 @@ public class FormControllerComponentTest {
 
         given().header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .body(mapper.writeValueAsString(createForm))
+                .body(mapper.writeValueAsString(createForm.getFields()))
                 .when()
                 .put(FormRestController.FORM_PATH + createForm.getId())
                 .then().log().ifValidationFails()
@@ -308,7 +308,7 @@ public class FormControllerComponentTest {
 
         given().header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .body(mapper.writeValueAsString(createForm))
+                .body(mapper.writeValueAsString(createForm.getFields()))
                 .when()
                 .put(FormRestController.FORM_PATH + createForm.getId())
                 .then().log().ifValidationFails()

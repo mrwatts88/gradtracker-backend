@@ -47,6 +47,7 @@ public class FormService {
         checkValidForm(form, true, formDefinitionInDb);
 
         form.setName(formDefinitionInDb.getName());
+        form.setApproved(null);
 
         FieldDefinition fd;
         for (Field f : form) {
@@ -114,42 +115,44 @@ public class FormService {
     /**
      * Updates the given {@link Form}.
      *
-     * @param form
+     * @param fields
      * @return
      */
-    public Form update(Form form) {
-        LOG.trace("Updating form {}", form);
+    public Form updateFormFields(Long formId, List<Field> fields) {
+        LOG.trace("Updating form {}", formId);
 
-        Form formInDb = formDao.read(form.getId());
+        Form formInDb = formDao.read(formId);
 
         if (formInDb == null) {
-            throw new EntityNotFoundException("Could not update form " + form.getId() + " - record not found.");
+            throw new EntityNotFoundException("Could not update form " + formId + " - record not found.");
         }
 
-        Assert.isTrue(formInDb.getUserId().equals(form.getUserId()), "Cannot change form's user");
-
-        FormDefinition formDefinitionInDb = formDefinitionDao.read(form.getFormDefId());
-        checkValidForm(form, false, formDefinitionInDb);
-
         HashSet<Long> fieldIdsAssociatedWithOldForm = formInDb.getFields().stream().map(Field::getId).collect(Collectors.toCollection(HashSet::new));
-        for (Field fd : form) {
+
+        formInDb.setFields(fields);
+        formInDb.setApproved(null);
+
+        FormDefinition formDefinitionInDb = formDefinitionDao.read(formInDb.getFormDefId());
+        checkValidForm(formInDb, false, formDefinitionInDb);
+
+        for (Field fd : formInDb) {
             if (fd.getId() != null) {
-                Assert.isTrue(fieldIdsAssociatedWithOldForm.contains(fd.getId()), "Could not update form " + form.getId() +
+                Assert.isTrue(fieldIdsAssociatedWithOldForm.contains(fd.getId()), "Could not update form " + formId +
                         " - found a field with id = " + fd.getId() + " which is not associated with this form");
             }
         }
 
-        form.setName(formDefinitionInDb.getName());
+        formInDb.setName(formDefinitionInDb.getName());
 
         FieldDefinition fd;
-        for (Field f : form) {
+        for (Field f : formInDb) {
             fd = formDefinitionInDb.getFieldDefinitionById(f.getFieldDefId());
             f.setLabel(fd.getLabel());
             f.setFieldIndex(fd.getFieldIndex());
         }
 
-        form.setCreatedDate(formInDb.getCreatedDate());
-        return formDao.update(form);
+        formInDb.setCreatedDate(formInDb.getCreatedDate());
+        return formDao.update(formInDb);
     }
 
     /**

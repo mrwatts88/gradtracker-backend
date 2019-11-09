@@ -46,7 +46,7 @@ public class FormDaoRowMapper extends BaseRowMapper<Form> {
         folder.setId(rs.getLong(ID.getColumnName()));
         folder.setFormDefId(rs.getLong(FORM_DEF_ID.getColumnName()));
         folder.setUserId(rs.getLong(USER_ID.getColumnName()));
-        folder.setApproved(rs.getBoolean(APPROVED.getColumnName()));
+        folder.setApproved(rs.getObject(APPROVED.getColumnName(), Boolean.class));
         folder.setName(rs.getString(NAME.getColumnName()));
         folder.setCreatedDate(dateFromJavaTime(rs.getObject(CREATED_DATE.getColumnName())));
         folder.setUpdatedDate(dateFromJavaTime(rs.getObject(UPDATED_DATE.getColumnName())));

@@ -1,5 +1,6 @@
 package edu.uwm.capstone.controller;
 
+import edu.uwm.capstone.model.Field;
 import edu.uwm.capstone.model.Form;
 import edu.uwm.capstone.model.FormDefinition;
 import edu.uwm.capstone.model.User;
@@ -110,16 +111,15 @@ public class FormRestController {
      * Updates a {@link Form} by its Id.
      *
      * @param formId   id of the {@link Form} to update
-     * @param form     updated {@link Form}
+     * @param fields   list of {@link Field}s to update
      * @param response {@link HttpServletResponse} that is sent back
      * @return updated {@link Form}
      * @throws IOException if error response cannot be created
      */
     @ApiOperation(value = "Update Form by ID")
     @PutMapping(value = FORM_PATH + "{formId}")
-    public Form update(@PathVariable Long formId, @RequestBody Form form, @ApiIgnore HttpServletResponse response) throws IOException {
-        form.setId(formId);
-        return RestControllerUtil.runCallable(() -> formService.update(form), response, LOG);
+    public Form update(@PathVariable Long formId, @RequestBody List<Field> fields, @ApiIgnore HttpServletResponse response) throws IOException {
+        return RestControllerUtil.runCallable(() -> formService.updateFormFields(formId, fields), response, LOG);
     }
 
     /**

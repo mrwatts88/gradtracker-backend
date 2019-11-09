@@ -95,7 +95,7 @@ public class FormDaoRowMapperComponentTest {
         when(resultSet.getLong(BaseRowMapper.BaseColumnType.ID.getColumnName())).thenReturn(sampleForm.getId());
         when(resultSet.getLong(FormDaoRowMapper.FormColumnType.FORM_DEF_ID.getColumnName())).thenReturn(sampleForm.getFormDefId());
         when(resultSet.getLong(FormDaoRowMapper.FormColumnType.USER_ID.getColumnName())).thenReturn(sampleForm.getUserId());
-        when(resultSet.getBoolean(FormDaoRowMapper.FormColumnType.APPROVED.getColumnName())).thenReturn(sampleForm.getApproved());
+        when(resultSet.getObject(FormDaoRowMapper.FormColumnType.APPROVED.getColumnName(), Boolean.class)).thenReturn(sampleForm.getApproved());
         when(resultSet.getObject(BaseRowMapper.BaseColumnType.CREATED_DATE.getColumnName())).thenReturn(javaTimeFromDate(sampleForm.getCreatedDate()));
         when(resultSet.getObject(BaseRowMapper.BaseColumnType.UPDATED_DATE.getColumnName())).thenReturn(javaTimeFromDate(sampleForm.getUpdatedDate()));
 

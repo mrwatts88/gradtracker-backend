@@ -373,7 +373,7 @@ public class FormServiceComponentTest {
     }
 
     /**
-     * Verify that {@link FormService#update} is working correctly.
+     * Verify that {@link FormService#updateFormFields} is working correctly.
      */
     @Test
     public void update() {
@@ -400,7 +400,7 @@ public class FormServiceComponentTest {
 
         Form updateForm = TestDataUtility.formWithTestValues(formDefinition, user.getId());
         updateForm.setId(form.getId());
-        formService.update(updateForm);
+        formService.updateFormFields(updateForm.getId(), updateForm.getFields());
 
         Form verifyUpdateForm = formService.read(updateForm.getId());
         assertNotNull(verifyUpdateForm);
@@ -409,16 +409,16 @@ public class FormServiceComponentTest {
     }
 
     /**
-     * Verify that {@link FormService#update} is working correctly when a request for creating a null object is made.
+     * Verify that {@link FormService#updateFormFields} is working correctly when a request for creating a null object is made.
      */
     @Test(expected = RuntimeException.class)
     public void updateNullForm() {
-        formService.update(null);
+        formService.updateFormFields(null, null);
         assertNull(formService.readAll());
     }
 
     /**
-     * Verify that {@link FormService#update} is working correctly when a request for a non-existent {@link Form#id} is made.
+     * Verify that {@link FormService#updateFormFields} is working correctly when a request for a non-existent {@link Form#id} is made.
      */
     @Test(expected = RuntimeException.class)
     public void updateNonExistentForm() {
@@ -436,12 +436,12 @@ public class FormServiceComponentTest {
 
         Form updateForm = TestDataUtility.formWithTestValues(formDefinition, user.getId());
         updateForm.setId(TestDataUtility.randomLong());
-        formService.update(updateForm);
+        formService.updateFormFields(updateForm.getId(), updateForm.getFields());
         assertNull(formService.readAll());
     }
 
     /**
-     * Verify that {@link FormService#update} is working correctly when field definitions are updated
+     * Verify that {@link FormService#updateFormFields} is working correctly when field definitions are updated
      * but not exist for form definition.
      */
     @Test(expected = RuntimeException.class)
@@ -473,11 +473,11 @@ public class FormServiceComponentTest {
         Field fd = TestDataUtility.fieldWithTestValues(TestDataUtility.fieldDefWithTestValues());
         fieldDefinitions.add(fd);
         updateForm.setFields(fieldDefinitions);
-        formService.update(updateForm);
+        formService.updateFormFields(updateForm.getId(), updateForm.getFields());
     }
 
     /**
-     * Verify that {@link FormService#update} is working correctly when field definitions are updated
+     * Verify that {@link FormService#updateFormFields} is working correctly when field definitions are updated
      * but without FieldDef.
      */
     @Test(expected = RuntimeException.class)
@@ -507,7 +507,7 @@ public class FormServiceComponentTest {
         Form updateForm = TestDataUtility.formWithTestValues(formDefinition, user.getId());
         updateForm.setId(verifyCreateForm.getId());
         updateForm.setFields(Collections.emptyList());
-        formService.update(updateForm);
+        formService.updateFormFields(updateForm.getId(), updateForm.getFields());
     }
 
     /**

@@ -76,7 +76,6 @@ public class TestDataUtility {
      */
     public static Form formWithTestValues(FormDefinition formDefinition, Long userId) {
         Form form = new Form();
-        form.setApproved(randomBoolean());
         form.setUserId(userId);
         form.setFormDefId(formDefinition.getId());
         ArrayList<Field> fields = new ArrayList<>();
