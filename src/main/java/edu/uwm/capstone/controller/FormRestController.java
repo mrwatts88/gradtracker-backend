@@ -3,11 +3,13 @@ package edu.uwm.capstone.controller;
 import edu.uwm.capstone.model.Form;
 import edu.uwm.capstone.model.FormDefinition;
 import edu.uwm.capstone.model.User;
+import edu.uwm.capstone.security.Authorities;
 import edu.uwm.capstone.service.FormService;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -142,6 +144,7 @@ public class FormRestController {
      * @throws IOException if error response cannot be created
      */
     @ApiOperation(value = "Approve/Reject form by ID")
+    @PreAuthorize("hasAuthority('APPROVE_FORM')")
     @PutMapping(value = FORM_PATH + "approve/{formId}")
     public Form approve(@PathVariable Long formId, @RequestParam(name = "approve") boolean approve, @ApiIgnore HttpServletResponse response) throws IOException {
         return RestControllerUtil.runCallable(() -> formService.approvalBehavior(formId, approve), response, LOG);
