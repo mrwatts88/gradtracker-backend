@@ -288,8 +288,9 @@ public class UserRestControllerComponentTest {
         usersToCleanup.add(userDao.create(user));
 
         User userToUpdate = TestDataUtility.userWithTestValues();
-        userToUpdate.setId(user.getId());
+        usersToCleanup.add(userDao.create(userToUpdate));
         userToUpdate.setEmail(user.getEmail());
+        userToUpdate.setCreatedDate(null);
 
         // exercise endpoint
         given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -307,8 +308,9 @@ public class UserRestControllerComponentTest {
         usersToCleanup.add(userDao.create(user));
 
         User userToUpdate = TestDataUtility.userWithTestValues();
-        userToUpdate.setId(user.getId());
+        usersToCleanup.add(userDao.create(userToUpdate));
         userToUpdate.setPantherId(user.getPantherId());
+        userToUpdate.setCreatedDate(null);
 
         // exercise endpoint
         given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)

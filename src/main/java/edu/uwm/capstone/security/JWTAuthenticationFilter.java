@@ -53,7 +53,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                             new ArrayList<>())
             );
         } catch (IOException e) {
-//            e.printStackTrace();
             throw new JWTAuthenticationException(e);
         }
     }

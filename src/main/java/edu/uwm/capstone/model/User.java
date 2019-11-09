@@ -16,7 +16,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(value = {"credentialsNonExpired", "accountNonExpired", "accountNonLocked", "username"}, ignoreUnknown = true)
+@JsonIgnoreProperties(value = {"username"}, ignoreUnknown = true)
 public class User extends BaseEntity implements UserDetails {
 
     @JsonFilter("JWTFilter")
@@ -29,20 +29,15 @@ public class User extends BaseEntity implements UserDetails {
     private String password;
     private String pantherId;
     private String email;
-    private Boolean enabled = true; // TODO need to add this column to users table
     private Set<String> roleNames;
 
     @ApiModelProperty(hidden = true)
     private Set<Authorities> authorities;
 
-    @ApiModelProperty(hidden = true)
-    private boolean credentialsNonExpired;
-
-    @ApiModelProperty(hidden = true)
-    private boolean accountNonExpired;
-
-    @ApiModelProperty(hidden = true)
-    private boolean accountNonLocked;
+    private Boolean enabled = true;
+    private boolean credentialsNonExpired = true;
+    private boolean accountNonExpired = true;
+    private boolean accountNonLocked = true;
 
     @ApiModelProperty(hidden = true)
     private String username;
@@ -54,17 +49,17 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return enabled; // TODO do we want to use enabled for this?
+        return accountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return enabled; // TODO do we want to use enabled for this?
+        return accountNonLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return enabled; // TODO do we want to use enabled for this?
+        return credentialsNonExpired;
     }
 
     @Override

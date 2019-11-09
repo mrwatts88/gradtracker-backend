@@ -164,9 +164,15 @@ public class UserService {
         Assert.notNull(user.getFirstName(), "User first name must not be null");
         Assert.notNull(user.getLastName(), "User last name must not be null");
         Assert.notNull(user.getPantherId(), "User panther id must not be null");
+        Assert.notNull(user.getRoleNames(), "User roles must not be null");
 
-        Assert.isNull(userDao.readByEmail(user.getEmail()), "User already registered with email " + user.getEmail());
-        Assert.isNull(userDao.readByPantherId(user.getPantherId()), "User already registered with panther id " + user.getPantherId());
+        User tmpUser = userDao.readByEmail(user.getEmail());
+        Assert.isTrue(tmpUser == null || tmpUser.getId().equals(user.getId()),
+                "User already registered with email " + user.getEmail());
+
+        tmpUser = userDao.readByPantherId(user.getPantherId());
+        Assert.isTrue(tmpUser == null || tmpUser.getId().equals(user.getId()),
+                "User already registered with panther id " + user.getPantherId());
 
         Set<String> roleNamesInDb = roleDao.readAll().stream().map(Role::getName).collect(Collectors.toCollection(HashSet::new));
         for (String roleName : user.getRoleNames()) {

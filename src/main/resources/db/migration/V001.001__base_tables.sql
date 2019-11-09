@@ -5,6 +5,10 @@ CREATE TABLE users(
     password     VARCHAR(255) NOT NULL,
     panther_id   VARCHAR(9)   NOT NULL,
     email        VARCHAR(255) NOT NULL,
+    enabled      BIT,
+    is_account_non_expired BIT,
+    is_account_non_locked BIT,
+    is_credentials_non_expired BIT,
     created_date BIGINT(25)   NOT NULL,
     updated_date BIGINT(25) DEFAULT NULL,
     PRIMARY KEY (id)

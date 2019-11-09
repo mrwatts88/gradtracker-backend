@@ -4,7 +4,6 @@ import com.google.common.collect.Sets;
 import edu.uwm.capstone.model.Role;
 import edu.uwm.capstone.model.User;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 public class SecurityConstants {
@@ -40,6 +39,9 @@ public class SecurityConstants {
                 .pantherId("123456789")
                 .password("password")
                 .enabled(true)
+                .accountNonExpired(true)
+                .accountNonLocked(true)
+                .credentialsNonExpired(true)
                 .roleNames(Collections.singleton(DEFAULT_ROLE.getName()))
                 .build();
     }

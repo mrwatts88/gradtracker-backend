@@ -5,6 +5,10 @@ INSERT INTO users (
   password,
   panther_id,
   email,
+  enabled,
+  is_account_non_expired,
+  is_account_non_locked,
+  is_credentials_non_expired,
   created_date
 ) VALUES (
   :first_name,
@@ -12,6 +16,10 @@ INSERT INTO users (
   :password,
   :panther_id,
   :email,
+  :enabled,
+  :is_account_non_expired,
+  :is_account_non_locked,
+  :is_credentials_non_expired,
   :created_date
 );
 
@@ -37,6 +45,10 @@ UPDATE users SET
   password = :password,
   panther_id = :panther_id,
   email = :email,
+  enabled = :enabled,
+  is_account_non_expired = :is_account_non_expired,
+  is_account_non_locked = :is_account_non_locked,
+  is_credentials_non_expired = :is_credentials_non_expired,
   updated_date = :updated_date
 WHERE
   id = :id;

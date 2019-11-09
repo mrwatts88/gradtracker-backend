@@ -22,15 +22,19 @@ public class TestDataUtility {
      * @return {@link User}
      */
     public static User userWithTestValues() {
-        User user = new User();
-        user.setFirstName(randomAlphabetic(randomInt(1, 100)));
-        user.setLastName(randomAlphabetic(randomInt(1, 100)));
-        user.setPassword(randomAlphabetic(randomInt(10, 100)));
-        user.setPantherId(randomAlphabetic(randomInt(9, 10)));
-        user.setEmail(randomAlphabetic(randomInt(1, 50)) + "@" + randomAlphabetic(randomInt(1, 50)));
-        user.setAuthorities(new HashSet<>());
-        user.setRoleNames(new HashSet<>());
-        return user;
+        return User.builder()
+                .firstName(randomAlphabetic(randomInt(10, 25)))
+                .lastName(randomAlphabetic(randomInt(10, 25)))
+                .password(randomAlphabetic(randomInt(10, 50)))
+                .pantherId(randomAlphabetic(randomInt(9, 10)))
+                .email(randomAlphabetic(randomInt(5, 15)) + "@" + randomAlphabetic(randomInt(3, 10)))
+                .roleNames(new HashSet<>())
+                .authorities(new HashSet<>())
+                .enabled(true)
+                .credentialsNonExpired(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .build();
     }
 
     /**
