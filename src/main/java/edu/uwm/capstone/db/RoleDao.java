@@ -14,11 +14,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import static edu.uwm.capstone.sql.dao.BaseRowMapper.javaTimeFromDate;
+import java.util.*;
 
 public class RoleDao extends BaseDao<Long, Role> {
 
@@ -52,21 +48,9 @@ public class RoleDao extends BaseDao<Long, Role> {
         Long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
         role.setId(id);
 
-        // TODO persist role's authorities in role_authorities table
-        //  Note: Role#authorities is a list which may contain duplicates which we don't want in the db
-
-        List<MapSqlParameterSource> batchArgs = new ArrayList<>();
-
-        for (Authorities roleAuthority : role.getAuthorities()) {
-            MapSqlParameterSource src = new MapSqlParameterSource();
-            src.addValue("authority", roleAuthority.toString());
-            src.addValue("role_id", role.getId());
-            src.addValue("created_date", javaTimeFromDate(role.getCreatedDate()));
-            batchArgs.add(src);
-        }
-
         jdbcTemplate.batchUpdate(sql("createRoleAuthority"),
-                batchArgs.toArray(new MapSqlParameterSource[role.getAuthorities().size()]));
+                getRoleAuthoritiesBatchArgs(role.getAuthorities(), role.getId())
+                        .toArray(new MapSqlParameterSource[role.getAuthorities().size()]));
 
         return role;
     }
@@ -156,25 +140,38 @@ public class RoleDao extends BaseDao<Long, Role> {
             throw new DaoException(String.format("Failed attempt to update role %s - affected %s rows", role.toString(), result));
         }
 
-        // TODO update role's authorities in role_authorities table
-        //  Note: Role#authorities is a list which may contain duplicates which we don't want in the db
+        Set<Authorities> authoritiesToDelete = read(role.getId()).getAuthorities();
+        Set<Authorities> authoritiesToCreate = new HashSet<>();
 
+        for (Authorities authority : role.getAuthorities()) {
+            if (!authoritiesToDelete.contains(authority))
+                authoritiesToCreate.add(authority);
+            else
+                authoritiesToDelete.remove(authority);
+        }
 
+        jdbcTemplate.batchUpdate(sql("createRoleAuthority"),
+                getRoleAuthoritiesBatchArgs(authoritiesToCreate, role.getId())
+                        .toArray(new MapSqlParameterSource[role.getAuthorities().size()]));
+
+        jdbcTemplate.batchUpdate(sql("deleteRoleAuthorityByNameAndRoleId"),
+                getRoleAuthoritiesBatchArgs(authoritiesToDelete, role.getId())
+                        .toArray(new MapSqlParameterSource[role.getAuthorities().size()]));
+
+        return role;
+    }
+
+    private List<MapSqlParameterSource> getRoleAuthoritiesBatchArgs(Set<Authorities> authorities, Long roleId) {
         List<MapSqlParameterSource> batchArgs = new ArrayList<>();
 
-        for (Authorities roleAuthority : role.getAuthorities()) {
+        for (Authorities roleAuthority : authorities) {
             MapSqlParameterSource src = new MapSqlParameterSource();
             src.addValue("authority", roleAuthority.toString());
-            src.addValue("role_id", role.getId());
-            src.addValue("updated_date", javaTimeFromDate(role.getUpdatedDate()));
+            src.addValue("role_id", roleId);
             batchArgs.add(src);
         }
 
-        jdbcTemplate.batchUpdate(sql("updateRoleAuthority"),
-                batchArgs.toArray(new MapSqlParameterSource[role.getAuthorities().size()]));
-
-
-        return role;
+        return batchArgs;
     }
 
     /**

@@ -83,8 +83,6 @@ CREATE TABLE role_authorities(
     id BIGINT(20) AUTO_INCREMENT,
     role_id BIGINT(20) NOT NULL,
     authority VARCHAR(255) NOT NULL,
-    created_date BIGINT(25)   NOT NULL,
-    updated_date BIGINT(25) DEFAULT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (role_id) REFERENCES roles(id)
 );

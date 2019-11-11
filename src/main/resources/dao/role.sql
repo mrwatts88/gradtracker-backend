@@ -12,34 +12,14 @@ INSERT INTO roles (
 --STATEMENT readRoleById
 SELECT * from roles WHERE id = :id
 
--- SELECT roles.*, role_authorities.authority
--- FROM roles
--- INNER JOIN role_authorities
---     ON role_authorities.role_id = roles.id
--- WHERE roles.id = :id
--- ORDER BY role_authorities.authority
-
 --STATEMENT readRoleByName
 SELECT * from roles WHERE name = :role_name
-
--- SELECT roles.*, role_authorities.authority
--- FROM roles
--- INNER JOIN role_authorities
---     ON role_authorities.role_id = roles.id
--- WHERE roles.name = :name
--- ORDER BY role_authorities.authority
 
 --STATEMENT readAllRoles
 SELECT *FROM roles;
 
 --STATEMENT deleteRole
-DELETE FROM role WHERE id = :id;
-
--- DELETE
--- FROM roles
--- INNER JOIN role_authorities
---     ON role_authorities.role_id = roles.id
--- WHERE roles.id = :id OR role_authorities.role_id = :id;
+DELETE FROM roles WHERE id = :id;
 
 --STATEMENT updateRole
 UPDATE roles SET

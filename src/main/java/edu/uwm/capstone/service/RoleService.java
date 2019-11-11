@@ -128,6 +128,7 @@ public class RoleService {
         if (checkNullId)
             Assert.isNull(role.getId(), "Role ID must be null");
 
-        Assert.isNull(roleDao.readByName(role.getName()), "Role already exists with the name " + role.getName());
+        Role tmpRole = roleDao.readByName(role.getName());
+        Assert.isTrue(tmpRole == null || tmpRole.getId().equals(role.getId()), "Role already exists with the name " + role.getName());
     }
 }
