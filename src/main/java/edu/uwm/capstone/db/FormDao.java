@@ -165,7 +165,8 @@ public class FormDao extends BaseDao<Long, Form>{
     public Form approvalBehavior(Long id, boolean isApproved){
         LOG.trace(isApproved ? "Approving" : "Rejecting" + "form {} in dao", id);
         Form thisForm = read(id);
-        thisForm.setUpdatedDate(LocalDateTime.now());
+        thisForm.setApproved(isApproved);
+
         int result = this.jdbcTemplate.update(sql("updateApproval"), new MapSqlParameterSource("id", id).
                 addValue("approved", isApproved));
 
