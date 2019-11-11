@@ -13,12 +13,10 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-
-import static edu.uwm.capstone.sql.dao.BaseRowMapper.javaTimeFromDate;
+import java.util.Set;
 
 public class UserDao extends BaseDao<Long, User> {
 
@@ -53,8 +51,9 @@ public class UserDao extends BaseDao<Long, User> {
         user.setId(id);
 
         try {
-            // Create user_roles for each user using batchUpdate()
-            persistUserRoles(user);
+            if (!user.getRoleNames().isEmpty())
+                jdbcTemplate.batchUpdate(sql("createUserRolesByRoleName"),
+                        getUserRolesBatchArgs(user.getRoleNames(), user.getId()));
         } catch (Exception e) {
             throw new DaoException("Failed to create user roles", e);
         }
@@ -125,7 +124,8 @@ public class UserDao extends BaseDao<Long, User> {
     public User readByPantherId(String pantherId) {
         LOG.trace("Reading user with panther id {}", pantherId);
         try {
-            User user = (User) this.jdbcTemplate.queryForObject(sql("readUserByPantherId"), new MapSqlParameterSource("panther_id", pantherId), rowMapper);
+            User user = (User) this.jdbcTemplate.queryForObject(sql("readUserByPantherId"),
+                    new MapSqlParameterSource("panther_id", pantherId), rowMapper);
 
             setUserRolesAndAuthorities(user);
             return user;
@@ -150,18 +150,18 @@ public class UserDao extends BaseDao<Long, User> {
         user.setAuthorities(authorities);
     }
 
-    private void persistUserRoles(User user) throws RuntimeException {
-        List<MapSqlParameterSource> batchArgs = new ArrayList<>();
-        for (String roleName : user.getRoleNames()) {
+    private MapSqlParameterSource[] getUserRolesBatchArgs(Set<String> roleNames, Long userId) {
+        MapSqlParameterSource[] batchArgs = new MapSqlParameterSource[roleNames.size()];
+
+        int i = 0;
+        for (String roleName : roleNames) {
             MapSqlParameterSource src = new MapSqlParameterSource();
-            src.addValue("user_id", user.getId());
+            src.addValue("user_id", userId);
             src.addValue("role_name", roleName);
-            src.addValue("created_date", javaTimeFromDate(user.getCreatedDate()));
-            batchArgs.add(src);
+            batchArgs[i++] = src;
         }
 
-        jdbcTemplate.batchUpdate(sql("createUserRolesByRoleName"),
-                batchArgs.toArray(new MapSqlParameterSource[user.getRoleNames().size()]));
+        return batchArgs;
     }
 
     /**
@@ -186,16 +186,28 @@ public class UserDao extends BaseDao<Long, User> {
             throw new DaoException(String.format("Failed attempt to update user %s - affected %s rows", user.toString(), result));
         }
 
-        try {
-            // Delete all user roles, then add them again.
-            // TODO updated date is never set doing this - we may want to get rid of created & updated date all together for user_roles ?
-            this.jdbcTemplate.update(sql("deleteUserRolesByUserId"),
-                    new MapSqlParameterSource("user_id", user.getId()));
+        Set<String> userRolesToDelete = read(user.getId()).getRoleNames();
+        Set<String> userRolesToCreate = new HashSet<>();
 
-            persistUserRoles(user);
-        } catch (Exception e) {
-            throw new DaoException("Failed to update user roles.", e);
+        for (String roleName : user.getRoleNames()) {
+            if (!userRolesToDelete.contains(roleName))
+                userRolesToCreate.add(roleName);
+            else
+                userRolesToDelete.remove(roleName);
         }
+
+        try {
+            if (!userRolesToCreate.isEmpty())
+                jdbcTemplate.batchUpdate(sql("createUserRolesByRoleName"),
+                        getUserRolesBatchArgs(userRolesToCreate, user.getId()));
+
+            if (!userRolesToDelete.isEmpty())
+                jdbcTemplate.batchUpdate(sql("deleteUserRoleByUserIdAndRoleName"),
+                        getUserRolesBatchArgs(userRolesToDelete, user.getId()));
+        } catch (Exception e) {
+            throw new DaoException("Failed to update user roles", e);
+        }
+
         return user;
     }
 

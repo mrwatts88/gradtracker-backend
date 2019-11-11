@@ -72,8 +72,6 @@ CREATE TABLE user_roles(
     id BIGINT(20) AUTO_INCREMENT,
     user_id BIGINT(20) NOT NULL,
     role_id BIGINT(20) NOT NULL,
-    created_date BIGINT(25)   NOT NULL,
-    updated_date BIGINT(25) DEFAULT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (role_id) REFERENCES roles(id)
