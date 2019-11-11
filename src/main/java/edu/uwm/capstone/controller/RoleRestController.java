@@ -1,6 +1,7 @@
 package edu.uwm.capstone.controller;
 
 import edu.uwm.capstone.model.Role;
+import edu.uwm.capstone.security.Authorities;
 import edu.uwm.capstone.service.RoleService;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -18,6 +20,8 @@ import java.util.List;
 public class RoleRestController {
 
     static final String ROLE_PATH = "/role/";
+    static final String READ_ROLE_BY_NAME_PATH = ROLE_PATH + "name/";
+    static final String ROLE_AUTHORITIES = ROLE_PATH + "authorities/";
 
     private static final Logger LOG = LoggerFactory.getLogger(RoleRestController.class);
 
@@ -65,7 +69,7 @@ public class RoleRestController {
      * @throws IOException if error response cannot be created
      */
     @ApiOperation(value = "Read Role by Name")
-    @GetMapping(value = ROLE_PATH + "name/{roleName}")
+    @GetMapping(value = READ_ROLE_BY_NAME_PATH + "/{roleName}")
     public Role readByName(@PathVariable String roleName, @ApiIgnore HttpServletResponse response) throws IOException {
         return RestControllerUtil.runCallable(() -> roleService.readByName(roleName), response, LOG);
     }
@@ -79,6 +83,17 @@ public class RoleRestController {
     @GetMapping(value = ROLE_PATH)
     public List<Role> readAll() {
         return roleService.readAll();
+    }
+
+    /**
+     * Gets all the {@link Authorities}s
+     *
+     * @return list of {@link Authorities}s
+     */
+    @ApiOperation(value = "Read All Authorities")
+    @GetMapping(value = ROLE_AUTHORITIES)
+    public List<Authorities> readAllAuthorities() {
+        return Arrays.asList(Authorities.values());
     }
 
     /**

@@ -162,8 +162,8 @@ public class FormDao extends BaseDao<Long, Form>{
         }
     }
 
-    public Form approvalBehavior(Long id, boolean isApproved){
-        LOG.trace(isApproved ? "Approving" : "Rejecting" + "form {} in dao", id);
+    public Form approve(Long id, boolean isApproved) {
+        LOG.trace(isApproved ? "Approving" : "Rejecting" + "form %s", id);
         Form thisForm = read(id);
         thisForm.setApproved(isApproved);
 

@@ -128,19 +128,18 @@ public class FormService {
         }
 
         HashSet<Long> fieldIdsAssociatedWithOldForm = formInDb.getFields().stream().map(Field::getId).collect(Collectors.toCollection(HashSet::new));
+        for (Field fd : fields) {
+            if (fd.getId() != null) {
+                Assert.isTrue(fieldIdsAssociatedWithOldForm.contains(fd.getId()), "Could not update form " + formId +
+                        " - found a field with id = " + fd.getId() + " which is not associated with this form");
+            }
+        }
 
         formInDb.setFields(fields);
         formInDb.setApproved(null);
 
         FormDefinition formDefinitionInDb = formDefinitionDao.read(formInDb.getFormDefId());
         checkValidForm(formInDb, false, formDefinitionInDb);
-
-        for (Field fd : formInDb) {
-            if (fd.getId() != null) {
-                Assert.isTrue(fieldIdsAssociatedWithOldForm.contains(fd.getId()), "Could not update form " + formId +
-                        " - found a field with id = " + fd.getId() + " which is not associated with this form");
-            }
-        }
 
         formInDb.setName(formDefinitionInDb.getName());
 
@@ -168,13 +167,14 @@ public class FormService {
         }
         formDao.delete(formId);
     }
-    public Form approvalBehavior(Long formId, boolean isApproved){
+
+    public Form approve(Long formId, boolean isApproved) {
         LOG.trace(isApproved ? "Approving" : "Rejecting" + "form {}", formId);
         if (formDao.read(formId) == null) {
             throw new EntityNotFoundException("Could not change approval for form " + formId + " - record not found.");
         }
 
-        return formDao.approvalBehavior(formId, isApproved);
+        return formDao.approve(formId, isApproved);
     }
 
     /**

@@ -536,4 +536,7 @@ public class FormServiceComponentTest {
         Long id = TestDataUtility.randomLong();
         formService.delete(id);
     }
+
+    // TODO test form approval
+
 }

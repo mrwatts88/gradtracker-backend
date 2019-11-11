@@ -398,7 +398,7 @@ public class FormControllerComponentTest {
     }
 
     /**
-     * Verify that {@link FormRestController#readAll} is working correctly.
+     * Verify that {@link FormRestController#readAllByFormDefId} is working correctly.
      */
     @Test
     public void readAllByFormDefId() {
@@ -438,7 +438,7 @@ public class FormControllerComponentTest {
                 .header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .when()
-                .get(FormRestController.FORM_PATH + "formDef/" + formDefId)
+                .get(FormRestController.FORM_FORM_DEF_PATH + formDefId)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value()).extract();
 
@@ -446,7 +446,7 @@ public class FormControllerComponentTest {
     }
 
     /**
-     * Verify that {@link FormRestController#readAll} is working correctly.
+     * Verify that {@link FormRestController#readAllByUserId} is working correctly.
      */
     @Test
     public void readAllByUserId() {
@@ -486,7 +486,7 @@ public class FormControllerComponentTest {
                 .header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .when()
-                .get(FormRestController.FORM_PATH + "user/" + userId)
+                .get(FormRestController.FORM_USER_PATH + userId)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value()).extract();
 
@@ -494,7 +494,55 @@ public class FormControllerComponentTest {
     }
 
     /**
-     * Verify that {@link FormRestController#deleteById} is working correctly
+     * Verify that {@link FormRestController#readAllByPantherId} l} is working correctly.
+     */
+    @Test
+    public void readAllByUserPantherId() {
+        List<Form> userForms = new ArrayList<>();
+        int randInt = TestDataUtility.randomInt(10, 30);
+        // need a user in the db connected to the form
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+        String pantherId = user.getPantherId();
+
+        // create user's forms
+        for (int i = 0; i < randInt; i++) {
+            // need a form definition in the db connected to the form
+            FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+            formDefsToCleanup.add(createFormDef);
+
+            Form createForm = formDao.create(TestDataUtility.formWithTestValues(createFormDef, user.getId()));
+            formsToCleanup.add(createForm);
+            userForms.add(createForm);
+        }
+
+        // create more forms
+        for (int i = 0; i < randInt; i++) {
+            // need a form definition in the db connected to the form
+            FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+            formDefsToCleanup.add(createFormDef);
+
+            // need a user in the db connected to the form
+            user = userDao.create(TestDataUtility.userWithTestValues());
+            usersToCleanup.add(user);
+
+            formsToCleanup.add(formDao.create(TestDataUtility.formWithTestValues(createFormDef, user.getId())));
+        }
+
+        // exercise endpoint
+        ExtractableResponse<Response> response = given()
+                .header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .when()
+                .get(FormRestController.FORM_PANTHER_ID_PATH + pantherId)
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        assertEquals(userForms, response.body().jsonPath().getList(".", Form.class));
+    }
+
+    /**
+     * Verify that {@link FormRestController#delete} is working correctly
      * when a request for a {@link Form#id} is made.
      **/
     @Test
@@ -522,7 +570,7 @@ public class FormControllerComponentTest {
     }
 
     /**
-     * Verify that {@link FormRestController#deleteById} is working correctly
+     * Verify that {@link FormRestController#delete} is working correctly
      * when a request for a non-existent {@link Form#id} is made.
      **/
     @Test
@@ -537,4 +585,7 @@ public class FormControllerComponentTest {
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("Could not delete form " + formId + " - record not found."));
     }
+
+    // TODO test form approval
+
 }

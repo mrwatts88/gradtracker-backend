@@ -368,7 +368,7 @@ public class UserRestControllerComponentTest {
                 .header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .when()
-                .get(UserRestController.USER_PATH + "panther_id/" + user.getPantherId())
+                .get(UserRestController.USER_PANTHER_ID_PATH + user.getPantherId())
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value()).extract();
 
@@ -386,7 +386,7 @@ public class UserRestControllerComponentTest {
                 .header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .when()
-                .get(UserRestController.USER_PATH + "email/" + user.getEmail())
+                .get(UserRestController.USER_EMAIL_PATH + user.getEmail())
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value()).extract();
 
@@ -415,7 +415,7 @@ public class UserRestControllerComponentTest {
         given().header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .when()
-                .get(UserRestController.USER_PATH + "panther_id/" + pantherId)
+                .get(UserRestController.USER_PANTHER_ID_PATH + pantherId)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("User with panther id: " + pantherId + " not found."));
     }
@@ -428,7 +428,7 @@ public class UserRestControllerComponentTest {
         given().header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .when()
-                .get(UserRestController.USER_PATH + "email/" + email)
+                .get(UserRestController.USER_EMAIL_PATH + email)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("User with email: " + email + " not found."));
     }

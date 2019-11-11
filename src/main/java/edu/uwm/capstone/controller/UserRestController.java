@@ -18,6 +18,8 @@ import java.util.List;
 public class UserRestController {
 
     static final String USER_PATH = "/user/";
+    static final String USER_PANTHER_ID_PATH = USER_PATH + "panther_id/";
+    static final String USER_EMAIL_PATH = USER_PATH + "email/";
 
     private static final Logger LOG = LoggerFactory.getLogger(UserRestController.class);
 
@@ -64,8 +66,8 @@ public class UserRestController {
      * @return {@link User} retrieved from the database
      * @throws IOException if error response cannot be created
      */
-    @ApiOperation(value = "Read User by ID")
-    @GetMapping(value = USER_PATH + "/panther_id/{pantherId}")
+    @ApiOperation(value = "Read User by Panther ID")
+    @GetMapping(value = USER_PANTHER_ID_PATH + "{pantherId}")
     public User readByPantherId(@PathVariable String pantherId, @ApiIgnore HttpServletResponse response) throws IOException {
         return RestControllerUtil.runCallable(() -> userService.readByPantherId(pantherId), response, LOG);
     }
@@ -78,14 +80,14 @@ public class UserRestController {
      * @return {@link User} retrieved from the database
      * @throws IOException if error response cannot be created
      */
-    @ApiOperation(value = "Read User by ID")
-    @GetMapping(value = USER_PATH + "/email/{email}")
+    @ApiOperation(value = "Read User by Email")
+    @GetMapping(value = USER_EMAIL_PATH + "{email}")
     public User readByEmail(@PathVariable String email, @ApiIgnore HttpServletResponse response) throws IOException {
         return RestControllerUtil.runCallable(() -> userService.readByEmail(email), response, LOG);
     }
 
     /**
-     * Gets all the {@link User}s
+     * Gets all the {@link User}s.
      *
      * @return list of {@link User}s retrieved from the database
      */

@@ -4,7 +4,6 @@ import edu.uwm.capstone.model.Field;
 import edu.uwm.capstone.model.Form;
 import edu.uwm.capstone.model.FormDefinition;
 import edu.uwm.capstone.model.User;
-import edu.uwm.capstone.security.Authorities;
 import edu.uwm.capstone.service.FormService;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -21,7 +20,12 @@ import java.util.List;
 @RestController
 @SuppressWarnings("squid:S1075") // suppress sonar warning about hard-coded URL path
 public class FormRestController {
+
     static final String FORM_PATH = "/form/";
+    static final String FORM_USER_PATH = FORM_PATH + "user/";
+    static final String FORM_PANTHER_ID_PATH = FORM_PATH + "panther_id/";
+    static final String FORM_FORM_DEF_PATH = FORM_PATH + "formDef/";
+    static final String FORM_APPROVAL_PATH = FORM_PATH + "approve/";
 
     private static final Logger LOG = LoggerFactory.getLogger(FormRestController.class);
 
@@ -73,15 +77,15 @@ public class FormRestController {
 
     /**
      * Gets all {@link Form}s belonging to the {@link User} with the given Panther ID.
+     *
      * @param pantherId
      * @return
      */
-    @ApiOperation(value = "Read All Forms by User's PantherID")
-    @GetMapping(value = FORM_PATH + "panther_id/{pantherId}")
+    @ApiOperation(value = "Read All Forms by User Panther ID")
+    @GetMapping(value = FORM_PANTHER_ID_PATH + "{pantherId}")
     public List<Form> readAllByPantherId(@PathVariable String pantherId) {
         return formService.readAllByPantherId(pantherId);
     }
-
 
     /**
      * Gets all {@link Form}s that have a {@link Form#getFormDefId()} = formDefId.
@@ -89,8 +93,8 @@ public class FormRestController {
      * @param formDefId id of the {@link FormDefinition}
      * @return list of {@link Form}s retrieved from the database
      */
-    @ApiOperation(value = "Read All Forms by Form Definition Id")
-    @GetMapping(value = FORM_PATH + "/formDef/{formDefId}")
+    @ApiOperation(value = "Read All Forms by Form Definition ID")
+    @GetMapping(value = FORM_FORM_DEF_PATH + "{formDefId}")
     public List<Form> readAllByFormDefId(@PathVariable Long formDefId) {
         return formService.readAllByFormDefId(formDefId);
     }
@@ -98,11 +102,11 @@ public class FormRestController {
     /**
      * Gets all {@link Form}s that have a {@link Form#getUserId()} = userId.
      *
-     * @param userId   id of the {@link User}
+     * @param userId id of the {@link User}
      * @return list of {@link Form}s retrieved from the database
      */
-    @ApiOperation(value = "Read All Forms by User Id")
-    @GetMapping(value = FORM_PATH + "/user/{userId}")
+    @ApiOperation(value = "Read All Forms by User ID")
+    @GetMapping(value = FORM_USER_PATH + "{userId}")
     public List<Form> readAllByUserId(@PathVariable Long userId) {
         return formService.readAllByUserId(userId);
     }
@@ -131,23 +135,23 @@ public class FormRestController {
      */
     @ApiOperation(value = "Delete Form by ID")
     @DeleteMapping(value = FORM_PATH + "{formId}")
-    public void deleteById(@PathVariable Long formId, @ApiIgnore HttpServletResponse response) throws IOException {
+    public void delete(@PathVariable Long formId, @ApiIgnore HttpServletResponse response) throws IOException {
         RestControllerUtil.runRunnable(() -> formService.delete(formId), response, LOG);
     }
 
     /**
-     * Approve or Reject a form submission
+     * Approve or Reject a form submission.
      *
      * @param formId   id of the {@link Form} to update
-     * @param approve form is approved, true or false
+     * @param approve  form is approved, true or false
      * @param response {@link HttpServletResponse} that is sent back
      * @throws IOException if error response cannot be created
      */
-    @ApiOperation(value = "Approve/Reject form by ID")
+    @ApiOperation(value = "Approve/Reject Form by ID")
     @PreAuthorize("hasAuthority('APPROVE_FORM')")
-    @PutMapping(value = FORM_PATH + "approve/{formId}")
+    @PutMapping(value = FORM_APPROVAL_PATH + "{formId}")
     public Form approve(@PathVariable Long formId, @RequestParam(name = "approve") boolean approve, @ApiIgnore HttpServletResponse response) throws IOException {
-        return RestControllerUtil.runCallable(() -> formService.approvalBehavior(formId, approve), response, LOG);
+        return RestControllerUtil.runCallable(() -> formService.approve(formId, approve), response, LOG);
     }
 
 }
