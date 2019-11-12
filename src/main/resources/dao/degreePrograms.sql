@@ -34,5 +34,5 @@ UPDATE degree_programs SET
 WHERE id = :id;
 
 --STATEMENT deleteDegreeProgramById
-DELETE FROM degree_programs
+DELETE FROM degree_programs --TODO: add logic to handle delete in degree_program_states, users, and possibly transitions
 WHERE id = :id;
