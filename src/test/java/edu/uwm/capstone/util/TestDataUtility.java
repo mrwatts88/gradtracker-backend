@@ -1,6 +1,7 @@
 package edu.uwm.capstone.util;
 
 import edu.uwm.capstone.model.*;
+import edu.uwm.capstone.security.Authorities;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.LocalDateTime;
@@ -97,6 +98,72 @@ public class TestDataUtility {
         field.setData(randomAlphabetic(randomInt(10, 200)));
         field.setFieldDefId(fieldDefinition.getId());
         return field;
+    }
+
+    /**
+     * Generate a {@link Role} object that is fully loaded with random values for testing purposes.
+     *
+     * @return {@link Role}
+     */
+    public static Role roleWithTestValues() {
+        return Role.builder()
+                .name(randomAlphabetic(randomInt(10, 25)))
+                .authorities(randomAuthorities())
+                .description(randomAlphabetic(randomInt(10, 25)))
+                .build();
+    }
+
+    /**
+     * Generate a {@link edu.uwm.capstone.security.Authorities} object that is fully loaded with random enum for testing purposes.
+     *
+     * @return {@link edu.uwm.capstone.security.Authorities}
+     */
+    public static Set<Authorities> randomAuthorities() {
+        Set<Authorities> ret = new HashSet<Authorities>();
+        int maxround = 12;
+        int radnround = randomInt(1, maxround);
+        do{
+            int rdnnum = randomInt(1, 12);
+            radnround--;
+            switch(rdnnum){
+                case 1:
+                    ret.add(Authorities.CREATE_ROLE);
+                    break;
+                case 2:
+                    ret.add(Authorities.DELETE_ROLE);
+                    break;
+                case 3:
+                    ret.add(Authorities.UPDATE_ROLE);
+                    break;
+                case 4:
+                    ret.add(Authorities.APPROVE_FORM);
+                    break;
+                case 5:
+                    ret.add(Authorities.CREATE_FORM_DEF);
+                    break;
+                case 6:
+                    ret.add(Authorities.CREATE_USER);
+                    break;
+                case 7:
+                    ret.add(Authorities.READ_DEFS);
+                    break;
+                case 8:
+                    ret.add(Authorities.READ_FORM_DEFS);
+                    break;
+                case 9:
+                    ret.add(Authorities.READ_USER_FORMS);
+                    break;
+                case 10:
+                    ret.add(Authorities.READ_USERS);
+                    break;
+                case 11:
+                    ret.add(Authorities.REVISE_FORM_DEF);
+                    break;
+                case 12:
+                    ret.add(Authorities.UPDATE_USER);
+            }
+        } while (radnround>0);
+        return ret;
     }
 
     /**
