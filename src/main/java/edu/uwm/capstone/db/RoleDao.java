@@ -74,10 +74,9 @@ public class RoleDao extends BaseDao<Long, Role> {
         try {
             Role role = (Role) this.jdbcTemplate.queryForObject(sql("readRoleById"), new MapSqlParameterSource("id", roleId), rowMapper);
 
-            role.setAuthorities(Sets.newHashSet(jdbcTemplate.queryForList(sql("readRoleAuthoritiesByRoleId"),
-                    new MapSqlParameterSource("role_id", role.getId()),
-                    Authorities.class))
-            );
+            if (role != null)
+                setRoleAuthorities(role);
+
             return role;
 
         } catch (NullPointerException | EmptyResultDataAccessException e) {
@@ -94,11 +93,8 @@ public class RoleDao extends BaseDao<Long, Role> {
         LOG.trace("Reading all roles");
         List<Role> roles = this.jdbcTemplate.query(sql("readAllRoles"), rowMapper);
 
-        for (Role role : roles) {
-            role.setAuthorities(Sets.newHashSet(jdbcTemplate.queryForList(sql("readRoleAuthoritiesByRoleId"),
-                    new MapSqlParameterSource("role_id", role.getId()),
-                    Authorities.class)));
-        }
+        for (Role role : roles)
+            setRoleAuthorities(role);
 
         return roles;
     }
@@ -106,23 +102,29 @@ public class RoleDao extends BaseDao<Long, Role> {
     /**
      * Retrieve a {@link Role} object by its email.
      *
-     * @param name
+     * @param roleName
      * @return {@link Role}
      */
-    public Role readByName(String name) {
-        LOG.trace("Reading role with name {}", name);
+    public Role readByName(String roleName) {
+        LOG.trace("Reading role with name {}", roleName);
         try {
-            Role role = (Role) this.jdbcTemplate.queryForObject(sql("readRoleByName"), new MapSqlParameterSource("role_name", name), rowMapper);
+            Role role = (Role) this.jdbcTemplate.queryForObject(sql("readRoleByName"), new MapSqlParameterSource("role_name", roleName), rowMapper);
 
-            role.setAuthorities(Sets.newHashSet(jdbcTemplate.queryForList(sql("readRoleAuthoritiesByRoleId"),
-                    new MapSqlParameterSource("role_id", role.getId()),
-                    Authorities.class))
-            );
+            if (role != null)
+                setRoleAuthorities(role);
+
             return role;
 
-        } catch (NullPointerException | EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException e) {
             return null;
         }
+    }
+
+    private void setRoleAuthorities(Role role) {
+        role.setAuthorities(Sets.newHashSet(jdbcTemplate.queryForList(sql("readRoleAuthoritiesByRoleId"),
+                new MapSqlParameterSource("role_id", role.getId()),
+                Authorities.class))
+        );
     }
 
     /**
