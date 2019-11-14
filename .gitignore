@@ -33,6 +33,9 @@ scratchpad/
 .idea/
 .idea
 
+# Eclipse
+/.metadata
+
 # weird directory - generated and not needed
 native
 
