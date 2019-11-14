@@ -2,7 +2,6 @@ package edu.uwm.capstone.controller;
 
 import edu.uwm.capstone.model.DegreeProgram;
 import edu.uwm.capstone.service.DegreeProgramService;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +46,8 @@ public class DegreeProgramRestController {
         return degreeProgramService.readAll();
     }
 
+    @ApiOperation(value = "Update Degree Program by ID")
+    @PutMapping(value = DEGREE_PROGRAM_PATH + "{degreeProgramId}")
     public DegreeProgram update(@PathVariable Long degreeProgramId, @RequestBody DegreeProgram dp,
                                 @ApiIgnore HttpServletResponse response) throws IOException {
         dp.setId(degreeProgramId);

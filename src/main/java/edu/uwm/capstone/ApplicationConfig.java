@@ -1,6 +1,7 @@
 package edu.uwm.capstone;
 
 import edu.uwm.capstone.db.*;
+import edu.uwm.capstone.sql.dao.BaseRowMapper;
 import edu.uwm.capstone.sql.statement.ISqlStatementsFileLoader;
 import edu.uwm.capstone.sql.statement.SqlStatementsFileLoader;
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -146,6 +147,24 @@ public class ApplicationConfig {
     }
 
     @Bean
+    public DegreeProgramDao degreeProgramDao() {
+        DegreeProgramDao degreeProgramDao = new DegreeProgramDao();
+        degreeProgramDao.setDataSource(dataSource());
+        degreeProgramDao.setSqlStatementsFileLoader(sqlStatementsFileLoader());
+        degreeProgramDao.setRowMapper(degreeProgramDaoRowMapper());
+        return degreeProgramDao;
+    }
+
+    @Bean
+    public DegreeProgramStateDao degreeProgramStateDao() {
+        DegreeProgramStateDao degreeProgramStateDao = new DegreeProgramStateDao();
+        degreeProgramStateDao.setDataSource(dataSource());
+        degreeProgramStateDao.setSqlStatementsFileLoader(sqlStatementsFileLoader());
+        degreeProgramStateDao.setRowMapper(degreeProgramStateDaoRowMapper());
+        return degreeProgramStateDao;
+    }
+
+    @Bean
     public UserDaoRowMapper userDaoRowMapper() {
         return new UserDaoRowMapper();
     }
@@ -169,6 +188,16 @@ public class ApplicationConfig {
     @Bean
     public FieldDefinitionDaoRowMapper fieldDefinitionDaoRowMapper() {
         return new FieldDefinitionDaoRowMapper();
+    }
+
+    @Bean
+    public DegreeProgramDaoRowMapper degreeProgramDaoRowMapper() {
+        return new DegreeProgramDaoRowMapper();
+    }
+
+    @Bean
+    public BaseRowMapper degreeProgramStateDaoRowMapper() {
+        return new DegreeProgramStateDaoRowMapper();
     }
 
     public String getDbDriverClassName() {

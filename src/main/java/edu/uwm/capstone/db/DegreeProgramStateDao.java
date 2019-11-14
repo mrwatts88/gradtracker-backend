@@ -4,7 +4,6 @@ import edu.uwm.capstone.model.DegreeProgramState;
 import edu.uwm.capstone.sql.dao.BaseDao;
 import edu.uwm.capstone.sql.dao.BaseRowMapper;
 import edu.uwm.capstone.sql.exception.DaoException;
-import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -26,13 +25,9 @@ public class DegreeProgramStateDao extends BaseDao<Long, DegreeProgramState> {
         }
         else if(dpState.getId() != null) {
             throw new DaoException("When creating a new degree program state, the id should be null, but was set to " + dpState.getId());
-        }
-        /*
-        // TODO: figure out why this check throws a compiler error
-        else if(dpState.getDegreeProgramId() == null) {
+        } else if (dpState.getDegreeProgramId() == null) {
             throw new DaoException("When creating a new degree program state, the degree program id should not be null.");
         }
-        */
 
         LOG.trace("Creating degree program state {}", dpState);
 
