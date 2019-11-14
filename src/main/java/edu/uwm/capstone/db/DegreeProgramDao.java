@@ -6,6 +6,7 @@ import edu.uwm.capstone.sql.dao.BaseRowMapper;
 import edu.uwm.capstone.sql.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -16,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 
 public class DegreeProgramDao extends BaseDao<Long, DegreeProgram> {
+
+    @Autowired
+    private DegreeProgramDao degreeProgramDao;
 
     private static final Logger LOG = LoggerFactory.getLogger(DegreeProgramDao.class);
 
