@@ -60,7 +60,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 return null;
 
             } catch (IOException e) {
-//                e.printStackTrace();
                 return null;
             }
         }

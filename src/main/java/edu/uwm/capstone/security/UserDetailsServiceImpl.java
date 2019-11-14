@@ -23,8 +23,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
 
-//        user.setAuthorities(Collections.singletonList(Authorities.TEST));
-
         return user;
     }
 }

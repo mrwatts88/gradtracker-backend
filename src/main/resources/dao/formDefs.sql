@@ -1,10 +1,8 @@
 --STATEMENT createFormDef
 INSERT INTO form_defs (
-  id,
   name,
   created_date
 ) VALUES (
-  :id,
   :name,
   :created_date
 );

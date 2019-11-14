@@ -77,6 +77,7 @@ public class FormDaoComponentTest {
         formsToCleanup.add(createForm);
 
         formDao.create(createForm);
+        assertNotNull(createForm.getId());
     }
 
     /**

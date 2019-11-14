@@ -1,12 +1,10 @@
 --STATEMENT createForm
 INSERT INTO forms (
-  id,
   form_def_id,
   user_id,
   approved,
   created_date
 ) VALUES (
-  :id,
   :form_def_id,
   :user_id,
   :approved,
