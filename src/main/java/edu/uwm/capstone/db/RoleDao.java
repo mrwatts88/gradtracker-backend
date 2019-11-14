@@ -52,7 +52,6 @@ public class RoleDao extends BaseDao<Long, Role> {
         role.setId(id);
 
         try {
-
             if (!role.getAuthorities().isEmpty())
                 jdbcTemplate.batchUpdate(sql("createRoleAuthority"),
                         getRoleAuthoritiesBatchArgs(role.getAuthorities(), role.getId()));

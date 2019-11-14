@@ -16,7 +16,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -172,7 +173,7 @@ public class RoleServiceComponentTest {
      * which exceeds the database configuration is made.
      */
     @Test(expected = RuntimeException.class)
-    public void updateUserColumnTooLong() {
+    public void updateRoleColumnTooLong() {
         Role createRole = TestDataUtility.roleWithTestValues();
         rolesToCleanup.add(createRole);
 

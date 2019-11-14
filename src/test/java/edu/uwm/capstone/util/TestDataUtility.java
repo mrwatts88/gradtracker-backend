@@ -113,57 +113,29 @@ public class TestDataUtility {
                 .build();
     }
 
+    public static Set<Authorities> randomAuthorities() {
+        return randomAuthorities(randomInt(0, Authorities.values().length));
+    }
+
     /**
-     * Generate a {@link edu.uwm.capstone.security.Authorities} object that is fully loaded with random enum for testing purposes.
+     * Generate a random Set of {@link edu.uwm.capstone.security.Authorities} for testing purposes.
      *
+     * @param setSize The size of the set to generate, must be in range [0, # of Authorities]
      * @return {@link edu.uwm.capstone.security.Authorities}
      */
-    public static Set<Authorities> randomAuthorities() {
-        Set<Authorities> ret = new HashSet<Authorities>();
-        int maxround = 12;
-        int radnround = randomInt(1, maxround);
-        do{
-            int rdnnum = randomInt(1, 12);
-            radnround--;
-            switch(rdnnum){
-                case 1:
-                    ret.add(Authorities.CREATE_ROLE);
-                    break;
-                case 2:
-                    ret.add(Authorities.DELETE_ROLE);
-                    break;
-                case 3:
-                    ret.add(Authorities.UPDATE_ROLE);
-                    break;
-                case 4:
-                    ret.add(Authorities.APPROVE_FORM);
-                    break;
-                case 5:
-                    ret.add(Authorities.CREATE_FORM_DEF);
-                    break;
-                case 6:
-                    ret.add(Authorities.CREATE_USER);
-                    break;
-                case 7:
-                    ret.add(Authorities.READ_DEFS);
-                    break;
-                case 8:
-                    ret.add(Authorities.READ_FORM_DEFS);
-                    break;
-                case 9:
-                    ret.add(Authorities.READ_USER_FORMS);
-                    break;
-                case 10:
-                    ret.add(Authorities.READ_USERS);
-                    break;
-                case 11:
-                    ret.add(Authorities.REVISE_FORM_DEF);
-                    break;
-                case 12:
-                    ret.add(Authorities.UPDATE_USER);
-            }
-        } while (radnround>0);
-        return ret;
+    public static Set<Authorities> randomAuthorities(int setSize) {
+        assert 0 <= setSize && setSize <= Authorities.values().length;
+
+        Set<Authorities> result = new HashSet<>();
+        List<Authorities> authorities = Arrays.asList(Authorities.values());
+        Collections.shuffle(authorities);
+
+        Iterator<Authorities> it = authorities.iterator();
+        for (int i = 0; i < setSize; i++) {
+            result.add(it.next());
+        }
+
+        return result;
     }
 
     /**

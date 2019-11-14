@@ -36,9 +36,7 @@ public class RoleDaoComponentTest {
         assertNotNull(roleDao.sql("readRoleAuthoritiesByRoleId"));
         assertNotNull(roleDao.sql("readAllRoles"));
         assertNotNull(roleDao.sql("readRoleByName"));
-
         assertNotNull(roleDao.sql("updateRole"));
-
         assertNotNull(roleDao.sql("deleteUserRolesByRoleId"));
         assertNotNull(roleDao.sql("deleteRoleAuthoritiesByRoleId"));
         assertNotNull(roleDao.sql("deleteRole"));
