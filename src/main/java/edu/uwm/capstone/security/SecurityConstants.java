@@ -5,6 +5,7 @@ import edu.uwm.capstone.model.Role;
 import edu.uwm.capstone.model.User;
 
 import java.util.Collections;
+import java.util.HashSet;
 
 public class SecurityConstants {
 
@@ -19,12 +20,19 @@ public class SecurityConstants {
 
     /* default role information */
     public static Role DEFAULT_ROLE;
+    public static Role STUDENT_ROLE;
 
     static {
         DEFAULT_ROLE = Role.builder()
                 .name("Admin")
                 .description("The default admin role")
                 .authorities(Sets.newHashSet(Authorities.values()))
+                .build();
+
+        STUDENT_ROLE = Role.builder()
+                .name("Student")
+                .description("The default student role.")
+                .authorities(new HashSet<>())
                 .build();
     }
 

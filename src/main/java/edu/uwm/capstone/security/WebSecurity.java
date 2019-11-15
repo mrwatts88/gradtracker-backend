@@ -94,5 +94,13 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         LOGGER.info("Persisting default role {}", DEFAULT_ROLE);
         roleDao.create(DEFAULT_ROLE);
         DEFAULT_ROLE.setId(null);
+
+        Role studentRole = roleDao.readByName(STUDENT_ROLE.getName());
+
+        if (studentRole != null) return;
+
+        LOGGER.info("Persisting student role {}", STUDENT_ROLE);
+        roleDao.create(STUDENT_ROLE);
+        STUDENT_ROLE.setId(null);
     }
 }
