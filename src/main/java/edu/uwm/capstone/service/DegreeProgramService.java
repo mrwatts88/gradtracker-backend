@@ -26,7 +26,7 @@ public class DegreeProgramService {
 
     public DegreeProgram create(DegreeProgram dp) {
         LOG.trace("Creating degree program {}", dp);
-        // Check the Degree Program validity
+        checkValidDegreeProgram(dp, true);
         return degreeProgramDao.create(dp);
     }
 
@@ -48,7 +48,7 @@ public class DegreeProgramService {
     public DegreeProgram update(DegreeProgram dp) {
         LOG.trace("Updating degree program {}", dp);
 
-        // check valid dp
+        checkValidDegreeProgram(dp, false);
         DegreeProgram dpInDb = degreeProgramDao.read(dp.getId());
 
         if(dpInDb == null) {
@@ -59,6 +59,7 @@ public class DegreeProgramService {
         return degreeProgramDao.update(dp);
     }
 
+    //TODO: add logic to delete the degree program states with the degree program.
     public void delete(Long degreeProgramId) {
         LOG.trace("Deleting degree program {}", degreeProgramId);
         if (degreeProgramDao.read(degreeProgramId) == null) {
@@ -74,7 +75,5 @@ public class DegreeProgramService {
         }
         Assert.notNull(dp.getName(), "Degree program name cannot be null.");
         Assert.notNull(dp.getDescription(), "Degree program description cannot be null.");
-
-        //TODO: check that degree program's connected degree program states aren't null
     }
 }
