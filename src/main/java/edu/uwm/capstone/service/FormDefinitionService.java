@@ -1,7 +1,9 @@
 package edu.uwm.capstone.service;
 
+import edu.uwm.capstone.db.FormDao;
 import edu.uwm.capstone.db.FormDefinitionDao;
 import edu.uwm.capstone.model.FieldDefinition;
+import edu.uwm.capstone.model.Form;
 import edu.uwm.capstone.model.FormDefinition;
 import edu.uwm.capstone.service.exception.EntityNotFoundException;
 import org.slf4j.Logger;
@@ -25,6 +27,9 @@ public class FormDefinitionService {
     public FormDefinitionService(FormDefinitionDao formDefinitionDao) {
         this.formDefinitionDao = formDefinitionDao;
     }
+
+    @Autowired
+    private FormService formService;
 
     /**
      * Given a {@link FormDefinition} formDef, returns a fully instantiated FormDefinition
@@ -80,12 +85,16 @@ public class FormDefinitionService {
         if (formDefinitionInDb == null) {
             throw new EntityNotFoundException("Could not update form definition " + formDef.getId() + " - record not found.");
         }
+        List<Form> resultSet = formService.readAllByFormDefId(formDef.getId());
+        Assert.isTrue(resultSet.size() == 0, "This form definition cannot be updated, forms already exist that " +
+                "use its old template!");
 
         HashSet<Long> fieldDefIdsAssociatedWithOldFormDef = formDefinitionInDb.getFieldDefs().stream().map(FieldDefinition::getId).collect(Collectors.toCollection(HashSet::new));
         for (FieldDefinition fd : formDef) {
             if (fd.getId() != null) {
                 Assert.isTrue(fieldDefIdsAssociatedWithOldFormDef.contains(fd.getId()), "Could not update form definition " + formDef.getId() +
                         " - found a field definition with id = " + fd.getId() + " which is not associated with this form definition");
+
             }
         }
         formDef.setCreatedDate(formDefinitionInDb.getCreatedDate());
@@ -103,6 +112,10 @@ public class FormDefinitionService {
         if (formDefinitionDao.read(formDefId) == null) {
             throw new EntityNotFoundException("Could not delete form definition " + formDefId + " - record not found.");
         }
+        List<Form> resultSet = formService.readAllByFormDefId(formDefId);
+        Assert.isTrue(resultSet.size() == 0, "This form definition cannot be deleted, forms already exist that " +
+                "use its old template!");
+
         formDefinitionDao.delete(formDefId);
     }
 
