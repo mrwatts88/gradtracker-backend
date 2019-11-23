@@ -1,5 +1,6 @@
 package edu.uwm.capstone.controller;
 
+import edu.uwm.capstone.db.FormDefinitionDao;
 import edu.uwm.capstone.model.FormDefinition;
 import edu.uwm.capstone.service.FormDefinitionService;
 import io.swagger.annotations.ApiOperation;
@@ -81,6 +82,7 @@ public class FormDefinitionRestController {
     @PutMapping(value = FORM_DEF_PATH + "{formDefId}")
     public FormDefinition update(@PathVariable Long formDefId, @RequestBody FormDefinition formDefinition, @ApiIgnore HttpServletResponse response) throws IOException {
         formDefinition.setId(formDefId);
+        
         return RestControllerUtil.runCallable(() -> formDefinitionService.update(formDefinition), response, LOG);
     }
 

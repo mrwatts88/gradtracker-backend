@@ -143,6 +143,29 @@ public class RoleRestControllerComponentTest {
     }
 
     //TODO: find the way to fix the update method and implement its tests.
+    @Test
+    public void update() throws Exception {
+        Role role = TestDataUtility.roleWithTestValues();
+        rolesToCleanup.add(roleDao.create(role));
+
+        Role roleToUpdate = TestDataUtility.roleWithTestValues();
+        roleToUpdate.setId(role.getId());
+
+        // exercise endpoint
+        given().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .header(new Header("Authorization", authorizationToken))
+                .body(mapper.writeValueAsString(roleToUpdate))
+                .when()
+                .put(RoleRestController.ROLE_PATH + roleToUpdate.getId())
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        Role verifyRole = roleDao.read(role.getId());
+        assertNotNull(verifyRole.getUpdatedDate());
+        assertEquals(roleToUpdate.getName(), verifyRole.getName());
+        assertEquals(roleToUpdate.getDescription(), verifyRole.getDescription());
+        assertEquals(roleToUpdate.getAuthorities(), verifyRole.getAuthorities());
+    }
 
     @Test
     public void updateNotFound() throws Exception {

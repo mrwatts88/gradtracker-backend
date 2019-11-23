@@ -161,6 +161,19 @@ public class RoleDaoComponentTest {
      * Verify that {@link RoleDao#update(Role)} is working correctly.
      */
     //TODO: find the way to fix the update method and implement its tests.
+    @Test
+    public void update() {
+        Role createRole = TestDataUtility.roleWithTestValues();
+        roleDao.create(createRole);
+        assertNotNull(createRole.getId());
+        rolesToCleanup.add(createRole);
+
+        Role updateRole = TestDataUtility.roleWithTestValues();
+        updateRole.setId(createRole.getId());
+        roleDao.update(updateRole);
+
+        assertNotEquals(createRole, updateRole);
+    }
 
     /**
      * Verify that {@link RoleDao#update} is working correctly when a request for creating a null object is made.

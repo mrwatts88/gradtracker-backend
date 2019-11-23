@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
@@ -148,6 +149,35 @@ public class RoleServiceComponentTest {
      * Verify that {@link RoleService#update} is working correctly.
      */
     //TODO: find the way to fix the update method and implement its tests.
+    @Test
+    public void update() {
+        Role createUser = TestDataUtility.roleWithTestValues();
+        rolesToCleanup.add(createUser);
+
+        roleService.create(createUser);
+        assertNotNull(createUser.getId());
+
+        Role verifyCreateUser = roleService.read(createUser.getId());
+        assertNotNull(verifyCreateUser);
+        assertEquals(createUser, verifyCreateUser);
+
+        Role updateUser = TestDataUtility.roleWithTestValues();
+        updateUser.setId(createUser.getId());
+        roleService.update(updateUser);
+
+        Role verifyUpdateUser = roleService.read(updateUser.getId());
+        assertNotNull(verifyUpdateUser);
+
+        assertEquals(createUser.getId(), verifyUpdateUser.getId());
+        assertEquals(updateUser.getName(), verifyUpdateUser.getName());
+        assertEquals(updateUser.getDescription(), verifyUpdateUser.getDescription());
+
+
+        assertNotEquals(verifyCreateUser.getName(), verifyUpdateUser.getName());
+        assertNotEquals(verifyCreateUser.getDescription(), verifyUpdateUser.getDescription());
+        assertNotEquals(verifyCreateUser.getAuthorities(), verifyUpdateUser.getAuthorities());
+    }
+
     /**
      * Verify that {@link RoleService#update} is working correctly when a request for creating a null object is made.
      */
