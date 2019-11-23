@@ -1,7 +1,10 @@
 package edu.uwm.capstone.service;
 
+import edu.uwm.capstone.db.DegreeProgramDao;
 import edu.uwm.capstone.db.RoleDao;
 import edu.uwm.capstone.db.UserDao;
+import edu.uwm.capstone.model.DegreeProgram;
+import edu.uwm.capstone.model.DegreeProgramState;
 import edu.uwm.capstone.model.Role;
 import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.service.exception.EntityNotFoundException;
@@ -26,12 +29,14 @@ public class UserService {
 
     private final UserDao userDao;
     private final RoleDao roleDao;
+    private final DegreeProgramDao degreeProgramDao;
 
     @Autowired
-    public UserService(PasswordEncoder passwordEncoder, UserDao userDao, RoleDao roleDao) {
+    public UserService(PasswordEncoder passwordEncoder, UserDao userDao, RoleDao roleDao, DegreeProgramDao degreeProgramDao) {
         this.passwordEncoder = passwordEncoder;
         this.userDao = userDao;
         this.roleDao = roleDao;
+        this.degreeProgramDao = degreeProgramDao;
     }
 
     /**
@@ -44,6 +49,14 @@ public class UserService {
         LOG.trace("Creating user {}", user);
 
         checkValidUser(user, true);
+
+        if (user.getDegreeProgramName() != null) {
+            DegreeProgram dp = degreeProgramDao.read(user.getDegreeProgramName());
+            Assert.notNull(dp, "Degree Program: " + user.getDegreeProgramName() + " not found.");
+            user.setCurrentState(dp.initialState());
+        } else {
+            user.setCurrentState(null);
+        }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userDao.create(user);
@@ -60,7 +73,6 @@ public class UserService {
         LOG.trace("Reading user {}", userId);
 
         User user = userDao.read(userId);
-
 
         if (user == null) {
             throw new EntityNotFoundException("User with ID: " + userId + " not found.");

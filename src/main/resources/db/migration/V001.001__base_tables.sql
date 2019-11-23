@@ -1,3 +1,24 @@
+CREATE TABLE degree_programs(
+    id BIGINT(20) AUTO_INCREMENT,
+    name VARCHAR(255),
+    description VARCHAR (1024),
+    created_date BIGINT(25)   NOT NULL,
+    updated_date BIGINT(25) DEFAULT NULL,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE degree_program_states(
+    id BIGINT(20) AUTO_INCREMENT,
+    degree_program_id BIGINT(20),
+    name VARCHAR(255),
+    description VARCHAR (1024),
+    is_initial BOOLEAN NOT NULL,
+    created_date BIGINT(25)   NOT NULL,
+    updated_date BIGINT(25) DEFAULT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY (degree_program_id) REFERENCES degree_programs(id)
+);
+
 CREATE TABLE users(
     id           BIGINT(20) AUTO_INCREMENT,
     first_name   VARCHAR(255) NOT NULL,
@@ -9,8 +30,10 @@ CREATE TABLE users(
     is_account_non_expired BIT,
     is_account_non_locked BIT,
     is_credentials_non_expired BIT,
+    current_state_id BIGINT(20),
     created_date BIGINT(25)   NOT NULL,
     updated_date BIGINT(25) DEFAULT NULL,
+    FOREIGN KEY (current_state_id) REFERENCES degree_program_states(id),
     PRIMARY KEY (id)
 );
 
@@ -83,24 +106,4 @@ CREATE TABLE role_authorities(
     authority VARCHAR(255) NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (role_id) REFERENCES roles(id)
-);
-
-CREATE TABLE degree_programs(
-    id BIGINT(20) AUTO_INCREMENT,
-    name VARCHAR(255),
-    description VARCHAR (1024),
-    created_date BIGINT(25)   NOT NULL,
-    updated_date BIGINT(25) DEFAULT NULL,
-    PRIMARY KEY(id)
-);
-
-CREATE TABLE degree_program_states(
-    id BIGINT(20) AUTO_INCREMENT,
-    degree_program_id BIGINT(20),
-    name VARCHAR(255),
-    description VARCHAR (1024),
-    created_date BIGINT(25)   NOT NULL,
-    updated_date BIGINT(25) DEFAULT NULL,
-    PRIMARY KEY(id),
-    FOREIGN KEY (degree_program_id) REFERENCES degree_programs(id)
 );

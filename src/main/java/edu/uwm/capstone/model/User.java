@@ -16,7 +16,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(value = {"username"}, ignoreUnknown = true)
+@JsonIgnoreProperties(value = {"username", "currentStateId"}, ignoreUnknown = true)
 public class User extends BaseEntity implements UserDetails {
 
     @JsonFilter("JWTFilter")
@@ -29,6 +29,14 @@ public class User extends BaseEntity implements UserDetails {
     private String password;
     private String pantherId;
     private String email;
+    private String degreeProgramName;
+
+    @ApiModelProperty(hidden = true)
+    private DegreeProgramState currentState;
+
+    @ApiModelProperty(hidden = true)
+    private Long currentStateId;
+
     private Set<String> roleNames;
 
     @ApiModelProperty(hidden = true)
