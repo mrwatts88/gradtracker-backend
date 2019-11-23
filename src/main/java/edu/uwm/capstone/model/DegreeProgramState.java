@@ -13,4 +13,5 @@ public class DegreeProgramState extends BaseEntity {
     private Long degreeProgramId;
     private String name;
     private String description;
+    private boolean initial;
 }

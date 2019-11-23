@@ -21,9 +21,17 @@ public class DegreeProgram extends BaseEntity implements Iterable<DegreeProgramS
     public Iterator<DegreeProgramState> iterator() { return degreeProgramStates.iterator(); }
 
     public DegreeProgramState getDegreeProgramStateById(Long dpStateId) {
+        if (dpStateId == null) return null;
+
         for(DegreeProgramState dps : degreeProgramStates) {
-            if(dps.getId() == null) continue;
-            if(dps.getId().equals(dpStateId)) return dps;
+            if(dpStateId.equals(dps.getId())) return dps;
+        }
+        return null;
+    }
+
+    public DegreeProgramState initialState() {
+        for(DegreeProgramState dps : degreeProgramStates) {
+            if (dps.isInitial()) return dps;
         }
         return null;
     }
