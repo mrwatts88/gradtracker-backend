@@ -115,6 +115,12 @@ public class DegreeProgramDao extends BaseDao<Long, DegreeProgram> {
     @Override
     public void delete(Long id) {
         LOG.trace("Deleting degree program {}", id);
+
+        List<DegreeProgramState> dpStates = degreeProgramStateDao.readAllStatesByDegreeProgramId(id);
+        for(DegreeProgramState degreeProgramState : dpStates) {
+            degreeProgramStateDao.delete(degreeProgramState.getId());
+        }
+
         int result = jdbcTemplate.update(sql("deleteDegreeProgramById"),
                 new MapSqlParameterSource("id", id));
         if (result != 1) {
