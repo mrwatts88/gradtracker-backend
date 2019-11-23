@@ -101,5 +101,6 @@ CREATE TABLE degree_program_states(
     description VARCHAR (1024),
     created_date BIGINT(25)   NOT NULL,
     updated_date BIGINT(25) DEFAULT NULL,
-    PRIMARY KEY(id)
+    PRIMARY KEY(id),
+    FOREIGN KEY (degree_program_id) REFERENCES degree_programs(id)
 );
