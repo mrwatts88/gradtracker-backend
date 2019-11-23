@@ -36,6 +36,12 @@ SELECT *
 FROM degree_program_states
 WHERE id = :id;
 
+--STATEMENT readDegreeProgramStatesByDegreeProgramId
+SELECT *
+FROM degree_program_states
+WHERE degree_program_id = :degree_program_id
+ORDER BY name;
+
 --STATEMENT updateDegreeProgramStateById
 UPDATE degree_program_states SET
     name = :name,

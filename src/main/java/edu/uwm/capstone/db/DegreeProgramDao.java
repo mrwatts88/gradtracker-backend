@@ -1,6 +1,7 @@
 package edu.uwm.capstone.db;
 
 import edu.uwm.capstone.model.DegreeProgram;
+import edu.uwm.capstone.model.DegreeProgramState;
 import edu.uwm.capstone.sql.dao.BaseDao;
 import edu.uwm.capstone.sql.dao.BaseRowMapper;
 import edu.uwm.capstone.sql.exception.DaoException;
@@ -19,7 +20,7 @@ import java.util.Map;
 public class DegreeProgramDao extends BaseDao<Long, DegreeProgram> {
 
     @Autowired
-    private DegreeProgramDao degreeProgramDao;
+    private DegreeProgramStateDao degreeProgramStateDao;
 
     private static final Logger LOG = LoggerFactory.getLogger(DegreeProgramDao.class);
 
@@ -47,6 +48,12 @@ public class DegreeProgramDao extends BaseDao<Long, DegreeProgram> {
 
         Long id = keyHolder.getKey().longValue();
         dp.setId(id);
+
+        // Create degree program states
+        for(DegreeProgramState dps: dp) {
+            dps.setDegreeProgramId(dp.getId());
+            degreeProgramStateDao.create(dps);
+        }
         return dp;
     }
 
@@ -54,8 +61,10 @@ public class DegreeProgramDao extends BaseDao<Long, DegreeProgram> {
     public DegreeProgram read(Long id) {
         LOG.trace("Reading degree program {}", id);
         try {
-            return (DegreeProgram) jdbcTemplate.queryForObject(sql("readDegreeProgramById"),
+            DegreeProgram dp =  (DegreeProgram) jdbcTemplate.queryForObject(sql("readDegreeProgramById"),
                     new MapSqlParameterSource("id", id), rowMapper);
+            dp.setDegreeProgramStates(degreeProgramStateDao.readAllStatesByDegreeProgramId(dp.getId()));
+            return dp;
         } catch(EmptyResultDataAccessException e) {
             return null;
         }
@@ -64,8 +73,10 @@ public class DegreeProgramDao extends BaseDao<Long, DegreeProgram> {
     public DegreeProgram read(String name) {
         LOG.trace("Reading degree program {}", name);
         try {
-            return (DegreeProgram) jdbcTemplate.queryForObject(sql("readDegreeProgramByName"),
+            DegreeProgram dp = (DegreeProgram) jdbcTemplate.queryForObject(sql("readDegreeProgramByName"),
                     new MapSqlParameterSource("name", name), rowMapper);
+            dp.setDegreeProgramStates(degreeProgramStateDao.readAllStatesByDegreeProgramId(dp.getId()));
+            return dp;
         } catch(EmptyResultDataAccessException e) {
             return null;
         }
@@ -74,6 +85,9 @@ public class DegreeProgramDao extends BaseDao<Long, DegreeProgram> {
     public List<DegreeProgram> readAll() {
         LOG.trace("Reading all degree programs");
         List<DegreeProgram> degreePrograms = jdbcTemplate.query(sql("readAllDegreePrograms"), rowMapper);
+        for(DegreeProgram dp: degreePrograms) {
+            dp.setDegreeProgramStates(degreeProgramStateDao.readAllStatesByDegreeProgramId(dp.getId()));
+        }
         return degreePrograms;
     }
 

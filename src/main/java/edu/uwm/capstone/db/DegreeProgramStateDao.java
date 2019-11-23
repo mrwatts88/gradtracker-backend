@@ -12,6 +12,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 public class DegreeProgramStateDao extends BaseDao<Long, DegreeProgramState> {
@@ -62,6 +63,16 @@ public class DegreeProgramStateDao extends BaseDao<Long, DegreeProgramState> {
         LOG.trace("Reading all degree program states.");
         List<DegreeProgramState> dpStates = jdbcTemplate.query(sql("readAllDegreeProgramStates"), rowMapper);
         return dpStates;
+    }
+
+    public List<DegreeProgramState> readAllStatesByDegreeProgramId(long degreeProgramId) {
+        LOG.trace("Reading all degree program states by degree program id.");
+        try {
+            return this.jdbcTemplate.query(sql("readDegreeProgramStatesByDegreeProgramId"),
+                    new MapSqlParameterSource("degree_program_id", degreeProgramId), rowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return Collections.emptyList();
+        }
     }
 
     @Override
