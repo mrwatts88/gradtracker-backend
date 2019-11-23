@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -42,6 +43,7 @@ public class RoleRestController {
      */
     @ApiOperation(value = "Create Role")
     @PostMapping(value = ROLE_PATH)
+    @PreAuthorize("hasAuthority('CREATE_ROLE')")
     public Role create(@RequestBody Role role, @ApiIgnore HttpServletResponse response) throws IOException {
         return RestControllerUtil.runCallable(() -> roleService.create(role), response, LOG);
     }
@@ -81,6 +83,7 @@ public class RoleRestController {
      */
     @ApiOperation(value = "Read All Roles")
     @GetMapping(value = ROLE_PATH)
+    @PreAuthorize("hasAuthority('READ_ALL_ROLES')")
     public List<Role> readAll() {
         return roleService.readAll();
     }
@@ -107,6 +110,7 @@ public class RoleRestController {
      */
     @ApiOperation(value = "Update Role by ID")
     @PutMapping(value = ROLE_PATH + "{roleId}")
+    @PreAuthorize("hasAuthority('UPDATE_ROLE')")
     public Role update(@PathVariable Long roleId, @RequestBody Role role, @ApiIgnore HttpServletResponse response) throws IOException {
         role.setId(roleId);
         return RestControllerUtil.runCallable(() -> roleService.update(role), response, LOG);
@@ -121,6 +125,7 @@ public class RoleRestController {
      */
     @ApiOperation(value = "Delete Role by ID")
     @DeleteMapping(value = ROLE_PATH + "{roleId}")
+    @PreAuthorize("hasAuthority('DELETE_ROLE')")
     public void deleteById(@PathVariable Long roleId, @ApiIgnore HttpServletResponse response) throws IOException {
         RestControllerUtil.runRunnable(() -> roleService.delete(roleId), response, LOG);
     }

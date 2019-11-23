@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -39,6 +40,7 @@ public class FormDefinitionRestController {
      */
     @ApiOperation(value = "Create Form Definition")
     @PostMapping(value = FORM_DEF_PATH)
+    @PreAuthorize("hasAuthority('CREATE_FORM_DEF')")
     public FormDefinition create(@RequestBody FormDefinition formDef, @ApiIgnore HttpServletResponse response) throws IOException {
         return RestControllerUtil.runCallable(() -> formDefinitionService.create(formDef), response, LOG);
     }
@@ -65,6 +67,7 @@ public class FormDefinitionRestController {
     @ApiOperation(value = "Read All Form Definitions")
     @GetMapping(value = FORM_DEF_PATH)
 //    @PreAuthorize("hasAuthority('TEST')") // TODO figure out how we can use the Authorities enum here
+    @PreAuthorize("hasAuthority('READ_ALL_FORMS_DEF')")
     public List<FormDefinition> readAll() {
         return formDefinitionService.readAll();
     }
@@ -80,6 +83,7 @@ public class FormDefinitionRestController {
      */
     @ApiOperation(value = "Update Form Definition by ID")
     @PutMapping(value = FORM_DEF_PATH + "{formDefId}")
+    @PreAuthorize("hasAuthority('UPDATE_FORM_DEF')")
     public FormDefinition update(@PathVariable Long formDefId, @RequestBody FormDefinition formDefinition, @ApiIgnore HttpServletResponse response) throws IOException {
         formDefinition.setId(formDefId);
         
@@ -95,6 +99,7 @@ public class FormDefinitionRestController {
      */
     @ApiOperation(value = "Delete FormDefinition by ID")
     @DeleteMapping(value = FORM_DEF_PATH + "{formDefId}")
+    @PreAuthorize("hasAuthority('DELETE_FORM_DEF')")
     public void deleteById(@PathVariable Long formDefId, @ApiIgnore HttpServletResponse response) throws IOException {
         RestControllerUtil.runRunnable(() -> formDefinitionService.delete(formDefId), response, LOG);
     }

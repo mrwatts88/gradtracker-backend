@@ -46,6 +46,7 @@ public class FormRestController {
      */
     @ApiOperation(value = "Create Form")
     @PostMapping(value = FORM_PATH)
+    @PreAuthorize("hasAuthority('CREATE_FORM')")
     public Form create(@RequestBody Form form, @ApiIgnore HttpServletResponse response) throws IOException {
         return RestControllerUtil.runCallable(() -> formService.create(form), response, LOG);
     }
@@ -71,6 +72,7 @@ public class FormRestController {
      */
     @ApiOperation(value = "Read All Forms")
     @GetMapping(value = FORM_PATH)
+    @PreAuthorize("hasAuthority('READ_ALL_FORMS')")
     public List<Form> readAll() {
         return formService.readAll();
     }
@@ -122,6 +124,7 @@ public class FormRestController {
      */
     @ApiOperation(value = "Update Form by ID")
     @PutMapping(value = FORM_PATH + "{formId}")
+    @PreAuthorize("hasAuthority('UPDATE_FORM')")
     public Form update(@PathVariable Long formId, @RequestBody List<Field> fields, @ApiIgnore HttpServletResponse response) throws IOException {
         return RestControllerUtil.runCallable(() -> formService.updateFormFields(formId, fields), response, LOG);
     }
@@ -135,6 +138,7 @@ public class FormRestController {
      */
     @ApiOperation(value = "Delete Form by ID")
     @DeleteMapping(value = FORM_PATH + "{formId}")
+    @PreAuthorize("hasAuthority('DELETE_FORM')")
     public void delete(@PathVariable Long formId, @ApiIgnore HttpServletResponse response) throws IOException {
         RestControllerUtil.runRunnable(() -> formService.delete(formId), response, LOG);
     }

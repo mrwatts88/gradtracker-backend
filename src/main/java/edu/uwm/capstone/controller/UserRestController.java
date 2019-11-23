@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -40,6 +41,7 @@ public class UserRestController {
      */
     @ApiOperation(value = "Create User")
     @PostMapping(value = USER_PATH)
+    @PreAuthorize("hasAuthority('CREATE_USER')")
     public User create(@RequestBody User user, @ApiIgnore HttpServletResponse response) throws IOException {
         return RestControllerUtil.runCallable(() -> userService.create(user), response, LOG);
     }
@@ -93,6 +95,7 @@ public class UserRestController {
      */
     @ApiOperation(value = "Read All Users")
     @GetMapping(value = USER_PATH)
+    @PreAuthorize("hasAuthority('READ_ALL_USERS')")
     public List<User> readAll() {
         return userService.readAll();
     }
@@ -108,6 +111,7 @@ public class UserRestController {
      */
     @ApiOperation(value = "Update User by ID")
     @PutMapping(value = USER_PATH + "{userId}")
+    @PreAuthorize("hasAuthority('UPDATE_USER')")
     public User update(@PathVariable Long userId, @RequestBody User user, @ApiIgnore HttpServletResponse response) throws IOException {
         user.setId(userId);
         return RestControllerUtil.runCallable(() -> userService.update(user), response, LOG);
@@ -122,6 +126,7 @@ public class UserRestController {
      */
     @ApiOperation(value = "Delete User by ID")
     @DeleteMapping(value = USER_PATH + "{userId}")
+    @PreAuthorize("hasAuthority('DELETE_USER')")
     public void deleteById(@PathVariable Long userId, @ApiIgnore HttpServletResponse response) throws IOException {
         RestControllerUtil.runRunnable(() -> userService.delete(userId), response, LOG);
     }
