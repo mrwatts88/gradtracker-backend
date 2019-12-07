@@ -1,7 +1,9 @@
 package edu.uwm.capstone.security;
 
+import edu.uwm.capstone.db.DegreeProgramDao;
 import edu.uwm.capstone.db.RoleDao;
 import edu.uwm.capstone.db.UserDao;
+import edu.uwm.capstone.model.DegreeProgram;
 import edu.uwm.capstone.model.Role;
 import edu.uwm.capstone.model.User;
 import org.slf4j.Logger;
@@ -61,6 +63,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
         persistDefaultRole();
         persistDefaultUser(pe);
+        persistDefaultDegreeProgram();
 
         auth.userDetailsService(userDetailsService())
                 .passwordEncoder(pe);
@@ -72,6 +75,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private RoleDao roleDao;
+
+    @Autowired
+    private DegreeProgramDao DpDao;
 
     private void persistDefaultUser(PasswordEncoder passwordEncoder) {
         User defaultUser = userDao.readByEmail(DEFAULT_USER.getEmail());
@@ -102,5 +108,15 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         LOGGER.info("Persisting student role {}", STUDENT_ROLE);
         roleDao.create(STUDENT_ROLE);
         STUDENT_ROLE.setId(null);
+    }
+
+    private void persistDefaultDegreeProgram() {
+        DegreeProgram dp = DpDao.read(DEFAULT_DP.getId());
+
+        if (dp == null) return;
+        LOGGER.info("Persisting default degree program {}", DEFAULT_DP);
+
+        DpDao.create(DEFAULT_DP);
+
     }
 }
