@@ -1,9 +1,13 @@
 package edu.uwm.capstone.security;
 
 import com.google.common.collect.Sets;
+import edu.uwm.capstone.model.DegreeProgram;
+import edu.uwm.capstone.model.DegreeProgramState;
 import edu.uwm.capstone.model.Role;
 import edu.uwm.capstone.model.User;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 
@@ -52,6 +56,17 @@ public class SecurityConstants {
                 .credentialsNonExpired(true)
                 .roleNames(Collections.singleton(DEFAULT_ROLE.getName()))
                 .build();
+    }
+
+    public static DegreeProgram DEFAULT_DP;
+    public static ArrayList<DegreeProgramState> initialState = new ArrayList<>();
+    static {
+        DEFAULT_DP = DegreeProgram.builder()
+                .name("Computer Science")
+                .description("The best degree program!")
+                .degreeProgramStates(initialState)
+                .build();
+        initialState.add(new DegreeProgramState(DEFAULT_DP.getId(), "Application State", "The starting point.", true));
     }
 
     public static final String DEFAULT_USER_CREDENTIALS = "{ \"email\": \"" + DEFAULT_USER.getEmail() + "\", \"password\": \"" + DEFAULT_USER.getPassword() + "\" }";
