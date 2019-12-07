@@ -44,6 +44,11 @@ FROM degree_program_states
 WHERE degree_program_id = :degree_program_id
 ORDER BY name;
 
+--STATEMENT readDegreeProgramStatesIdsByDegreeProgramId
+SELECT id
+FROM degree_program_states
+WHERE degree_program_id = :degree_program_id;
+
 --STATEMENT updateDegreeProgramStateById
 UPDATE degree_program_states SET
     name = :name,

@@ -113,8 +113,18 @@ public class UserRestControllerComponentTest {
     @Test
     public void createUserWithoutAuthorities() throws Exception {
         User user = TestDataUtility.userWithTestValues();
-    }
 
+        // exercise endpoint
+        ExtractableResponse<Response> response = given()
+                .header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .body(mapper.writeValueAsString(user))
+                .when()
+                .post(UserRestController.USER_PATH)
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.OK.value()).extract();
+    }
+    //todo: maybe create an credential for a different user.
     @Test
     public void createPreconditionFailedId() throws Exception {
         User user = TestDataUtility.userWithTestValues();

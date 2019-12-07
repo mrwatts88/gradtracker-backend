@@ -586,6 +586,31 @@ public class FormControllerComponentTest {
                 .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("Could not delete form " + formId + " - record not found."));
     }
 
+    @Test
     // TODO test form approval
+    public void approval(){
+        // need a form definition in the db connected to the form
+        FormDefinition createFormDef = formDefinitionDao.create(TestDataUtility.formDefWithTestValues());
+        formDefsToCleanup.add(createFormDef);
 
+        // need a user in the db connected to the form
+        User user = userDao.create(TestDataUtility.userWithTestValues());
+        usersToCleanup.add(user);
+
+        Form createForm = TestDataUtility.formWithTestValues(createFormDef, user.getId());
+        formsToCleanup.add(formDao.create(createForm));
+
+        // exercise endpoint
+        ExtractableResponse<Response> response = given()
+                .header(new Header("Authorization", authorizationToken))
+                .param("approve", true)
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .when()
+                .put(FormRestController.FORM_APPROVAL_PATH + createForm.getId())
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        Form receivedForm = response.body().as(Form.class);
+        assertTrue(receivedForm.getApproved());
+    }
 }

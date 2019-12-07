@@ -1,6 +1,6 @@
 CREATE TABLE degree_programs(
     id BIGINT(20) AUTO_INCREMENT,
-    name VARCHAR(255),
+    name VARCHAR(255) UNIQUE,
     description VARCHAR (1024),
     created_date BIGINT(25)   NOT NULL,
     updated_date BIGINT(25) DEFAULT NULL,

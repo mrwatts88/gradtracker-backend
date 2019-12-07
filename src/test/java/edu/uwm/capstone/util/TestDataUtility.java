@@ -43,7 +43,7 @@ public class TestDataUtility {
      *
      * @return {@link User}
      */
-    //todo: check on role names
+
     public static User userWithCreateUserPower() {
 
         return User.builder()
