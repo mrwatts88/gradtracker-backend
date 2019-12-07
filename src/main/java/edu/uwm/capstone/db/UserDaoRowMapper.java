@@ -22,6 +22,7 @@ public class UserDaoRowMapper extends BaseRowMapper<User> {
         ENABLED(),
         IS_ACCOUNT_NON_EXPIRED(),
         IS_ACCOUNT_NON_LOCKED(),
+        CURRENT_STATE_ID(),
         IS_CREDENTIALS_NON_EXPIRED();
 
         private String columnName;
@@ -48,6 +49,7 @@ public class UserDaoRowMapper extends BaseRowMapper<User> {
         map.put(IS_ACCOUNT_NON_EXPIRED.getColumnName(), object.isAccountNonExpired());
         map.put(IS_ACCOUNT_NON_LOCKED.getColumnName(), object.isAccountNonLocked());
         map.put(IS_CREDENTIALS_NON_EXPIRED.getColumnName(), object.isCredentialsNonExpired());
+        map.put(CURRENT_STATE_ID.getColumnName(), object.getCurrentState() == null? null : object.getCurrentState().getId());
         map.put(CREATED_DATE.getColumnName(), javaTimeFromDate(object.getCreatedDate()));
         map.put(UPDATED_DATE.getColumnName(), javaTimeFromDate(object.getUpdatedDate()));
         return map;
@@ -66,6 +68,7 @@ public class UserDaoRowMapper extends BaseRowMapper<User> {
         folder.setAccountNonExpired(rs.getBoolean(IS_ACCOUNT_NON_EXPIRED.getColumnName()));
         folder.setAccountNonLocked(rs.getBoolean(IS_ACCOUNT_NON_LOCKED.getColumnName()));
         folder.setCredentialsNonExpired(rs.getBoolean(IS_CREDENTIALS_NON_EXPIRED.getColumnName()));
+        folder.setCurrentStateId(rs.getLong(CURRENT_STATE_ID.getColumnName()));
         folder.setCreatedDate(dateFromJavaTime(rs.getObject(CREATED_DATE.getColumnName())));
         folder.setUpdatedDate(dateFromJavaTime(rs.getObject(UPDATED_DATE.getColumnName())));
         return folder;

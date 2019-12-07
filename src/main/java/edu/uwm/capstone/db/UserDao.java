@@ -7,6 +7,7 @@ import edu.uwm.capstone.sql.dao.BaseRowMapper;
 import edu.uwm.capstone.sql.exception.DaoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -21,6 +22,9 @@ import java.util.Set;
 public class UserDao extends BaseDao<Long, User> {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserDao.class);
+
+    @Autowired
+    private DegreeProgramStateDao degreeProgramStateDao;
 
     /**
      * Create a {@link User} object.
@@ -73,6 +77,7 @@ public class UserDao extends BaseDao<Long, User> {
             User user = (User) this.jdbcTemplate.queryForObject(sql("readUser"), new MapSqlParameterSource("id", userId), rowMapper);
 
             setUserRolesAndAuthorities(user);
+            setUserCurrentState(user);
             return user;
 
         } catch (EmptyResultDataAccessException e) {
@@ -91,6 +96,7 @@ public class UserDao extends BaseDao<Long, User> {
 
         for (User user : users) {
             setUserRolesAndAuthorities(user);
+            setUserCurrentState(user);
         }
 
         return users;
@@ -108,6 +114,7 @@ public class UserDao extends BaseDao<Long, User> {
             User user = (User) this.jdbcTemplate.queryForObject(sql("readUserByEmail"), new MapSqlParameterSource("email", email), rowMapper);
 
             setUserRolesAndAuthorities(user);
+            setUserCurrentState(user);
             return user;
 
         } catch (EmptyResultDataAccessException e) {
@@ -128,6 +135,7 @@ public class UserDao extends BaseDao<Long, User> {
                     new MapSqlParameterSource("panther_id", pantherId), rowMapper);
 
             setUserRolesAndAuthorities(user);
+            setUserCurrentState(user);
             return user;
 
         } catch (EmptyResultDataAccessException e) {
@@ -148,6 +156,11 @@ public class UserDao extends BaseDao<Long, User> {
                 });
         user.setRoleNames(roleNames);
         user.setAuthorities(authorities);
+    }
+
+    private void setUserCurrentState(User user) {
+        if (user.getCurrentStateId() == null) return;
+        user.setCurrentState(degreeProgramStateDao.read(user.getCurrentStateId()));
     }
 
     private MapSqlParameterSource[] getUserRolesBatchArgs(Set<String> roleNames, Long userId) {

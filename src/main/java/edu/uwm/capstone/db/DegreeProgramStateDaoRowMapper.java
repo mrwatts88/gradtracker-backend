@@ -15,7 +15,8 @@ public class DegreeProgramStateDaoRowMapper extends BaseRowMapper<DegreeProgramS
     public enum DegreeProgramStateColumnType {
         DEGREE_PROGRAM_ID(),
         NAME(),
-        DESCRIPTION();
+        DESCRIPTION(),
+        IS_INITIAL();
 
         private String columnName;
         DegreeProgramStateColumnType() { columnName = name().toLowerCase(); }
@@ -30,6 +31,7 @@ public class DegreeProgramStateDaoRowMapper extends BaseRowMapper<DegreeProgramS
         map.put(DEGREE_PROGRAM_ID.getColumnName(), object.getDegreeProgramId());
         map.put(NAME.getColumnName(), object.getName());
         map.put(DESCRIPTION.getColumnName(), object.getDescription());
+        map.put(IS_INITIAL.getColumnName(), object.isInitial());
         map.put(CREATED_DATE.getColumnName(), javaTimeFromDate(object.getCreatedDate()));
         map.put(UPDATED_DATE.getColumnName(), javaTimeFromDate(object.getUpdatedDate()));
         return map;
@@ -42,6 +44,7 @@ public class DegreeProgramStateDaoRowMapper extends BaseRowMapper<DegreeProgramS
         folder.setDegreeProgramId(resultSet.getLong(DEGREE_PROGRAM_ID.getColumnName()));
         folder.setName(resultSet.getString(NAME.getColumnName()));
         folder.setDescription(resultSet.getString(DESCRIPTION.getColumnName()));
+        folder.setInitial(resultSet.getBoolean(IS_INITIAL.getColumnName()));
         folder.setCreatedDate(dateFromJavaTime(resultSet.getObject(CREATED_DATE.getColumnName())));
         folder.setUpdatedDate(dateFromJavaTime(resultSet.getObject(UPDATED_DATE.getColumnName())));
         return folder;
