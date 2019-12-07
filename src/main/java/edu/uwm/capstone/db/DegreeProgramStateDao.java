@@ -75,6 +75,16 @@ public class DegreeProgramStateDao extends BaseDao<Long, DegreeProgramState> {
         }
     }
 
+    public List<Long> readAllStatesIdsByDegreeProgramId(long degreeProgramId) {
+        LOG.trace("Reading all degree program states by degree program id.");
+        try {
+            return this.jdbcTemplate.queryForList(sql("readDegreeProgramStatesIdsByDegreeProgramId"),
+                    new MapSqlParameterSource("degree_program_id", degreeProgramId), Long.class);
+        } catch (EmptyResultDataAccessException e) {
+            return Collections.emptyList();
+        }
+    }
+
     @Override
     public DegreeProgramState update(DegreeProgramState dpState) {
         if(dpState == null) {

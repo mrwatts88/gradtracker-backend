@@ -2,6 +2,7 @@ package edu.uwm.capstone.db;
 
 import edu.uwm.capstone.model.DegreeProgram;
 import edu.uwm.capstone.model.DegreeProgramState;
+import edu.uwm.capstone.security.Authorities;
 import edu.uwm.capstone.sql.dao.BaseDao;
 import edu.uwm.capstone.sql.dao.BaseRowMapper;
 import edu.uwm.capstone.sql.exception.DaoException;
@@ -14,8 +15,10 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class DegreeProgramDao extends BaseDao<Long, DegreeProgram> {
 
@@ -96,8 +99,8 @@ public class DegreeProgramDao extends BaseDao<Long, DegreeProgram> {
         if(dp == null) {
             throw new DaoException("Request to update a degree program received null.");
         }
-        else if (dp.getId() != null) {
-            throw new DaoException("When updating a degree program the id should not be null");
+        else if (dp.getId() == null) {
+            throw new DaoException("When updating a degree program the id should be null.");
         }
 
         LOG.trace("Updating degree program {}", dp);
@@ -109,6 +112,22 @@ public class DegreeProgramDao extends BaseDao<Long, DegreeProgram> {
             throw new DaoException(String.format("Failed attempt to update degree program %s - %s rows affected.",
                     dp.toString(), result));
         }
+
+        HashSet<Long> fieldDefIdsAssociatedWithOldFormDef = new HashSet<>(degreeProgramStateDao.readAllStatesIdsByDegreeProgramId(dp.getId()));
+
+        Long fieldDefId;
+        for (DegreeProgramState dps : dp) {
+            fieldDefId = dps.getId();
+            if (fieldDefId == null) {                                              // create new field def if has null id
+                dps.setDegreeProgramId(dp.getId());
+                degreeProgramStateDao.create(dps);
+            } else if (fieldDefIdsAssociatedWithOldFormDef.contains(fieldDefId)) { // update field def if it's connected to formDef
+                fieldDefIdsAssociatedWithOldFormDef.remove(fieldDefId);
+                degreeProgramStateDao.update(dps);
+            }
+        }
+
+        fieldDefIdsAssociatedWithOldFormDef.forEach(fdId -> degreeProgramStateDao.delete(fdId)); // remove old field defs
         return dp;
     }
 
