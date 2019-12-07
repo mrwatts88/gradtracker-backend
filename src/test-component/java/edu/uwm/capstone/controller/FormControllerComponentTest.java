@@ -612,14 +612,5 @@ public class FormControllerComponentTest {
 
         Form receivedForm = response.body().as(Form.class);
         assertTrue(receivedForm.getApproved());
-
-
-
-//        given().header(new Header("Authorization", authorizationToken))
-//                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                .when()
-//                .delete(FormRestController.FORM_APPROVAL_PATH + createForm.getId())
-//                .then().log().ifValidationFails()
-//                .statusCode(HttpStatus.NOT_FOUND.value()).body("message", equalTo("Could not delete form " + formId + " - record not found."))
     }
 }
