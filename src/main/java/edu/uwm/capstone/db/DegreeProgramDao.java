@@ -73,7 +73,7 @@ public class DegreeProgramDao extends BaseDao<Long, DegreeProgram> {
         }
     }
 
-    public DegreeProgram read(String name) {
+    public DegreeProgram readByName(String name) {
         LOG.trace("Reading degree program {}", name);
         try {
             DegreeProgram dp = (DegreeProgram) jdbcTemplate.queryForObject(sql("readDegreeProgramByName"),

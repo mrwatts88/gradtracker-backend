@@ -68,7 +68,7 @@ public class UserDaoRowMapper extends BaseRowMapper<User> {
         folder.setAccountNonExpired(rs.getBoolean(IS_ACCOUNT_NON_EXPIRED.getColumnName()));
         folder.setAccountNonLocked(rs.getBoolean(IS_ACCOUNT_NON_LOCKED.getColumnName()));
         folder.setCredentialsNonExpired(rs.getBoolean(IS_CREDENTIALS_NON_EXPIRED.getColumnName()));
-        folder.setCurrentStateId(rs.getLong(CURRENT_STATE_ID.getColumnName()));
+        folder.setCurrentStateId((Long) rs.getObject(CURRENT_STATE_ID.getColumnName()));
         folder.setCreatedDate(dateFromJavaTime(rs.getObject(CREATED_DATE.getColumnName())));
         folder.setUpdatedDate(dateFromJavaTime(rs.getObject(UPDATED_DATE.getColumnName())));
         return folder;

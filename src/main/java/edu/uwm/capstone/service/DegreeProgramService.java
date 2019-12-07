@@ -64,7 +64,6 @@ public class DegreeProgramService {
         return degreeProgramDao.update(dp);
     }
 
-    // TODO: add logic to delete the degree program states with the degree program.
     public void delete(Long degreeProgramId) {
         LOG.trace("Deleting degree program {}", degreeProgramId);
         if (degreeProgramDao.read(degreeProgramId) == null) {

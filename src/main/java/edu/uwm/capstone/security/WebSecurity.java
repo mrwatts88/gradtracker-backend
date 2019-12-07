@@ -111,12 +111,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     }
 
     private void persistDefaultDegreeProgram() {
-        DegreeProgram dp = DpDao.read(DEFAULT_DP.getId());
+        DegreeProgram dp = DpDao.readByName(DEFAULT_DP.getName());
 
-        if (dp == null) return;
+        if (dp != null) return;
+
         LOGGER.info("Persisting default degree program {}", DEFAULT_DP);
-
         DpDao.create(DEFAULT_DP);
-
     }
 }

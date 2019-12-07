@@ -4,7 +4,6 @@ import edu.uwm.capstone.db.DegreeProgramDao;
 import edu.uwm.capstone.db.RoleDao;
 import edu.uwm.capstone.db.UserDao;
 import edu.uwm.capstone.model.DegreeProgram;
-import edu.uwm.capstone.model.DegreeProgramState;
 import edu.uwm.capstone.model.Role;
 import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.service.exception.EntityNotFoundException;
@@ -51,7 +50,7 @@ public class UserService {
         checkValidUser(user, true);
 
         if (user.getDegreeProgramName() != null) {
-            DegreeProgram dp = degreeProgramDao.read(user.getDegreeProgramName());
+            DegreeProgram dp = degreeProgramDao.readByName(user.getDegreeProgramName());
             Assert.notNull(dp, "Degree Program: " + user.getDegreeProgramName() + " not found.");
             user.setCurrentState(dp.initialState());
         } else {
