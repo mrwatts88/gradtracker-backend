@@ -3,12 +3,14 @@ INSERT INTO degree_program_states (
     id,
     degree_program_id,
     name,
+    is_initial,
     description,
     created_date
 ) VALUES (
     :id,
     :degree_program_id,
     :name,
+    :is_initial,
     :description,
     :created_date
 )
