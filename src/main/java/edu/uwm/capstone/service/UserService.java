@@ -76,6 +76,7 @@ public class UserService {
         if (user == null) {
             throw new EntityNotFoundException("User with ID: " + userId + " not found.");
         }
+        setUsersDegreeProgramName(user);
         return user;
     }
 
@@ -93,6 +94,7 @@ public class UserService {
         if (user == null) {
             throw new EntityNotFoundException("User with email: " + email + " not found.");
         }
+        setUsersDegreeProgramName(user);
         return user;
     }
 
@@ -110,6 +112,7 @@ public class UserService {
         if (user == null) {
             throw new EntityNotFoundException("User with panther id: " + pantherId + " not found.");
         }
+        setUsersDegreeProgramName(user);
         return user;
     }
 
@@ -120,8 +123,14 @@ public class UserService {
      */
     public List<User> readAll() {
         LOG.trace("Reading all users");
+        List<User> result = userDao.readAll();
+        result.forEach(this::setUsersDegreeProgramName);
+        return result;
+    }
 
-        return userDao.readAll();
+    private void setUsersDegreeProgramName(User user) {
+        if (user.getCurrentState() != null)
+            user.setDegreeProgramName(degreeProgramDao.read(user.getCurrentState().getDegreeProgramId()).getName());
     }
 
     /**
