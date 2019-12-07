@@ -111,6 +111,11 @@ public class UserRestControllerComponentTest {
     }
 
     @Test
+    public void createUserWithoutAuthorities() throws Exception {
+        User user = TestDataUtility.userWithTestValues();
+    }
+
+    @Test
     public void createPreconditionFailedId() throws Exception {
         User user = TestDataUtility.userWithTestValues();
         user.setId(TestDataUtility.randomLong());

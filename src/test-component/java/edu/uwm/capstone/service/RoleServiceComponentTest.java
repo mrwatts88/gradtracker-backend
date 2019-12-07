@@ -175,7 +175,6 @@ public class RoleServiceComponentTest {
 
         assertNotEquals(verifyCreateUser.getName(), verifyUpdateUser.getName());
         assertNotEquals(verifyCreateUser.getDescription(), verifyUpdateUser.getDescription());
-
     }
 
     /**

@@ -39,6 +39,311 @@ public class TestDataUtility {
     }
 
     /**
+     * Generate a {@link User} object that is fully loaded with CreateUser power for testing purposes.
+     *
+     * @return {@link User}
+     */
+    //todo: check on role names
+    public static User userWithCreateUserPower() {
+
+        return User.builder()
+                .firstName(randomAlphabetic(randomInt(10, 25)))
+                .lastName(randomAlphabetic(randomInt(10, 25)))
+                .password(randomAlphabetic(randomInt(10, 50)))
+                .pantherId(randomAlphabetic(randomInt(9, 10)))
+                .email(randomAlphabetic(randomInt(5, 15)) + "@" + randomAlphabetic(randomInt(3, 10)))
+                .roleNames(Collections.singleton(roleWithCreateUserPower().getName()))
+                .authorities(roleWithCreateUserPower().getAuthorities())
+                .enabled(true)
+                .credentialsNonExpired(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .build();
+    }
+
+    public static User userWithCreateRolePower() {
+
+        return User.builder()
+                .firstName(randomAlphabetic(randomInt(10, 25)))
+                .lastName(randomAlphabetic(randomInt(10, 25)))
+                .password(randomAlphabetic(randomInt(10, 50)))
+                .pantherId(randomAlphabetic(randomInt(9, 10)))
+                .email(randomAlphabetic(randomInt(5, 15)) + "@" + randomAlphabetic(randomInt(3, 10)))
+                .roleNames(Collections.singleton(roleWithCreateRolePower().getName()))
+                .authorities(roleWithCreateRolePower().getAuthorities())
+                .enabled(true)
+                .credentialsNonExpired(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .build();
+    }
+
+    public static User userWithReadAllFormsPower() {
+
+        return User.builder()
+                .firstName(randomAlphabetic(randomInt(10, 25)))
+                .lastName(randomAlphabetic(randomInt(10, 25)))
+                .password(randomAlphabetic(randomInt(10, 50)))
+                .pantherId(randomAlphabetic(randomInt(9, 10)))
+                .email(randomAlphabetic(randomInt(5, 15)) + "@" + randomAlphabetic(randomInt(3, 10)))
+                .roleNames(Collections.singleton(roleWithReadAllFormsPower().getName()))
+                .authorities(roleWithReadAllFormsPower().getAuthorities())
+                .enabled(true)
+                .credentialsNonExpired(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .build();
+    }
+
+    public static User userWithReadAllFormsDefPower() {
+
+        return User.builder()
+                .firstName(randomAlphabetic(randomInt(10, 25)))
+                .lastName(randomAlphabetic(randomInt(10, 25)))
+                .password(randomAlphabetic(randomInt(10, 50)))
+                .pantherId(randomAlphabetic(randomInt(9, 10)))
+                .email(randomAlphabetic(randomInt(5, 15)) + "@" + randomAlphabetic(randomInt(3, 10)))
+                .roleNames(Collections.singleton(roleWithReadAllFormsDefPower().getName()))
+                .authorities(roleWithReadAllFormsDefPower().getAuthorities())
+                .enabled(true)
+                .credentialsNonExpired(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .build();
+    }
+
+    public static User userWithCreateFormDefPower() {
+
+        return User.builder()
+                .firstName(randomAlphabetic(randomInt(10, 25)))
+                .lastName(randomAlphabetic(randomInt(10, 25)))
+                .password(randomAlphabetic(randomInt(10, 50)))
+                .pantherId(randomAlphabetic(randomInt(9, 10)))
+                .email(randomAlphabetic(randomInt(5, 15)) + "@" + randomAlphabetic(randomInt(3, 10)))
+                .roleNames(Collections.singleton(roleWithCreateFormDefPower().getName()))
+                .authorities(roleWithCreateFormDefPower().getAuthorities())
+                .enabled(true)
+                .credentialsNonExpired(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .build();
+    }
+
+    public static User userWithReadAllUsersPower() {
+
+        return User.builder()
+                .firstName(randomAlphabetic(randomInt(10, 25)))
+                .lastName(randomAlphabetic(randomInt(10, 25)))
+                .password(randomAlphabetic(randomInt(10, 50)))
+                .pantherId(randomAlphabetic(randomInt(9, 10)))
+                .email(randomAlphabetic(randomInt(5, 15)) + "@" + randomAlphabetic(randomInt(3, 10)))
+                .roleNames(Collections.singleton(roleWithReadAllUsersPower().getName()))
+                .authorities(roleWithReadAllUsersPower().getAuthorities())
+                .enabled(true)
+                .credentialsNonExpired(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .build();
+    }
+
+    public static User userWithCreateFormPower() {
+
+        return User.builder()
+                .firstName(randomAlphabetic(randomInt(10, 25)))
+                .lastName(randomAlphabetic(randomInt(10, 25)))
+                .password(randomAlphabetic(randomInt(10, 50)))
+                .pantherId(randomAlphabetic(randomInt(9, 10)))
+                .email(randomAlphabetic(randomInt(5, 15)) + "@" + randomAlphabetic(randomInt(3, 10)))
+                .roleNames(Collections.singleton(roleWithCreateFormPower().getName()))
+                .authorities(roleWithCreateFormPower().getAuthorities())
+                .enabled(true)
+                .credentialsNonExpired(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .build();
+    }
+
+    //roleWithReadAllRolesPower
+    public static User userWithReadAllRolesPower() {
+
+        return User.builder()
+                .firstName(randomAlphabetic(randomInt(10, 25)))
+                .lastName(randomAlphabetic(randomInt(10, 25)))
+                .password(randomAlphabetic(randomInt(10, 50)))
+                .pantherId(randomAlphabetic(randomInt(9, 10)))
+                .email(randomAlphabetic(randomInt(5, 15)) + "@" + randomAlphabetic(randomInt(3, 10)))
+                .roleNames(Collections.singleton(roleWithReadAllRolesPower().getName()))
+                .authorities(roleWithReadAllRolesPower().getAuthorities())
+                .enabled(true)
+                .credentialsNonExpired(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .build();
+    }
+
+    //roleWithUpdateFormDefPower
+    public static User userWithUpdateFormDefPower() {
+
+        return User.builder()
+                .firstName(randomAlphabetic(randomInt(10, 25)))
+                .lastName(randomAlphabetic(randomInt(10, 25)))
+                .password(randomAlphabetic(randomInt(10, 50)))
+                .pantherId(randomAlphabetic(randomInt(9, 10)))
+                .email(randomAlphabetic(randomInt(5, 15)) + "@" + randomAlphabetic(randomInt(3, 10)))
+                .roleNames(Collections.singleton(roleWithUpdateFormDefPower().getName()))
+                .authorities(roleWithUpdateFormDefPower().getAuthorities())
+                .enabled(true)
+                .credentialsNonExpired(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .build();
+    }
+
+    //roleWithApproveFormPower
+    public static User userWithApproveFormPower() {
+
+        return User.builder()
+                .firstName(randomAlphabetic(randomInt(10, 25)))
+                .lastName(randomAlphabetic(randomInt(10, 25)))
+                .password(randomAlphabetic(randomInt(10, 50)))
+                .pantherId(randomAlphabetic(randomInt(9, 10)))
+                .email(randomAlphabetic(randomInt(5, 15)) + "@" + randomAlphabetic(randomInt(3, 10)))
+                .roleNames(Collections.singleton(roleWithApproveFormPower().getName()))
+                .authorities(roleWithApproveFormPower().getAuthorities())
+                .enabled(true)
+                .credentialsNonExpired(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .build();
+    }
+
+    //roleWithUpdateUserPower
+    public static User userWithUpdateUserPower() {
+
+        return User.builder()
+                .firstName(randomAlphabetic(randomInt(10, 25)))
+                .lastName(randomAlphabetic(randomInt(10, 25)))
+                .password(randomAlphabetic(randomInt(10, 50)))
+                .pantherId(randomAlphabetic(randomInt(9, 10)))
+                .email(randomAlphabetic(randomInt(5, 15)) + "@" + randomAlphabetic(randomInt(3, 10)))
+                .roleNames(Collections.singleton(roleWithUpdateUserPower().getName()))
+                .authorities(roleWithUpdateUserPower().getAuthorities())
+                .enabled(true)
+                .credentialsNonExpired(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .build();
+    }
+
+    //roleWithUpdateFormPower
+    public static User userWithUpdateFormPower() {
+
+        return User.builder()
+                .firstName(randomAlphabetic(randomInt(10, 25)))
+                .lastName(randomAlphabetic(randomInt(10, 25)))
+                .password(randomAlphabetic(randomInt(10, 50)))
+                .pantherId(randomAlphabetic(randomInt(9, 10)))
+                .email(randomAlphabetic(randomInt(5, 15)) + "@" + randomAlphabetic(randomInt(3, 10)))
+                .roleNames(Collections.singleton(roleWithUpdateFormPower().getName()))
+                .authorities(roleWithUpdateFormPower().getAuthorities())
+                .enabled(true)
+                .credentialsNonExpired(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .build();
+    }
+
+    //roleWithUpdateRolePower
+    public static User userWithUpdateRolePower() {
+
+        return User.builder()
+                .firstName(randomAlphabetic(randomInt(10, 25)))
+                .lastName(randomAlphabetic(randomInt(10, 25)))
+                .password(randomAlphabetic(randomInt(10, 50)))
+                .pantherId(randomAlphabetic(randomInt(9, 10)))
+                .email(randomAlphabetic(randomInt(5, 15)) + "@" + randomAlphabetic(randomInt(3, 10)))
+                .roleNames(Collections.singleton(roleWithUpdateRolePower().getName()))
+                .authorities(roleWithUpdateRolePower().getAuthorities())
+                .enabled(true)
+                .credentialsNonExpired(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .build();
+    }
+
+    //roleWithDeleteFormDefPower
+    public static User userWithDeleteFormDefPower() {
+
+        return User.builder()
+                .firstName(randomAlphabetic(randomInt(10, 25)))
+                .lastName(randomAlphabetic(randomInt(10, 25)))
+                .password(randomAlphabetic(randomInt(10, 50)))
+                .pantherId(randomAlphabetic(randomInt(9, 10)))
+                .email(randomAlphabetic(randomInt(5, 15)) + "@" + randomAlphabetic(randomInt(3, 10)))
+                .roleNames(Collections.singleton(roleWithDeleteFormDefPower().getName()))
+                .authorities(roleWithDeleteFormDefPower().getAuthorities())
+                .enabled(true)
+                .credentialsNonExpired(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .build();
+    }
+
+    //roleWithDeleteFormPower
+    public static User userWithDeleteFormPower() {
+
+        return User.builder()
+                .firstName(randomAlphabetic(randomInt(10, 25)))
+                .lastName(randomAlphabetic(randomInt(10, 25)))
+                .password(randomAlphabetic(randomInt(10, 50)))
+                .pantherId(randomAlphabetic(randomInt(9, 10)))
+                .email(randomAlphabetic(randomInt(5, 15)) + "@" + randomAlphabetic(randomInt(3, 10)))
+                .roleNames(Collections.singleton(roleWithDeleteFormPower().getName()))
+                .authorities(roleWithDeleteFormPower().getAuthorities())
+                .enabled(true)
+                .credentialsNonExpired(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .build();
+    }
+
+    //roleWithDeleteUserPower
+    public static User userWithDeleteUserPower() {
+
+        return User.builder()
+                .firstName(randomAlphabetic(randomInt(10, 25)))
+                .lastName(randomAlphabetic(randomInt(10, 25)))
+                .password(randomAlphabetic(randomInt(10, 50)))
+                .pantherId(randomAlphabetic(randomInt(9, 10)))
+                .email(randomAlphabetic(randomInt(5, 15)) + "@" + randomAlphabetic(randomInt(3, 10)))
+                .roleNames(Collections.singleton(roleWithDeleteUserPower().getName()))
+                .authorities(roleWithDeleteUserPower().getAuthorities())
+                .enabled(true)
+                .credentialsNonExpired(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .build();
+    }
+
+    //roleWithDeleteRolePower
+    public static User userWithDeleteRolePower() {
+
+        return User.builder()
+                .firstName(randomAlphabetic(randomInt(10, 25)))
+                .lastName(randomAlphabetic(randomInt(10, 25)))
+                .password(randomAlphabetic(randomInt(10, 50)))
+                .pantherId(randomAlphabetic(randomInt(9, 10)))
+                .email(randomAlphabetic(randomInt(5, 15)) + "@" + randomAlphabetic(randomInt(3, 10)))
+                .roleNames(Collections.singleton(roleWithDeleteRolePower().getName()))
+                .authorities(roleWithDeleteRolePower().getAuthorities())
+                .enabled(true)
+                .credentialsNonExpired(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .build();
+    }
+
+    /**
      * Generate a {@link FormDefinition} object that is fully loaded with random values for testing purposes.
      *
      * @return {@link FormDefinition}
@@ -109,6 +414,261 @@ public class TestDataUtility {
         return Role.builder()
                 .name(randomAlphabetic(randomInt(10, 25)))
                 .authorities(randomAuthorities())
+                .description(randomAlphabetic(randomInt(10, 25)))
+                .build();
+    }
+
+    /**
+     * Generate a {@link Role} object that is loaded with CreateFormDefPower for testing purposes.
+     *
+     * @return {@link Role}
+     */
+    public static Role roleWithCreateFormDefPower() {
+        List<Authorities> authorities = Arrays.asList(Authorities.values());
+        authorities.add(Authorities.CREATE_FORM_DEF);
+        return Role.builder()
+                .name(randomAlphabetic(randomInt(10, 25)))
+                .authorities((Set<Authorities>) authorities)
+                .description(randomAlphabetic(randomInt(10, 25)))
+                .build();
+    }
+
+    /**
+     * Generate a {@link Role} object that is loaded with CreateFormPower for testing purposes.
+     *
+     * @return {@link Role}
+     */
+    public static Role roleWithCreateFormPower() {
+        List<Authorities> authorities = Arrays.asList(Authorities.values());
+        authorities.add(Authorities.CREATE_FORM);
+        return Role.builder()
+                .name(randomAlphabetic(randomInt(10, 25)))
+                .authorities((Set<Authorities>) authorities)
+                .description(randomAlphabetic(randomInt(10, 25)))
+                .build();
+    }
+
+    /**
+     * Generate a {@link Role} object that is loaded with CREATE_USER Power for testing purposes.
+     *
+     * @return {@link Role}
+     */
+    public static Role roleWithCreateUserPower() {
+        List<Authorities> authorities = Arrays.asList(Authorities.values());
+        authorities.add(Authorities.CREATE_USER);
+        return Role.builder()
+                .name(randomAlphabetic(randomInt(10, 25)))
+                .authorities((Set<Authorities>) authorities)
+                .description(randomAlphabetic(randomInt(10, 25)))
+                .build();
+    }
+
+    /**
+     * Generate a {@link Role} object that is loaded with CREATE_ROLE Power for testing purposes.
+     *
+     * @return {@link Role}
+     */
+    public static Role roleWithCreateRolePower() {
+        List<Authorities> authorities = Arrays.asList(Authorities.values());
+        authorities.add(Authorities.CREATE_ROLE);
+        return Role.builder()
+                .name(randomAlphabetic(randomInt(10, 25)))
+                .authorities((Set<Authorities>) authorities)
+                .description(randomAlphabetic(randomInt(10, 25)))
+                .build();
+    }
+
+    /**
+     * Generate a {@link Role} object that is loaded with READ_ALL_FORMS Power for testing purposes.
+     *
+     * @return {@link Role}
+     */
+    public static Role roleWithReadAllFormsPower() {
+        List<Authorities> authorities = Arrays.asList(Authorities.values());
+        authorities.add(Authorities.READ_ALL_FORMS);
+        return Role.builder()
+                .name(randomAlphabetic(randomInt(10, 25)))
+                .authorities((Set<Authorities>) authorities)
+                .description(randomAlphabetic(randomInt(10, 25)))
+                .build();
+    }
+
+    /**
+     * Generate a {@link Role} object that is loaded with READ_ALL_FORMS_DEF Power for testing purposes.
+     *
+     * @return {@link Role}
+     */
+    public static Role roleWithReadAllFormsDefPower() {
+        List<Authorities> authorities = Arrays.asList(Authorities.values());
+        authorities.add(Authorities.READ_ALL_FORMS_DEF);
+        return Role.builder()
+                .name(randomAlphabetic(randomInt(10, 25)))
+                .authorities((Set<Authorities>) authorities)
+                .description(randomAlphabetic(randomInt(10, 25)))
+                .build();
+    }
+
+    /**
+     * Generate a {@link Role} object that is loaded with READ_ALL_USERS Power for testing purposes.
+     *
+     * @return {@link Role}
+     */
+    public static Role roleWithReadAllUsersPower() {
+        List<Authorities> authorities = Arrays.asList(Authorities.values());
+        authorities.add(Authorities.READ_ALL_USERS);
+        return Role.builder()
+                .name(randomAlphabetic(randomInt(10, 25)))
+                .authorities((Set<Authorities>) authorities)
+                .description(randomAlphabetic(randomInt(10, 25)))
+                .build();
+    }
+
+    /**
+     * Generate a {@link Role} object that is loaded with READ_ALL_ROLES Power for testing purposes.
+     *
+     * @return {@link Role}
+     */
+    public static Role roleWithReadAllRolesPower() {
+        List<Authorities> authorities = Arrays.asList(Authorities.values());
+        authorities.add(Authorities.READ_ALL_ROLES);
+        return Role.builder()
+                .name(randomAlphabetic(randomInt(10, 25)))
+                .authorities((Set<Authorities>) authorities)
+                .description(randomAlphabetic(randomInt(10, 25)))
+                .build();
+    }
+
+    /**
+     * Generate a {@link Role} object that is loaded with UPDATE_FORM_DEF Power for testing purposes.
+     *
+     * @return {@link Role}
+     */
+    public static Role roleWithUpdateFormDefPower() {
+        List<Authorities> authorities = Arrays.asList(Authorities.values());
+        authorities.add(Authorities.UPDATE_FORM_DEF);
+        return Role.builder()
+                .name(randomAlphabetic(randomInt(10, 25)))
+                .authorities((Set<Authorities>) authorities)
+                .description(randomAlphabetic(randomInt(10, 25)))
+                .build();
+    }
+
+    /**
+     * Generate a {@link Role} object that is loaded with APPROVE_FORM Power for testing purposes.
+     *
+     * @return {@link Role}
+     */
+    public static Role roleWithApproveFormPower() {
+        List<Authorities> authorities = Arrays.asList(Authorities.values());
+        authorities.add(Authorities.APPROVE_FORM);
+        return Role.builder()
+                .name(randomAlphabetic(randomInt(10, 25)))
+                .authorities((Set<Authorities>) authorities)
+                .description(randomAlphabetic(randomInt(10, 25)))
+                .build();
+    }
+
+    /**
+     * Generate a {@link Role} object that is loaded with UPDATE_USER Power for testing purposes.
+     *
+     * @return {@link Role}
+     */
+    public static Role roleWithUpdateUserPower() {
+        List<Authorities> authorities = Arrays.asList(Authorities.values());
+        authorities.add(Authorities.UPDATE_USER);
+        return Role.builder()
+                .name(randomAlphabetic(randomInt(10, 25)))
+                .authorities((Set<Authorities>) authorities)
+                .description(randomAlphabetic(randomInt(10, 25)))
+                .build();
+    }
+
+    /**
+     * Generate a {@link Role} object that is loaded with UPDATE_FORM Power for testing purposes.
+     *
+     * @return {@link Role}
+     */
+    public static Role roleWithUpdateFormPower() {
+        List<Authorities> authorities = Arrays.asList(Authorities.values());
+        authorities.add(Authorities.UPDATE_FORM);
+        return Role.builder()
+                .name(randomAlphabetic(randomInt(10, 25)))
+                .authorities((Set<Authorities>) authorities)
+                .description(randomAlphabetic(randomInt(10, 25)))
+                .build();
+    }
+
+    /**
+     * Generate a {@link Role} object that is loaded with UPDATE_ROLE Power for testing purposes.
+     *
+     * @return {@link Role}
+     */
+    public static Role roleWithUpdateRolePower() {
+        List<Authorities> authorities = Arrays.asList(Authorities.values());
+        authorities.add(Authorities.UPDATE_ROLE);
+        return Role.builder()
+                .name(randomAlphabetic(randomInt(10, 25)))
+                .authorities((Set<Authorities>) authorities)
+                .description(randomAlphabetic(randomInt(10, 25)))
+                .build();
+    }
+
+    /**
+     * Generate a {@link Role} object that is loaded with DELETE_FORM_DEF Power for testing purposes.
+     *
+     * @return {@link Role}
+     */
+    public static Role roleWithDeleteFormDefPower() {
+        List<Authorities> authorities = Arrays.asList(Authorities.values());
+        authorities.add(Authorities.DELETE_FORM_DEF);
+        return Role.builder()
+                .name(randomAlphabetic(randomInt(10, 25)))
+                .authorities((Set<Authorities>) authorities)
+                .description(randomAlphabetic(randomInt(10, 25)))
+                .build();
+    }
+
+    /**
+     * Generate a {@link Role} object that is loaded with DELETE_FORM Power for testing purposes.
+     *
+     * @return {@link Role}
+     */
+    public static Role roleWithDeleteFormPower() {
+        List<Authorities> authorities = Arrays.asList(Authorities.values());
+        authorities.add(Authorities.DELETE_FORM);
+        return Role.builder()
+                .name(randomAlphabetic(randomInt(10, 25)))
+                .authorities((Set<Authorities>) authorities)
+                .description(randomAlphabetic(randomInt(10, 25)))
+                .build();
+    }
+
+    /**
+     * Generate a {@link Role} object that is loaded with DELETE_USER Power for testing purposes.
+     *
+     * @return {@link Role}
+     */
+    public static Role roleWithDeleteUserPower() {
+        List<Authorities> authorities = Arrays.asList(Authorities.values());
+        authorities.add(Authorities.DELETE_USER);
+        return Role.builder()
+                .name(randomAlphabetic(randomInt(10, 25)))
+                .authorities((Set<Authorities>) authorities)
+                .description(randomAlphabetic(randomInt(10, 25)))
+                .build();
+    }
+
+    /**
+     * Generate a {@link Role} object that is loaded with DELETE_ROLE Power for testing purposes.
+     *
+     * @return {@link Role}
+     */
+    public static Role roleWithDeleteRolePower() {
+        List<Authorities> authorities = Arrays.asList(Authorities.values());
+        authorities.add(Authorities.DELETE_ROLE);
+        return Role.builder()
+                .name(randomAlphabetic(randomInt(10, 25)))
+                .authorities((Set<Authorities>) authorities)
                 .description(randomAlphabetic(randomInt(10, 25)))
                 .build();
     }
