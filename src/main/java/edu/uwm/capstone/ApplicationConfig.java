@@ -1,7 +1,6 @@
 package edu.uwm.capstone;
 
 import edu.uwm.capstone.db.*;
-import edu.uwm.capstone.sql.dao.BaseRowMapper;
 import edu.uwm.capstone.sql.statement.ISqlStatementsFileLoader;
 import edu.uwm.capstone.sql.statement.SqlStatementsFileLoader;
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -196,7 +195,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public BaseRowMapper degreeProgramStateDaoRowMapper() {
+    public DegreeProgramStateDaoRowMapper degreeProgramStateDaoRowMapper() {
         return new DegreeProgramStateDaoRowMapper();
     }
 

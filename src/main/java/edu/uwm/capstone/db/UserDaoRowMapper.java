@@ -73,4 +73,12 @@ public class UserDaoRowMapper extends BaseRowMapper<User> {
         folder.setUpdatedDate(dateFromJavaTime(rs.getObject(UPDATED_DATE.getColumnName())));
         return folder;
     }
+
+    public Map<String, Object> mapUserCurrentState(User user) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(ID.getColumnName(), user.getId());
+        map.put(CURRENT_STATE_ID.getColumnName(), user.getCurrentStateId());
+        map.put(UPDATED_DATE.getColumnName(), javaTimeFromDate(user.getUpdatedDate()));
+        return map;
+    }
 }

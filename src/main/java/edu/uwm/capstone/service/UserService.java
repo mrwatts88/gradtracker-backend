@@ -1,9 +1,11 @@
 package edu.uwm.capstone.service;
 
 import edu.uwm.capstone.db.DegreeProgramDao;
+import edu.uwm.capstone.db.DegreeProgramStateDao;
 import edu.uwm.capstone.db.RoleDao;
 import edu.uwm.capstone.db.UserDao;
 import edu.uwm.capstone.model.DegreeProgram;
+import edu.uwm.capstone.model.DegreeProgramState;
 import edu.uwm.capstone.model.Role;
 import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.service.exception.EntityNotFoundException;
@@ -29,13 +31,15 @@ public class UserService {
     private final UserDao userDao;
     private final RoleDao roleDao;
     private final DegreeProgramDao degreeProgramDao;
+    private final DegreeProgramStateDao degreeProgramStateDao;
 
     @Autowired
-    public UserService(PasswordEncoder passwordEncoder, UserDao userDao, RoleDao roleDao, DegreeProgramDao degreeProgramDao) {
+    public UserService(PasswordEncoder passwordEncoder, UserDao userDao, RoleDao roleDao, DegreeProgramDao degreeProgramDao, DegreeProgramStateDao degreeProgramStateDao) {
         this.passwordEncoder = passwordEncoder;
         this.userDao = userDao;
         this.roleDao = roleDao;
         this.degreeProgramDao = degreeProgramDao;
+        this.degreeProgramStateDao = degreeProgramStateDao;
     }
 
     /**
@@ -151,6 +155,37 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setCreatedDate(userInDb.getCreatedDate());
         return userDao.update(user);
+    }
+
+    /**
+     * Update the provided {@link User}'s current state.
+     *
+     * @param userId  id of the {@link User}
+     * @param stateId id of the {@link edu.uwm.capstone.model.DegreeProgramState}
+     * @return true if successful
+     */
+    public User updateCurrentState(Long userId, Long stateId) {
+        User user = userDao.read(userId);
+
+        if (user == null) {
+            throw new EntityNotFoundException("User with ID: " + userId + " not found.");
+        }
+
+        if (stateId != null) {
+            DegreeProgramState dps = degreeProgramStateDao.read(stateId);
+            if (dps == null) {
+                throw new EntityNotFoundException("Degree Program State with ID: " + stateId + " not found.");
+            }
+            user.setCurrentStateId(stateId);
+            user.setCurrentState(dps);
+            setUsersDegreeProgramName(user);
+            userDao.updateState(user);
+        } else {
+            user.setCurrentStateId(null);
+            user.setCurrentState(null);
+        }
+
+        return user;
     }
 
     /**

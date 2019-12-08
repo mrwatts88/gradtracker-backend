@@ -55,3 +55,10 @@ UPDATE users SET
 WHERE
   id = :id;
 
+--STATEMENT updateUserCurrentState
+UPDATE users SET
+  current_state_id = :current_state_id,
+  updated_date = :updated_date
+WHERE
+  id = :id;
+

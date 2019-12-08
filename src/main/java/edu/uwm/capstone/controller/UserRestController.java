@@ -21,6 +21,7 @@ public class UserRestController {
     static final String USER_PATH = "/user/";
     static final String USER_PANTHER_ID_PATH = USER_PATH + "panther_id/";
     static final String USER_EMAIL_PATH = USER_PATH + "email/";
+    static final String USER_STATE_PATH = USER_PATH + "current_state/";
 
     private static final Logger LOG = LoggerFactory.getLogger(UserRestController.class);
 
@@ -115,6 +116,22 @@ public class UserRestController {
     public User update(@PathVariable Long userId, @RequestBody User user, @ApiIgnore HttpServletResponse response) throws IOException {
         user.setId(userId);
         return RestControllerUtil.runCallable(() -> userService.update(user), response, LOG);
+    }
+
+    /**
+     * Updates a {@link User}'s current state by its Id.
+     *
+     * @param userId   id of the {@link User} to update
+     * @param stateId  id of the {@link edu.uwm.capstone.model.DegreeProgramState} to set as the user's current state
+     * @param response {@link HttpServletResponse} that is sent back
+     * @return updated {@link User}
+     * @throws IOException if error response cannot be created
+     */
+    @ApiOperation(value = "Update User by ID")
+    @PutMapping(value = USER_STATE_PATH + "{userId}")
+    @PreAuthorize("hasAuthority('UPDATE_USER')")
+    public User updateCurrentState(@PathVariable Long userId, @RequestParam("stateId") Long stateId, @ApiIgnore HttpServletResponse response) throws IOException {
+        return RestControllerUtil.runCallable(() -> userService.updateCurrentState(userId, stateId), response, LOG);
     }
 
     /**

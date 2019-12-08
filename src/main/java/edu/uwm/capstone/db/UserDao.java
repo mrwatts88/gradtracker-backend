@@ -22,9 +22,14 @@ import java.util.Set;
 public class UserDao extends BaseDao<Long, User> {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserDao.class);
+    private UserDaoRowMapper rowMapper;
 
     @Autowired
     private DegreeProgramStateDao degreeProgramStateDao;
+
+    public void setRowMapper(UserDaoRowMapper rowMapper) {
+        this.rowMapper = rowMapper;
+    }
 
     /**
      * Create a {@link User} object.
@@ -219,6 +224,17 @@ public class UserDao extends BaseDao<Long, User> {
                         getUserRolesBatchArgs(userRolesToDelete, user.getId()));
         } catch (Exception e) {
             throw new DaoException("Failed to update user roles", e);
+        }
+
+        return user;
+    }
+
+    public User updateState(User user) {
+        user.setUpdatedDate(LocalDateTime.now());
+        int result = this.jdbcTemplate.update(sql("updateUserCurrentState"), new MapSqlParameterSource(rowMapper.mapUserCurrentState(user)));
+
+        if (result != 1) {
+            throw new DaoException(String.format("Failed attempt to update user %s - affected %s rows", user.toString(), result));
         }
 
         return user;
