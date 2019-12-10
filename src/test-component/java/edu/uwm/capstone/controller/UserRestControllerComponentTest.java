@@ -123,7 +123,11 @@ public class UserRestControllerComponentTest {
                 .post(UserRestController.USER_PATH)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value()).extract();
+
+        User receivedUser = response.body().as(User.class);
+        usersToCleanup.add(receivedUser);
     }
+
     //todo: maybe create an credential for a different user.
     @Test
     public void createPreconditionFailedId() throws Exception {
@@ -450,6 +454,9 @@ public class UserRestControllerComponentTest {
 
     @Test
     public void readAll() {
+        // workaround - figure out why default user is persisted every time
+        //.forEach(user -> userDao.delete(user.getId()));
+
         List<User> persistedUsers = new ArrayList<>();
         persistedUsers.add(userDao.readByEmail(DEFAULT_USER.getEmail())); // need default user in here
         int randInt = TestDataUtility.randomInt(10, 30);
