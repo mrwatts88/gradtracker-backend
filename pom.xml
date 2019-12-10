@@ -10,19 +10,41 @@
     <packaging>jar</packaging>
 
     <properties>
+        <!-- java properties -->
         <java.version>11</java.version>
+
+        <!-- application properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-boot.version>2.1.1.RELEASE</spring-boot.version>
-        <spring.version>5.1.3.RELEASE</spring.version>
-        <spring-security.version>5.1.2.RELEASE</spring-security.version>
+
+        <!-- plugin versions -->
+        <spring-boot.version>2.2.0.RELEASE</spring-boot.version>
+        <spring.version>5.2.0.RELEASE</spring.version>
         <jackson.version>2.9.7</jackson.version>
+        <swagger.version>2.9.2</swagger.version>
         <surefire-junit.version>2.6</surefire-junit.version>
-        <sonar.projectVersion>1.0</sonar.projectVersion>
-        <sonar.jacoco.reportPaths>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPaths>
+
+        <!-- sonar properties -->
+        <sonar.host.url>https://sonarqube.nmcapstone.com</sonar.host.url>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.projectKey>${env.SONAR_PROJECT_KEY}</sonar.projectKey>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.login>${env.SONARQUBE_USERNAME}</sonar.login>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.password>${env.SONARQUBE_PASSWORD}</sonar.password>
+        <sonar.projectVersion>${project.version}</sonar.projectVersion>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.binaries>target/classes</sonar.binaries>
         <sonar.test.binaries>target/test-classes</sonar.test.binaries>
-        <sonar.exclusions>**/src/test/**/*,**/src/test-component/**/*,**/src/test-integration/**/*</sonar.exclusions>
+        <jacoco.ut.datafile>${project.basedir}/target/jacoco.exec</jacoco.ut.datafile>
+        <jacoco.ut.coverage>${project.basedir}/target/coverage</jacoco.ut.coverage>
+        <jacoco.it.datafile>${project.basedir}/target/jacoco-it.exec</jacoco.it.datafile>
+        <jacoco.it.coverage>${project.basedir}/target/coverage-it</jacoco.it.coverage>
+        <surefire.reportPath>${project.basedir}/target/surefire-reports</surefire.reportPath>
+        <sonar.jacoco.reportPaths>${jacoco.ut.datafile}, ${jacoco.it.datafile}</sonar.jacoco.reportPaths>
+        <sonar.junit.reportPaths>${surefire.reportPath}</sonar.junit.reportPaths>
+        <sonar.exclusions>**/src/test/**/*,**/src/test-component/**/*</sonar.exclusions>
+
+        <!-- project starter class -->
         <start-class>edu.uwm.capstone.Application</start-class>
     </properties>
 
@@ -293,11 +315,6 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.19</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.0.2</version>
                 <configuration>
@@ -329,61 +346,10 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.3</version>
-                <executions>
-                    <execution>
-                        <id>pre-unit-test</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                        <configuration>
-                            <destFile>${sonar.jacoco.reportPaths}</destFile>
-                            <append>true</append>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>post-unit-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
     <profiles>
-        <profile>
-            <id>sonar-local</id>
-            <activation>
-                <property>
-                    <name>!env.SONAR_PROJECT_KEY</name>
-                </property>
-            </activation>
-            <properties>
-                <sonar.projectKey>edu.uwm.capstone:uwm-cs595-nm-backend</sonar.projectKey>
-            </properties>
-        </profile>
-        <profile>
-            <id>sonar-pipeline</id>
-            <activation>
-                <property>
-                    <name>env.SONAR_PROJECT_KEY</name>
-                </property>
-            </activation>
-            <properties>
-                <sonar.host.url>https://sonarqube.nmcapstone.com</sonar.host.url>
-                <sonar.projectKey>${env.SONAR_PROJECT_KEY}</sonar.projectKey>
-                <!--suppress UnresolvedMavenProperty -->
-                <sonar.login>${env.SONARQUBE_USERNAME}</sonar.login>
-                <!--suppress UnresolvedMavenProperty -->
-                <sonar.password>${env.SONARQUBE_PASSWORD}</sonar.password>
-            </properties>
-        </profile>
         <profile>
             <id>default</id>
             <activation>
@@ -407,6 +373,44 @@
                                 <include>**/*UnitTest.java</include>
                             </includes>
                         </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.5</version>
+                        <executions>
+                            <!--
+                                Prepares the property pointing to the JaCoCo runtime agent which
+                                is passed as VM argument when Maven the Surefire plugin is executed.
+                            -->
+                            <execution>
+                                <id>pre-unit-test</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Sets the path to the file which contains the execution data. -->
+                                    <destFile>${jacoco.ut.datafile}</destFile>
+                                </configuration>
+                            </execution>
+                            <!--
+                                Ensures that the code coverage report for unit tests is created after
+                                unit tests have been run.
+                            -->
+                            <execution>
+                                <id>post-unit-test</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Sets the path to the file which contains the execution data. -->
+                                    <dataFile>${jacoco.ut.datafile}</dataFile>
+                                    <!-- Sets the output directory for the code coverage report. -->
+                                    <outputDirectory>${jacoco.ut.coverage}</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
@@ -432,9 +436,46 @@
                             </includes>
                         </configuration>
                     </plugin>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.5</version>
+                        <executions>
+                            <!--
+                                Prepares the property pointing to the JaCoCo runtime agent which
+                                is passed as VM argument when the Surefire plugin is executed.
+                            -->
+                            <execution>
+                                <id>pre-unit-test</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Sets the path to the file which contains the execution data. -->
+                                    <destFile>${jacoco.it.datafile}</destFile>
+                                </configuration>
+                            </execution>
+                            <!--
+                                Ensures that the code coverage report for integration tests after
+                                integration tests have been run.
+                            -->
+                            <execution>
+                                <id>post-unit-test</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Sets the path to the file which contains the execution data. -->
+                                    <dataFile>${jacoco.it.datafile}</dataFile>
+                                    <!-- Sets the output directory for the code coverage report. -->
+                                    <outputDirectory>${jacoco.it.coverage}</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
     </profiles>
-
 </project>

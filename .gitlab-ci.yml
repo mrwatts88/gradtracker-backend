@@ -1,7 +1,7 @@
 stages:
-  - Pre-Build
+  - Test
+  - Post-Test
   - Build
-  - Post-Build
   - Deploy
 
 # region global_settings ######################################################
@@ -14,20 +14,49 @@ cache:
     - target/
 # endregion global_settings ###################################################
 
-# region Pre-Build ############################################################
+# region Test ############################################################
 Unit Tests:
-  stage: Pre-Build
+  stage: Test
   image: $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
+  artifacts:
+    paths:
+      - target/
+    expire_in: 1d
   script:
-    - mvn $MAVEN_CLI_OPTS install
+    - mvn $MAVEN_CLI_OPTS test
+  cache: {}
 
 Component Tests:
-  stage: Pre-Build
+  stage: Test
   image: $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
+  artifacts:
+    paths:
+      - target/
+    expire_in: 1d
   script:
     - mvn $MAVEN_CLI_OPTS -P test-component test
   when: on_success
-# endregion Pre-Build #########################################################
+  cache: {}
+# endregion Test #########################################################
+
+# region Post-Test ###########################################################
+SonarQube Analyze:
+  stage: Post-Test
+  image: $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
+  script:
+    - export SONAR_PROJECT_KEY="$(echo $CI_PROJECT_PATH | tr '/' ':')"
+    - mvn verify sonar:sonar -DskipTests=true
+  only:
+    - master
+    - branches
+  when: on_success
+  allow_failure: true
+  artifacts:
+    paths:
+      - target/
+    expire_in: 1d
+  cache: {}
+# endregion Post-Test ########################################################
 
 # region Build ################################################################
 Build:
@@ -47,18 +76,6 @@ Build:
   after_script:
     - 'echo "Image SHA Tag : $CI_COMMIT_SHA"'
 # endregion Build #############################################################
-
-# region Post-Build ###########################################################
-SonarQube Analyze:
-  stage: Post-Build
-  image: $DOCKER_REGISTRY/general/docker-images/maven-docker:latest
-  script:
-    - export SONAR_PROJECT_KEY="$(echo $CI_PROJECT_PATH | tr '/' ':')"
-    - mvn verify sonar:sonar
-  only:
-    - master
-  when: on_success
-# endregion Post-Build ########################################################
 
 # region Deploy ###############################################################
 Deploy:
