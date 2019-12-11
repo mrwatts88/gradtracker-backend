@@ -12,19 +12,29 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DegreeProgram extends BaseEntity implements Iterable<DegreeProgramState>{
+public class DegreeProgram extends BaseEntity implements Iterable<DegreeProgramState> {
     private String name;
     private String description;
     private List<DegreeProgramState> degreeProgramStates;
 
     @Override
-    public Iterator<DegreeProgramState> iterator() { return degreeProgramStates.iterator(); }
+    public Iterator<DegreeProgramState> iterator() {
+        return degreeProgramStates.iterator();
+    }
+
+    public int size() {
+        return degreeProgramStates.size();
+    }
+
+    public boolean isEmpty() {
+        return degreeProgramStates.isEmpty();
+    }
 
     public DegreeProgramState getDegreeProgramStateById(Long dpStateId) {
         if (dpStateId == null) return null;
 
-        for(DegreeProgramState dps : degreeProgramStates) {
-            if(dpStateId.equals(dps.getId())) return dps;
+        for (DegreeProgramState dps : degreeProgramStates) {
+            if (dpStateId.equals(dps.getId())) return dps;
         }
         return null;
     }
