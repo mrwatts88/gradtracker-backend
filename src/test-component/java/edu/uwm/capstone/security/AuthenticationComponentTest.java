@@ -4,7 +4,10 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uwm.capstone.Application;
+import edu.uwm.capstone.db.RoleDao;
 import edu.uwm.capstone.db.UserDao;
+import edu.uwm.capstone.helper.DefaultEntities;
+import edu.uwm.capstone.model.Role;
 import edu.uwm.capstone.model.User;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -47,9 +50,14 @@ public class AuthenticationComponentTest {
     private UserDao userDao;
 
     @Autowired
+    private RoleDao roleDao;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     private List<User> usersToCleanup = new ArrayList<>();
+
+    private List<Role> rolesToCleanup = new ArrayList<>();
 
     @Before
     public void setUp() {
@@ -63,46 +71,55 @@ public class AuthenticationComponentTest {
     public void teardown() {
         usersToCleanup.forEach(user -> userDao.delete(user.getId()));
         usersToCleanup.clear();
+        rolesToCleanup.forEach(role -> roleDao.delete(role.getId()));
+        rolesToCleanup.clear();
     }
 
-//    @Test
-//    public void defaultUserCanGetToken() {
-//        // exercise authentication endpoint
-//        ExtractableResponse<Response> response = given()
-//                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-//                .body(DEFAULT_USER_CREDENTIALS)
-//                .when()
-//                .post(AUTHENTICATE_URL)
-//                .then().log().ifValidationFails()
-//                .statusCode(HttpStatus.OK.value()).extract();
-//
-//        String token = response.header("Authorization").replaceFirst("Bearer ", "").trim();
-//        assertNotNull(token);
-//
-//        String userJSON = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
-//                .build()
-//                .verify(token.replace(TOKEN_PREFIX, ""))
-//                .getSubject();
-//
-//        assertNotNull(userJSON);
-//
-//        try {
-//            User userSubject = new ObjectMapper().readValue(userJSON, User.class);
-//
-//            assertEquals(DEFAULT_USER.getFirstName(), userSubject.getFirstName());
-//            assertEquals(DEFAULT_USER.getLastName(), userSubject.getLastName());
-//            assertEquals(DEFAULT_USER.getEmail(), userSubject.getEmail());
-//            assertEquals(DEFAULT_USER.getPantherId(), userSubject.getPantherId());
-//
-//            // TODO uncomment these lines once UserDao and RoleDao are done and default role, "Admin" is persisted with all authorities
-////            assertEquals(DEFAULT_USER.getRoleNames(), userSubject.getRoleNames());
-////            assertEquals(Sets.newHashSet(Authorities.values()), userSubject.getAuthorities());
-//
-//        } catch (IOException e) {
-//            fail("Mapping JWT subject to User class failed");
-//            e.getStackTrace();
-//        }
-//    }
+    @Test
+    public void defaultUserCanGetToken() {
+        Role role = DefaultEntities.getDefaultAdminRole();
+        User user = DefaultEntities.getDefaultUser();
+        String credentials = "{ \"email\" : \"" + user.getEmail() + "\", \"password\" : \"" + user.getPassword() + "\" }";
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        roleDao.create(role);
+        userDao.create(user);
+        rolesToCleanup.add(role);
+        usersToCleanup.add(user);
+
+        // exercise authentication endpoint
+        ExtractableResponse<Response> response = given()
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .body(credentials)
+                .when()
+                .post(AUTHENTICATE_URL)
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        String token = response.header("Authorization").replaceFirst("Bearer ", "").trim();
+        assertNotNull(token);
+
+        String userJSON = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
+                .build()
+                .verify(token.replace(TOKEN_PREFIX, ""))
+                .getSubject();
+
+        assertNotNull(userJSON);
+
+        try {
+            User userSubject = new ObjectMapper().readValue(userJSON, User.class);
+
+            assertEquals(user.getFirstName(), userSubject.getFirstName());
+            assertEquals(user.getLastName(), userSubject.getLastName());
+            assertEquals(user.getEmail(), userSubject.getEmail());
+            assertEquals(user.getPantherId(), userSubject.getPantherId());
+            assertEquals(user.getRoleNames(), userSubject.getRoleNames());
+            assertEquals(role.getAuthorities(), userSubject.getAuthorities());
+
+        } catch (IOException e) {
+            fail("Mapping JWT subject to User class failed");
+            e.getStackTrace();
+        }
+    }
 
     @Test
     public void existentUserCanGetToken() {
