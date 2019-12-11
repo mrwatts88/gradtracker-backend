@@ -2,7 +2,10 @@ package edu.uwm.capstone.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uwm.capstone.Application;
+import edu.uwm.capstone.db.RoleDao;
 import edu.uwm.capstone.db.UserDao;
+import edu.uwm.capstone.helper.DefaultEntities;
+import edu.uwm.capstone.model.Role;
 import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.util.TestDataUtility;
 import io.restassured.RestAssured;
@@ -18,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
@@ -25,7 +29,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static edu.uwm.capstone.security.SecurityConstants.*;
+import static edu.uwm.capstone.security.SecurityConstants.AUTHENTICATE_URL;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
@@ -49,7 +53,13 @@ public class UserRestControllerComponentTest {
     private RestTemplate restTemplate;
 
     @Autowired
+    private RoleDao roleDao;
+
+    @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -68,15 +78,28 @@ public class UserRestControllerComponentTest {
 
         // get authorization token if it's null
         if (authorizationToken == null) {
+
+            Role defaultAdminRole = DefaultEntities.getDefaultAdminRole();
+            User defaultUser = DefaultEntities.getDefaultUser();
+
+            String creds = "{ \"email\" : \"" + defaultUser.getEmail() + "\", \"password\" : \"" + defaultUser.getPassword() + "\" }";
+
+            roleDao.create(defaultAdminRole);
+            defaultUser.setPassword(passwordEncoder.encode(defaultUser.getPassword()));
+            userDao.create(defaultUser);
+
             ExtractableResponse<Response> response = given()
                     .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                    .body(DEFAULT_USER_CREDENTIALS)
+                    .body(creds)
                     .when()
                     .post(AUTHENTICATE_URL)
                     .then().log().ifValidationFails()
                     .statusCode(HttpStatus.OK.value()).extract();
 
             authorizationToken = response.header("Authorization");
+
+            userDao.delete(defaultUser.getId());
+            roleDao.delete(defaultAdminRole.getId());
         }
     }
 
@@ -458,7 +481,6 @@ public class UserRestControllerComponentTest {
         //.forEach(user -> userDao.delete(user.getId()));
 
         List<User> persistedUsers = new ArrayList<>();
-        persistedUsers.add(userDao.readByEmail(DEFAULT_USER.getEmail())); // need default user in here
         int randInt = TestDataUtility.randomInt(10, 30);
         for (int i = 0; i < randInt; i++) {
             User user = TestDataUtility.userWithTestValues();
