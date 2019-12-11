@@ -52,7 +52,9 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        if (username == null || !username.equals(email))
+            username = email;
+        return username;
     }
 
     @Override

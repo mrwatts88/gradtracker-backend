@@ -1,7 +1,6 @@
 package edu.uwm.capstone.service;
 
 import edu.uwm.capstone.db.DegreeProgramDao;
-import edu.uwm.capstone.db.DegreeProgramStateDao;
 import edu.uwm.capstone.model.DegreeProgram;
 import edu.uwm.capstone.model.DegreeProgramState;
 import edu.uwm.capstone.service.exception.EntityNotFoundException;
@@ -11,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import javax.swing.text.html.parser.Entity;
-import javax.validation.constraints.AssertFalse;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service("degreeProgramService")
 public class DegreeProgramService {
@@ -21,12 +20,10 @@ public class DegreeProgramService {
     private static final Logger LOG = LoggerFactory.getLogger(DegreeProgramService.class);
 
     private final DegreeProgramDao degreeProgramDao;
-    private final DegreeProgramStateDao degreeProgramStateDao;
 
     @Autowired
-    public DegreeProgramService(DegreeProgramDao degreeProgramDao, DegreeProgramStateDao degreeProgramStateDao) {
+    public DegreeProgramService(DegreeProgramDao degreeProgramDao) {
         this.degreeProgramDao = degreeProgramDao;
-        this.degreeProgramStateDao = degreeProgramStateDao;
     }
 
     public DegreeProgram create(DegreeProgram dp) {
@@ -74,30 +71,27 @@ public class DegreeProgramService {
 
     public void checkValidDegreeProgram(DegreeProgram dp, boolean checkNullId) {
         Assert.notNull(dp, "Degree program cannot be null.");
-        if(checkNullId) {
+        if (checkNullId) {
             Assert.isNull(dp.getId(), "Degree program ID should be null.");
-        }
-        else {
-            // Assert that there is only one initial Degree Program State in the degree program
-            List<DegreeProgramState> programStates = degreeProgramStateDao.readAllStatesByDegreeProgramId(dp.getId());
-            Assert.notEmpty(programStates, "Degree program must have at least one degree program state.");
-            int numInitial = 0;
-            for(DegreeProgramState programState : programStates) {
-                if(programState.isInitial()) {
-                    numInitial++;
-                }
+            for (DegreeProgramState programState : dp) {
+                Assert.isNull(programState.getId(), "Degree program state ID's should be null.");
             }
-            Assert.isTrue(numInitial == 1, "Degree program must have only one initial state.");
         }
+        Assert.isTrue(!dp.isEmpty(), "Degree program must have at least one degree program state.");
+
+        // Assert that there is only one initial Degree Program State in the degree program
+        int numInitial = 0;
+        for (DegreeProgramState programState : dp) {
+            if (programState.isInitial()) {
+                numInitial++;
+            }
+        }
+        Assert.isTrue(numInitial == 1, "Degree program must have one and only one initial state.");
         Assert.notNull(dp.getName(), "Degree program name cannot be null.");
         Assert.notNull(dp.getDescription(), "Degree program description cannot be null.");
 
         // Assert that the Degree Program name is unique
-        List<DegreeProgram> degreePrograms = degreeProgramDao.readAll();
-        for (DegreeProgram program : degreePrograms) {
-            if(program.getId() != dp.getId()) {
-                Assert.isTrue(!(dp.getName().equals(program.getName())), "Degree program names must be unique.");
-            }
-        }
+        Set<String> degreeProgramIds = degreeProgramDao.readAll().stream().map(DegreeProgram::getName).collect(Collectors.toSet());
+        Assert.isTrue(!degreeProgramIds.contains(dp.getName()), "Degree program names must be unique.");
     }
 }
