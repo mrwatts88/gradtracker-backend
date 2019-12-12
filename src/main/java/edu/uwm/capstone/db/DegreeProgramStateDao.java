@@ -61,8 +61,7 @@ public class DegreeProgramStateDao extends BaseDao<Long, DegreeProgramState> {
 
     public List<DegreeProgramState> readAll() {
         LOG.trace("Reading all degree program states.");
-        List<DegreeProgramState> dpStates = jdbcTemplate.query(sql("readAllDegreeProgramStates"), rowMapper);
-        return dpStates;
+        return jdbcTemplate.query(sql("readAllDegreeProgramStates"), rowMapper);
     }
 
     public List<DegreeProgramState> readAllStatesByDegreeProgramId(long degreeProgramId) {

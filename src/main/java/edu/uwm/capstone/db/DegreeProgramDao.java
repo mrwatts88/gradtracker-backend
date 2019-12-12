@@ -2,7 +2,6 @@ package edu.uwm.capstone.db;
 
 import edu.uwm.capstone.model.DegreeProgram;
 import edu.uwm.capstone.model.DegreeProgramState;
-import edu.uwm.capstone.security.Authorities;
 import edu.uwm.capstone.sql.dao.BaseDao;
 import edu.uwm.capstone.sql.dao.BaseRowMapper;
 import edu.uwm.capstone.sql.exception.DaoException;
@@ -17,8 +16,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class DegreeProgramDao extends BaseDao<Long, DegreeProgram> {
 
