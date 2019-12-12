@@ -1,6 +1,7 @@
 package edu.uwm.capstone.db;
 
 import edu.uwm.capstone.UnitTestConfig;
+import edu.uwm.capstone.model.DegreeProgram;
 import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.util.TestDataUtility;
 import org.junit.After;
@@ -27,7 +28,11 @@ public class UserDaoComponentTest {
     @Autowired
     UserDao userDao;
 
+    @Autowired
+    DegreeProgramDao degreeProgramDao;
+
     private List<User> usersToCleanup = new ArrayList<>();
+    private List<DegreeProgram> degreeProgramsToCleanup = new ArrayList<>();
 
     @Before
     public void setUp() {
@@ -44,6 +49,8 @@ public class UserDaoComponentTest {
     public void teardown() {
         usersToCleanup.forEach(user -> userDao.delete(user.getId()));
         usersToCleanup.clear();
+        degreeProgramsToCleanup.forEach(dp -> degreeProgramDao.delete(dp.getId()));
+        degreeProgramsToCleanup.clear();
     }
 
     /**
@@ -252,6 +259,53 @@ public class UserDaoComponentTest {
         updateUser.setId(createUser.getId());
         updateUser.setFirstName(TestDataUtility.randomAlphabetic(2000));
         userDao.update(updateUser);
+    }
+
+    /**
+     * Verify that {@link UserDao#updateState} is working correctly.
+     */
+    @Test
+    public void updateState() {
+        User createUser = TestDataUtility.userWithTestValues();
+        // Create an User
+        userDao.create(createUser);
+
+        // Verify user Id got generated
+        assertNotNull(createUser.getId());
+        usersToCleanup.add(createUser);
+
+        // Create a DegreeProgram
+        DegreeProgram dp = TestDataUtility.randomDegreeProgram(5);
+        degreeProgramDao.create(dp);
+
+        // Verify dp Id got generated
+        assertNotNull(dp.getId());
+        degreeProgramsToCleanup.add(dp);
+
+        // Generate new User object with same Id as createUser object
+        // and new DegreeProgramState => CurrentStateId
+        User updateUser = new User();
+        updateUser.setId(createUser.getId());
+        updateUser.setCurrentState(dp.initialState());
+
+        // Exercise the updateState method
+        userDao.updateState(updateUser);
+
+        // Read updated User from DB
+        User verifyUpdateUser = userDao.read(updateUser.getId());
+        assertNotNull(verifyUpdateUser);
+
+        // Make sure it has same user Id
+        assertEquals(verifyUpdateUser.getId(), createUser.getId());
+
+        // Verify that CurrentState got updated
+        assertEquals(updateUser.getCurrentState(), verifyUpdateUser.getCurrentState());
+
+        // Verify that other fields are in fact intact
+        assertEquals(createUser.getFirstName(), verifyUpdateUser.getFirstName());
+        assertEquals(createUser.getLastName(), verifyUpdateUser.getLastName());
+        assertEquals(createUser.getPantherId(), verifyUpdateUser.getPantherId());
+        assertEquals(createUser.getEmail(), verifyUpdateUser.getEmail());
     }
 
     /**

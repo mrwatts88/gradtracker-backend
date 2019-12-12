@@ -698,6 +698,30 @@ public class TestDataUtility {
         return result;
     }
 
+    public static DegreeProgram randomDegreeProgram(int numStates) {
+        assert 1 <= numStates;
+
+        List<DegreeProgramState> degreeProgramStates = new ArrayList<>();
+        degreeProgramStates.add(randomDegreeProgramState(true));
+        for (int i = 1; i < numStates; i++) {
+            degreeProgramStates.add(randomDegreeProgramState(false));
+        }
+
+        return DegreeProgram.builder()
+                .name(randomAlphabetic(10))
+                .description(randomAlphabetic(50))
+                .degreeProgramStates(degreeProgramStates)
+                .build();
+    }
+
+    public static DegreeProgramState randomDegreeProgramState(boolean isInitial) {
+        return DegreeProgramState.builder()
+                .name(randomAlphabetic(10))
+                .description(randomAlphabetic(50))
+                .initial(isInitial)
+                .build();
+    }
+
     /**
      * Generate a random {@link Boolean}.
      *

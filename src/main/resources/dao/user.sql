@@ -48,16 +48,10 @@ UPDATE users SET
   panther_id = :panther_id,
   email = :email,
   enabled = :enabled,
+  current_state_id = :current_state_id,
   is_account_non_expired = :is_account_non_expired,
   is_account_non_locked = :is_account_non_locked,
   is_credentials_non_expired = :is_credentials_non_expired,
-  updated_date = :updated_date
-WHERE
-  id = :id;
-
---STATEMENT updateUserCurrentState
-UPDATE users SET
-  current_state_id = :current_state_id,
   updated_date = :updated_date
 WHERE
   id = :id;

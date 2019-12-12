@@ -12,6 +12,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -22,14 +23,11 @@ import java.util.Set;
 public class UserDao extends BaseDao<Long, User> {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserDao.class);
-    private UserDaoRowMapper rowMapper;
 
     @Autowired
     private DegreeProgramStateDao degreeProgramStateDao;
 
-    public void setRowMapper(UserDaoRowMapper rowMapper) {
-        this.rowMapper = rowMapper;
-    }
+    private static final String USER_ID_KEY = "user_id";
 
     /**
      * Create a {@link User} object.
@@ -153,7 +151,7 @@ public class UserDao extends BaseDao<Long, User> {
         HashSet<Authorities> authorities = new HashSet<>();
 
         this.jdbcTemplate.query(sql("readRoleAuthoritiesByUserId"),
-                new MapSqlParameterSource("user_id", user.getId()),
+                new MapSqlParameterSource(USER_ID_KEY, user.getId()),
                 (rs) -> {
                     // TODO may not want to hardcode these column names here
                     roleNames.add(rs.getString("name"));
@@ -174,7 +172,7 @@ public class UserDao extends BaseDao<Long, User> {
         int i = 0;
         for (String roleName : roleNames) {
             MapSqlParameterSource src = new MapSqlParameterSource();
-            src.addValue("user_id", userId);
+            src.addValue(USER_ID_KEY, userId);
             src.addValue("role_name", roleName);
             batchArgs[i++] = src;
         }
@@ -229,15 +227,25 @@ public class UserDao extends BaseDao<Long, User> {
         return user;
     }
 
-    public User updateState(User user) {
-        user.setUpdatedDate(LocalDateTime.now());
-        int result = this.jdbcTemplate.update(sql("updateUserCurrentState"), new MapSqlParameterSource(rowMapper.mapUserCurrentState(user)));
+    public User updateState(User userToUpdateState) {
+        Assert.notNull(userToUpdateState, "User cannot be null");
+        Assert.notNull(userToUpdateState.getId(), "User Id cannot be null");
+
+        // Get all fields from existing user from database
+        User existingUser = read(userToUpdateState.getId());
+
+        // update the fields in existing record that are concerned with updateState functionality
+        existingUser.setCurrentState(userToUpdateState.getCurrentState());
+        existingUser.setUpdatedDate(LocalDateTime.now());
+
+        // Update the User object in DB
+        int result = this.jdbcTemplate.update(sql("updateUser"), new MapSqlParameterSource(rowMapper.mapObject(existingUser)));
 
         if (result != 1) {
-            throw new DaoException(String.format("Failed attempt to update user %s - affected %s rows", user.toString(), result));
+            throw new DaoException(String.format("Failed attempt to update user %s - affected %s rows", existingUser.toString(), result));
         }
 
-        return user;
+        return existingUser;
     }
 
     /**
@@ -249,7 +257,7 @@ public class UserDao extends BaseDao<Long, User> {
     @Override
     public void delete(Long userId) {
         LOG.trace("Deleting user {}", userId);
-        this.jdbcTemplate.update(sql("deleteUserRolesByUserId"), new MapSqlParameterSource("user_id", userId));
+        this.jdbcTemplate.update(sql("deleteUserRolesByUserId"), new MapSqlParameterSource(USER_ID_KEY, userId));
         int result = this.jdbcTemplate.update(sql("deleteUser"), new MapSqlParameterSource("id", userId));
         if (result != 1) {
             throw new DaoException(String.format("Failed attempt to delete user %s affected %s rows", userId, result));
