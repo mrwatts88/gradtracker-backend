@@ -77,7 +77,7 @@ public class DegreeProgramService {
                 Assert.isNull(programState.getId(), "Degree program state ID's should be null.");
             }
         }
-        Assert.isTrue(!dp.isEmpty(), "Degree program must have at least one degree program state.");
+        Assert.isTrue(!dp.getDegreeProgramStates().isEmpty(), "Degree program must have at least one degree program state.");
 
         // Assert that there is only one initial Degree Program State in the degree program
         int numInitial = 0;
@@ -91,7 +91,10 @@ public class DegreeProgramService {
         Assert.notNull(dp.getDescription(), "Degree program description cannot be null.");
 
         // Assert that the Degree Program name is unique
-        Set<String> degreeProgramIds = degreeProgramDao.readAll().stream().map(DegreeProgram::getName).collect(Collectors.toSet());
+        Set<String> degreeProgramIds = degreeProgramDao.readAll().stream()
+                .filter(dps -> !dps.getId().equals(dp.getId()))
+                .map(DegreeProgram::getName)
+                .collect(Collectors.toSet());
         Assert.isTrue(!degreeProgramIds.contains(dp.getName()), "Degree program names must be unique.");
     }
 }

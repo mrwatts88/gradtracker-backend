@@ -22,14 +22,6 @@ public class DegreeProgram extends BaseEntity implements Iterable<DegreeProgramS
         return degreeProgramStates.iterator();
     }
 
-    public int size() {
-        return degreeProgramStates.size();
-    }
-
-    public boolean isEmpty() {
-        return degreeProgramStates.isEmpty();
-    }
-
     public DegreeProgramState getDegreeProgramStateById(Long dpStateId) {
         if (dpStateId == null) return null;
 
