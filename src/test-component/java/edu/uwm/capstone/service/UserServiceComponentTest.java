@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import static edu.uwm.capstone.security.SecurityConstants.DEFAULT_USER;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
@@ -196,7 +195,7 @@ public class UserServiceComponentTest {
     @Test
     public void readAll() {
         List<User> persistedUsers = new ArrayList<>();
-        persistedUsers.add(userService.readByEmail(DEFAULT_USER.getEmail())); // need default user in here
+//        persistedUsers.add(userService.readByEmail(DEFAULT_USER.getEmail())); // need default user in here
         int randInt = TestDataUtility.randomInt(1, 2);
         for (int i = 0; i < randInt; i++) {
             User user = TestDataUtility.userWithTestValues();

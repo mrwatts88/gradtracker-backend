@@ -1,14 +1,7 @@
 package edu.uwm.capstone.security;
 
-import edu.uwm.capstone.db.DegreeProgramDao;
-import edu.uwm.capstone.db.RoleDao;
-import edu.uwm.capstone.db.UserDao;
-import edu.uwm.capstone.model.DegreeProgram;
-import edu.uwm.capstone.model.Role;
-import edu.uwm.capstone.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,7 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static edu.uwm.capstone.security.SecurityConstants.*;
+import static edu.uwm.capstone.security.SecurityConstants.AUTHENTICATE_URL;
 
 @Configuration
 @EnableWebSecurity
@@ -58,64 +51,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-
-        PasswordEncoder pe = passwordEncoder();
-
-        persistDefaultRole();
-        persistDefaultUser(pe);
-        persistDefaultDegreeProgram();
-
-        auth.userDetailsService(userDetailsService())
-                .passwordEncoder(pe);
-
-    }
-
-    @Autowired
-    private UserDao userDao;
-
-    @Autowired
-    private RoleDao roleDao;
-
-    @Autowired
-    private DegreeProgramDao DpDao;
-
-    private void persistDefaultUser(PasswordEncoder passwordEncoder) {
-        User defaultUser = userDao.readByEmail(DEFAULT_USER.getEmail());
-
-        if (defaultUser != null) return;
-
-        LOGGER.info("Persisting default user {}", DEFAULT_USER);
-        String rawPassword = DEFAULT_USER.getPassword();
-        DEFAULT_USER.setPassword(passwordEncoder.encode(rawPassword));
-        userDao.create(DEFAULT_USER);
-        DEFAULT_USER.setPassword(rawPassword);
-        DEFAULT_USER.setId(null);
-    }
-
-    private void persistDefaultRole() {
-        Role defaultRole = roleDao.readByName(DEFAULT_ROLE.getName());
-
-        if (defaultRole != null) return;
-
-        LOGGER.info("Persisting default role {}", DEFAULT_ROLE);
-        roleDao.create(DEFAULT_ROLE);
-        DEFAULT_ROLE.setId(null);
-
-        Role studentRole = roleDao.readByName(STUDENT_ROLE.getName());
-
-        if (studentRole != null) return;
-
-        LOGGER.info("Persisting student role {}", STUDENT_ROLE);
-        roleDao.create(STUDENT_ROLE);
-        STUDENT_ROLE.setId(null);
-    }
-
-    private void persistDefaultDegreeProgram() {
-        DegreeProgram dp = DpDao.readByName(DEFAULT_DP.getName());
-
-        if (dp != null) return;
-
-        LOGGER.info("Persisting default degree program {}", DEFAULT_DP);
-        DpDao.create(DEFAULT_DP);
+        auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
     }
 }
