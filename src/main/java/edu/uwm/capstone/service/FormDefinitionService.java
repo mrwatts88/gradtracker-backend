@@ -1,6 +1,5 @@
 package edu.uwm.capstone.service;
 
-import edu.uwm.capstone.db.FormDao;
 import edu.uwm.capstone.db.FormDefinitionDao;
 import edu.uwm.capstone.model.FieldDefinition;
 import edu.uwm.capstone.model.Form;
@@ -86,7 +85,7 @@ public class FormDefinitionService {
             throw new EntityNotFoundException("Could not update form definition " + formDef.getId() + " - record not found.");
         }
         List<Form> resultSet = formService.readAllByFormDefId(formDef.getId());
-        Assert.isTrue(resultSet.size() == 0, "This form definition cannot be updated, forms already exist that " +
+        Assert.isTrue(resultSet.isEmpty(), "This form definition cannot be updated, forms already exist that " +
                 "use its old template!");
 
         HashSet<Long> fieldDefIdsAssociatedWithOldFormDef = formDefinitionInDb.getFieldDefs().stream().map(FieldDefinition::getId).collect(Collectors.toCollection(HashSet::new));
@@ -113,7 +112,7 @@ public class FormDefinitionService {
             throw new EntityNotFoundException("Could not delete form definition " + formDefId + " - record not found.");
         }
         List<Form> resultSet = formService.readAllByFormDefId(formDefId);
-        Assert.isTrue(resultSet.size() == 0, "This form definition cannot be deleted, forms already exist that " +
+        Assert.isTrue(resultSet.isEmpty(), "This form definition cannot be deleted, forms already exist that " +
                 "use its old template!");
 
         formDefinitionDao.delete(formDefId);
