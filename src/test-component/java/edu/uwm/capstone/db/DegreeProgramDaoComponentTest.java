@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -73,6 +74,18 @@ public class DegreeProgramDaoComponentTest {
 
         degreeProgramDao.create(dp);
         assertNotNull(dp.getId());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void createDegreeProgramNull() {
+        degreeProgramDao.create(null);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void createDegreeProgramNonNullId() {
+        DegreeProgram dp = TestDataUtility.degreeProgramWithTestValues(TestDataUtility.randomInt(1, 10));
+        dp.setId(TestDataUtility.randomLong());
+        degreeProgramDao.create(dp);
     }
 
     /**
@@ -139,7 +152,7 @@ public class DegreeProgramDaoComponentTest {
         for(int i = 0; i < randInt; i++) {
             DegreeProgram dp = TestDataUtility.degreeProgramWithTestValues(TestDataUtility.randomInt(1, 10));
             degreeProgramDao.create(dp);
-            degreeProgramsToCleanup.add(dp); // todo: figure out why adding this fails the test due to some SQL constraint
+            degreeProgramsToCleanup.add(dp);
             allPrograms.add(dp);
         }
 
@@ -167,7 +180,6 @@ public class DegreeProgramDaoComponentTest {
         // Update the DegreeProgram
         DegreeProgram dpUpdate = TestDataUtility.degreeProgramWithTestValues(TestDataUtility.randomInt(1, 10));
         dpUpdate.setId(dpCreate.getId());
-        //dpUpdate.setDegreeProgramStates(dpCreate.getDegreeProgramStates());
         degreeProgramDao.update(dpUpdate);
 
         DegreeProgram dpVerify = degreeProgramDao.read(dpUpdate.getId());
@@ -176,7 +188,34 @@ public class DegreeProgramDaoComponentTest {
         HashMap<Long, DegreeProgramState> map = new HashMap<>();
         dpUpdate.forEach((dpState) -> map.put(dpState.getId(), dpState));
 
-        for(DegreeProgramState state : dpVerify.getDegreeProgramStates()) {
+        for (DegreeProgramState state : dpVerify.getDegreeProgramStates()) {
+            assertEquals(map.get(state.getId()).getName(), state.getName());
+        }
+    }
+
+    @Test
+    public void updateExistingState() {
+        // Create a DegreeProgram
+        DegreeProgram dpCreate = TestDataUtility.degreeProgramWithTestValues(10);
+        degreeProgramsToCleanup.add(dpCreate);
+        degreeProgramDao.create(dpCreate);
+
+        // Update the DegreeProgram
+        DegreeProgram dpUpdate = TestDataUtility.degreeProgramWithTestValues(8);
+        dpUpdate.setId(dpCreate.getId());
+        Iterator<DegreeProgramState> iter = dpCreate.iterator();
+        for (DegreeProgramState dps : dpUpdate) {
+            dps.setId(iter.next().getId());
+        }
+        degreeProgramDao.update(dpUpdate);
+
+        DegreeProgram dpVerify = degreeProgramDao.read(dpUpdate.getId());
+        assertNotNull(dpVerify);
+
+        HashMap<Long, DegreeProgramState> map = new HashMap<>();
+        dpUpdate.forEach((dpState) -> map.put(dpState.getId(), dpState));
+
+        for (DegreeProgramState state : dpVerify.getDegreeProgramStates()) {
             assertEquals(map.get(state.getId()).getName(), state.getName());
         }
     }
