@@ -13,8 +13,7 @@ INSERT INTO degree_programs (
 
 --STATEMENT readAllDegreePrograms
 SELECT *
-FROM degree_programs
-ORDER BY name;
+FROM degree_programs;
 
 --STATEMENT readDegreeProgramById
 SELECT *
@@ -34,5 +33,5 @@ UPDATE degree_programs SET
 WHERE id = :id;
 
 --STATEMENT deleteDegreeProgramById
-DELETE FROM degree_programs --TODO: add logic to handle delete in degree_program_states, users, and possibly transitions
+DELETE FROM degree_programs
 WHERE id = :id;

@@ -2,10 +2,14 @@ package edu.uwm.capstone.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uwm.capstone.Application;
-import edu.uwm.capstone.db.*;
+import edu.uwm.capstone.db.DegreeProgramDao;
+import edu.uwm.capstone.db.RoleDao;
+import edu.uwm.capstone.db.UserDao;
 import edu.uwm.capstone.helper.DefaultEntities;
-import edu.uwm.capstone.model.*;
-import edu.uwm.capstone.service.DegreeProgramService;
+import edu.uwm.capstone.model.DegreeProgram;
+import edu.uwm.capstone.model.DegreeProgramState;
+import edu.uwm.capstone.model.Role;
+import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.util.TestDataUtility;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
@@ -25,8 +29,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static edu.uwm.capstone.security.SecurityConstants.AUTHENTICATE_URL;
@@ -62,17 +66,9 @@ public class DegreeProgramControllerComponentTest {
     @Autowired
     private DegreeProgramDao dpDao;
 
-    @Autowired
-    private DegreeProgramStateDao stateDao;
-
     private ObjectMapper mapper = new ObjectMapper();
 
     private List<DegreeProgram> degreeProgramsToClean = new ArrayList<>();
-
-    private List<DegreeProgramState> defaultState = new ArrayList<>();
-
-    private List<User> usersToCleanup = new ArrayList<>();
-
 
     private String authorizationToken;
 
@@ -84,7 +80,6 @@ public class DegreeProgramControllerComponentTest {
 
         RestAssured.port = port;
         RestAssured.basePath = basePath;
-        defaultState.add(new DegreeProgramState(null, "Test state", "Testing", true));
 
         // get authorization token if it's null
         if (authorizationToken == null) {
@@ -116,11 +111,7 @@ public class DegreeProgramControllerComponentTest {
     @After
     public void teardown() {
         degreeProgramsToClean.forEach(degreeProg -> dpDao.delete(degreeProg.getId()));
-
         degreeProgramsToClean.clear();
-        defaultState.clear();
-        usersToCleanup.forEach(user -> userDao.delete(user.getId()));
-        usersToCleanup.clear();
     }
 
     /**
@@ -128,104 +119,90 @@ public class DegreeProgramControllerComponentTest {
      */
     @Test
     public void create() throws Exception {
-        DegreeProgram testProg = new DegreeProgram("Program for test!", "Testing data", defaultState);
+        DegreeProgram createDegreeProgram = TestDataUtility.randomDegreeProgram(TestDataUtility.randomInt(1, 10));
 
         // exercise endpoint
         ExtractableResponse<Response> response = given()
                 .header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .body(mapper.writeValueAsString(testProg))
+                .body(mapper.writeValueAsString(createDegreeProgram))
                 .when()
                 .post(DegreeProgramRestController.DEGREE_PROGRAM_PATH)
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value()).extract();
 
         DegreeProgram receivedProgram = response.body().as(DegreeProgram.class);
-
-        //if Id is populated - record created successfully
-        assertNotNull(receivedProgram);
-        assertNotNull(receivedProgram.getId());
-        assertNotNull(receivedProgram.getCreatedDate());
-        assertEquals(dpDao.read(receivedProgram.getId()), receivedProgram);
-        assertEquals(dpDao.read(receivedProgram.getId()).getName(), receivedProgram.getName());
-        assertEquals(dpDao.read(receivedProgram.getId()).getDescription(), receivedProgram.getDescription());
-        List<DegreeProgramState> states = receivedProgram.getDegreeProgramStates();
-        assertNotNull(states);
-        boolean initialStateFound = false;
-        for (DegreeProgramState ds: states){
-            if (ds.isInitial()){
-                initialStateFound = true;
-                break;
-            }
-        }
-        assertTrue(initialStateFound);
         degreeProgramsToClean.add(receivedProgram);
+
+        // verify dp was created
+        DegreeProgram verifyProgram = dpDao.read(receivedProgram.getId());
+        assertEquals(receivedProgram, verifyProgram);
+
+        // check name and description
+        assertEquals(createDegreeProgram.getName(), verifyProgram.getName());
+        assertEquals(createDegreeProgram.getDescription(), verifyProgram.getDescription());
+
+        // check degree program states
+        assertEquals(createDegreeProgram.getDegreeProgramStates().size(), verifyProgram.getDegreeProgramStates().size());
+        Iterator<DegreeProgramState> createDPIter = createDegreeProgram.iterator();
+        Iterator<DegreeProgramState> verifyDPIter = verifyProgram.iterator();
+
+        while (createDPIter.hasNext()) {
+            DegreeProgramState cdps = createDPIter.next();
+            DegreeProgramState vdps = verifyDPIter.next();
+
+            assertEquals(cdps.getName(), vdps.getName());
+            assertEquals(cdps.getDescription(), vdps.getDescription());
+            assertEquals(cdps.isInitial(), vdps.isInitial());
+        }
     }
 
     /**
      * Verify that {@link DegreeProgramRestController#readById} is working correctly.
      */
     @Test
-    public void readById() throws Exception {
-        DegreeProgram testProg = new DegreeProgram("Program for test!", "Testing data", defaultState);
-        dpDao.create(testProg);
+    public void readById() {
+        DegreeProgram createDegreeProgram = TestDataUtility.randomDegreeProgram(TestDataUtility.randomInt(1, 10));
+        dpDao.create(createDegreeProgram);
+        degreeProgramsToClean.add(createDegreeProgram);
+
 
         // exercise endpoint
         ExtractableResponse<Response> response = given()
                 .header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .body(mapper.writeValueAsString(testProg))
                 .when()
-                .get(DegreeProgramRestController.DEGREE_PROGRAM_PATH+testProg.getId())
+                .get(DegreeProgramRestController.DEGREE_PROGRAM_PATH + createDegreeProgram.getId())
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value()).extract();
 
         DegreeProgram receivedProgram = response.body().as(DegreeProgram.class);
 
-        //if Id is populated - record created successfully
         assertNotNull(receivedProgram);
         assertNotNull(receivedProgram.getId());
         assertNotNull(receivedProgram.getCreatedDate());
-        assertEquals(dpDao.read(receivedProgram.getId()).getId(), testProg.getId());
-      assertEquals(dpDao.read(receivedProgram.getId()).getName(), testProg.getName());
-        assertEquals(dpDao.read(receivedProgram.getId()).getDescription(), testProg.getDescription());
-        List<DegreeProgramState> states = receivedProgram.getDegreeProgramStates();
-        assertNotNull(states);
-        boolean initialStateFound = false;
-        for (DegreeProgramState ds: states){
-            if (ds.isInitial()){
-                initialStateFound = true;
-                break;
-            }
-        }
-        assertTrue(initialStateFound);
-        degreeProgramsToClean.add(receivedProgram);
+        assertNotNull(receivedProgram.getDegreeProgramStates());
+
+        assertEquals(createDegreeProgram.getName(), receivedProgram.getName());
+        assertEquals(createDegreeProgram.getDescription(), receivedProgram.getDescription());
+        assertNotNull(createDegreeProgram.getDegreeProgramStates());
+        assertTrue(receivedProgram.getDegreeProgramStates().containsAll(createDegreeProgram.getDegreeProgramStates()));
+        assertNotNull(createDegreeProgram.initialState());
     }
 
     /**
      * Verify that {@link DegreeProgramRestController#readAll} is working correctly.
      */
     @Test
-    public void readAll() throws Exception {
+    public void readAll() {
         List<DegreeProgram> persistedDegreePrograms = new ArrayList<>();
-        DegreeProgram testProg = new DegreeProgram("Program for test!", "Testing data", defaultState);
-        dpDao.create(testProg);
-
-        List<DegreeProgramState> nextStates = new ArrayList<>();
-        nextStates.add(new DegreeProgramState(null, "Another state!", "Testing more!", true));
-
-        DegreeProgram testProg2 = new DegreeProgram("Next Program!", "Another Test!", nextStates);
-        dpDao.create(testProg2);
-
-        List<DegreeProgramState> lastStates = new ArrayList<>();
-        lastStates.add(new DegreeProgramState(null, "Last state!", "Testing final!", true));
-
-        DegreeProgram testProg3 = new DegreeProgram("Final Program!", "Testing final!", lastStates);
-        dpDao.create(testProg3);
-
-        persistedDegreePrograms.add(testProg);
-        persistedDegreePrograms.add(testProg2);
-        persistedDegreePrograms.add(testProg3);
+        int randInt = TestDataUtility.randomInt(10, 30);
+        for (int i = 0; i < randInt; i++) {
+            DegreeProgram degreeProgram = TestDataUtility.randomDegreeProgram(TestDataUtility.randomInt(1, 10));
+            dpDao.create(degreeProgram);
+            degreeProgramsToClean.add(degreeProgram);
+            persistedDegreePrograms.add(degreeProgram);
+        }
 
         // exercise endpoint
         ExtractableResponse<Response> response = given()
@@ -236,15 +213,7 @@ public class DegreeProgramControllerComponentTest {
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value()).extract();
 
-        List<DegreeProgram> returnedList = response.body().jsonPath().getList(".", DegreeProgram.class);
-        boolean allContained = true;
-
-        for (DegreeProgram ds: returnedList) {
-            if (!persistedDegreePrograms.contains(ds)) allContained = false;
-            //degreeProgramsToClean.add(ds); Call doesn't work here for some reason?
-        }
-
-        assertTrue(allContained);
+        assertEquals(persistedDegreePrograms, response.body().jsonPath().getList(".", DegreeProgram.class));
     }
 
     /**
@@ -252,10 +221,11 @@ public class DegreeProgramControllerComponentTest {
      */
     @Test
     public void updateById() throws Exception {
-        DegreeProgram testProg = new DegreeProgram("Program for test!", "Testing data", defaultState);
-        dpDao.create(testProg);
+        DegreeProgram createDegreeProgram = TestDataUtility.randomDegreeProgram(TestDataUtility.randomInt(1, 10));
+        dpDao.create(createDegreeProgram);
+        degreeProgramsToClean.add(createDegreeProgram);
 
-        DegreeProgram dpToUpdate = TestDataUtility.randomDegreeProgram(1);
+        DegreeProgram dpToUpdate = TestDataUtility.randomDegreeProgram(TestDataUtility.randomInt(1, 10));
 
         // exercise endpoint
         ExtractableResponse<Response> response = given()
@@ -263,45 +233,49 @@ public class DegreeProgramControllerComponentTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .body(mapper.writeValueAsString(dpToUpdate))
                 .when()
-                .put(DegreeProgramRestController.DEGREE_PROGRAM_PATH+testProg.getId())
+                .put(DegreeProgramRestController.DEGREE_PROGRAM_PATH + createDegreeProgram.getId())
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value()).extract();
 
         DegreeProgram receivedProgram = response.body().as(DegreeProgram.class);
 
-        //if Id is populated - record created successfully
-        assertNotNull(receivedProgram);
-        assertNotNull(receivedProgram.getId());
-        assertNotNull(receivedProgram.getCreatedDate());
-        assertNotEquals(testProg, receivedProgram);
-        List<DegreeProgramState> states = receivedProgram.getDegreeProgramStates();
-        assertNotNull(states);
-        boolean initialStateFound = false;
-        for (DegreeProgramState ds: states){
-            if (ds.isInitial()){
-                initialStateFound = true;
-                break;
-            }
+        // verify dp was updated
+        DegreeProgram verifyProgram = dpDao.read(createDegreeProgram.getId());
+        assertEquals(receivedProgram, verifyProgram);
+
+        // check name and description
+        assertEquals(dpToUpdate.getName(), verifyProgram.getName());
+        assertEquals(dpToUpdate.getDescription(), verifyProgram.getDescription());
+
+        // check degree program states
+        assertEquals(dpToUpdate.getDegreeProgramStates().size(), verifyProgram.getDegreeProgramStates().size());
+        Iterator<DegreeProgramState> updateDPIter = dpToUpdate.iterator();
+        Iterator<DegreeProgramState> verifyDPIter = verifyProgram.iterator();
+
+        while (updateDPIter.hasNext()) {
+            DegreeProgramState udps = updateDPIter.next();
+            DegreeProgramState vdps = verifyDPIter.next();
+
+            assertEquals(udps.getName(), vdps.getName());
+            assertEquals(udps.getDescription(), vdps.getDescription());
+            assertEquals(udps.isInitial(), vdps.isInitial());
         }
-        assertTrue(initialStateFound);
-        degreeProgramsToClean.add(receivedProgram);
     }
 
     /**
      * Verify that {@link DegreeProgramRestController#deleteById} is working correctly.
      */
     @Test
-    public void deleteById() throws Exception {
-        DegreeProgram testProg = new DegreeProgram("Program for test!", "Testing data", defaultState);
-        dpDao.create(testProg);
+    public void deleteById() {
+        DegreeProgram degreeProgram = TestDataUtility.randomDegreeProgram(5);
+        dpDao.create(degreeProgram);
 
         // exercise endpoint
         ExtractableResponse<Response> response = given()
                 .header(new Header("Authorization", authorizationToken))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .body(mapper.writeValueAsString(testProg))
                 .when()
-                .delete(DegreeProgramRestController.DEGREE_PROGRAM_PATH+testProg.getId())
+                .delete(DegreeProgramRestController.DEGREE_PROGRAM_PATH + degreeProgram.getId())
                 .then().log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value()).extract();
     }
