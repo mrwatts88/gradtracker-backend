@@ -18,45 +18,6 @@ public class TestDataUtility {
     }
 
     /**
-     * Generate a {@link DegreeProgram} object that is loaded with random values for testing purposes.
-     * @return
-     */
-    public static DegreeProgram degreeProgramWithTestValues() {
-        DegreeProgram dp = new DegreeProgram();
-        dp.setName(randomAlphabetic(randomInt(10, 25)));
-        dp.setDescription(randomAlphabetic(randomInt(10, 25)));
-
-        ArrayList<DegreeProgramState> dpStates = new ArrayList<>();
-        dpStates.add(degreeProgramStateWithTestValues(dp, true));
-
-        int j = randomInt(0, 20);
-        for(int i = 0; i < j; i++)
-        {
-            dpStates.add(degreeProgramStateWithTestValues(dp, false));
-        }
-
-        dp.setDegreeProgramStates(dpStates);
-        return dp;
-    }
-
-    /**
-     * Generate a {@link DegreeProgramState} object that is loaded with random values for testing purposes.
-     * @param dp - DegreeProgram to which the DegreeProgramState belongs.
-     * @param isInitial - boolean value indicating whether the DegreeProgramState is the initial state.
-     * @return
-     */
-    public static DegreeProgramState degreeProgramStateWithTestValues(DegreeProgram dp, boolean isInitial) {
-        return DegreeProgramState.builder()
-                .name(randomAlphabetic(randomInt(10, 25)))
-                .description(randomAlphabetic(randomInt(10,25)))
-                .initial(isInitial)
-                .degreeProgramId(dp.getId())
-                .build();
-    }
-
-
-
-    /**
      * Generate a {@link User} object that is fully loaded with random values for testing purposes.
      *
      * @return {@link User}
@@ -737,7 +698,7 @@ public class TestDataUtility {
         return result;
     }
 
-    public static DegreeProgram randomDegreeProgram(int numStates) {
+    public static DegreeProgram degreeProgramWithTestValues(int numStates) {
         assert 1 <= numStates;
 
         List<DegreeProgramState> degreeProgramStates = new ArrayList<>();

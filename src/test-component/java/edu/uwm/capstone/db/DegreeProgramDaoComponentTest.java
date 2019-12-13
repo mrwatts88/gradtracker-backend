@@ -1,7 +1,8 @@
 package edu.uwm.capstone.db;
 
 import edu.uwm.capstone.UnitTestConfig;
-import edu.uwm.capstone.model.*;
+import edu.uwm.capstone.model.DegreeProgram;
+import edu.uwm.capstone.model.DegreeProgramState;
 import edu.uwm.capstone.util.TestDataUtility;
 import org.junit.After;
 import org.junit.Before;
@@ -16,7 +17,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = UnitTestConfig.class)
@@ -48,7 +50,6 @@ public class DegreeProgramDaoComponentTest {
         assertNotNull(degreeProgramStateDao);
         assertNotNull(degreeProgramStateDao.sql("createDegreeProgramState"));
         assertNotNull(degreeProgramStateDao.sql("readAllDegreeProgramStates"));
-        assertNotNull(degreeProgramStateDao.sql("readAllDegreeProgramStatesWithDegreePrograms"));
         assertNotNull(degreeProgramStateDao.sql("readDegreeProgramStateById"));
         assertNotNull(degreeProgramStateDao.sql("readDegreeProgramStatesByDegreeProgramId"));
         assertNotNull(degreeProgramStateDao.sql("readDegreeProgramStatesIdsByDegreeProgramId"));
@@ -58,7 +59,6 @@ public class DegreeProgramDaoComponentTest {
 
     @After
     public void teardown() {
-
         degreeProgramsToCleanup.forEach(degreeProgram -> degreeProgramDao.delete(degreeProgram.getId()));
         degreeProgramsToCleanup.clear();
     }
@@ -68,7 +68,7 @@ public class DegreeProgramDaoComponentTest {
      */
     @Test
     public void create() {
-        DegreeProgram dp = TestDataUtility.degreeProgramWithTestValues();
+        DegreeProgram dp = TestDataUtility.degreeProgramWithTestValues(TestDataUtility.randomInt(1, 10));
         degreeProgramsToCleanup.add(dp);
 
         degreeProgramDao.create(dp);
@@ -81,7 +81,7 @@ public class DegreeProgramDaoComponentTest {
      */
     @Test(expected = RuntimeException.class)
     public void createDegreeProgramColumnNameTooLong() {
-        DegreeProgram dp = TestDataUtility.degreeProgramWithTestValues();
+        DegreeProgram dp = TestDataUtility.degreeProgramWithTestValues(TestDataUtility.randomInt(1, 10));
         dp.setName(TestDataUtility.randomAlphabetic(2000));
 
         degreeProgramDao.create(dp);
@@ -89,7 +89,7 @@ public class DegreeProgramDaoComponentTest {
 
     @Test
     public void read() {
-        DegreeProgram dpCreate = TestDataUtility.degreeProgramWithTestValues();
+        DegreeProgram dpCreate = TestDataUtility.degreeProgramWithTestValues(TestDataUtility.randomInt(1, 10));
         degreeProgramsToCleanup.add(dpCreate);
         degreeProgramDao.create(dpCreate);
         assertNotNull(dpCreate.getId());
@@ -111,7 +111,7 @@ public class DegreeProgramDaoComponentTest {
 
     @Test
     public void readByName() {
-        DegreeProgram dpCreate = TestDataUtility.degreeProgramWithTestValues();
+        DegreeProgram dpCreate = TestDataUtility.degreeProgramWithTestValues(TestDataUtility.randomInt(1, 10));
         degreeProgramsToCleanup.add(dpCreate);
         degreeProgramDao.create(dpCreate);
 
@@ -137,11 +137,9 @@ public class DegreeProgramDaoComponentTest {
         List<DegreeProgram> allPrograms = new ArrayList<>();
         int randInt = TestDataUtility.randomInt(10, 30);
         for(int i = 0; i < randInt; i++) {
-
-            DegreeProgram dp = TestDataUtility.degreeProgramWithTestValues();
-            //degreeProgramsToCleanup.add(dp); // todo: figure out why adding this fails the test due to some SQL constraint
-
+            DegreeProgram dp = TestDataUtility.degreeProgramWithTestValues(TestDataUtility.randomInt(1, 10));
             degreeProgramDao.create(dp);
+            degreeProgramsToCleanup.add(dp); // todo: figure out why adding this fails the test due to some SQL constraint
             allPrograms.add(dp);
         }
 
@@ -162,12 +160,12 @@ public class DegreeProgramDaoComponentTest {
     @Test
     public void update() {
         // Create a DegreeProgram
-        DegreeProgram dpCreate = TestDataUtility.degreeProgramWithTestValues();
+        DegreeProgram dpCreate = TestDataUtility.degreeProgramWithTestValues(TestDataUtility.randomInt(1, 10));
         degreeProgramsToCleanup.add(dpCreate);
         degreeProgramDao.create(dpCreate);
 
         // Update the DegreeProgram
-        DegreeProgram dpUpdate = TestDataUtility.degreeProgramWithTestValues();
+        DegreeProgram dpUpdate = TestDataUtility.degreeProgramWithTestValues(TestDataUtility.randomInt(1, 10));
         dpUpdate.setId(dpCreate.getId());
         //dpUpdate.setDegreeProgramStates(dpCreate.getDegreeProgramStates());
         degreeProgramDao.update(dpUpdate);
@@ -185,7 +183,7 @@ public class DegreeProgramDaoComponentTest {
 
     @Test
     public void delete() {
-        DegreeProgram dpCreate = TestDataUtility.degreeProgramWithTestValues();
+        DegreeProgram dpCreate = TestDataUtility.degreeProgramWithTestValues(TestDataUtility.randomInt(1, 10));
         degreeProgramDao.create(dpCreate);
         assertNotNull(dpCreate.getId());
 
