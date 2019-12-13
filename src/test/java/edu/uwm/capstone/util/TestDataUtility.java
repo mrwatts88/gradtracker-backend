@@ -698,7 +698,7 @@ public class TestDataUtility {
         return result;
     }
 
-    public static DegreeProgram randomDegreeProgram(int numStates) {
+    public static DegreeProgram degreeProgramWithTestValues(int numStates) {
         assert 1 <= numStates;
 
         List<DegreeProgramState> degreeProgramStates = new ArrayList<>();

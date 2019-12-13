@@ -275,7 +275,7 @@ public class UserDaoComponentTest {
         usersToCleanup.add(createUser);
 
         // Create a DegreeProgram
-        DegreeProgram dp = TestDataUtility.randomDegreeProgram(5);
+        DegreeProgram dp = TestDataUtility.degreeProgramWithTestValues(5);
         degreeProgramDao.create(dp);
 
         // Verify dp Id got generated

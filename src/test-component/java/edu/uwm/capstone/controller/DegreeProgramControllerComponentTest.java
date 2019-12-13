@@ -119,7 +119,7 @@ public class DegreeProgramControllerComponentTest {
      */
     @Test
     public void create() throws Exception {
-        DegreeProgram createDegreeProgram = TestDataUtility.randomDegreeProgram(TestDataUtility.randomInt(1, 10));
+        DegreeProgram createDegreeProgram = TestDataUtility.degreeProgramWithTestValues(TestDataUtility.randomInt(1, 10));
 
         // exercise endpoint
         ExtractableResponse<Response> response = given()
@@ -162,7 +162,7 @@ public class DegreeProgramControllerComponentTest {
      */
     @Test
     public void readById() {
-        DegreeProgram createDegreeProgram = TestDataUtility.randomDegreeProgram(TestDataUtility.randomInt(1, 10));
+        DegreeProgram createDegreeProgram = TestDataUtility.degreeProgramWithTestValues(TestDataUtility.randomInt(1, 10));
         dpDao.create(createDegreeProgram);
         degreeProgramsToClean.add(createDegreeProgram);
 
@@ -198,7 +198,7 @@ public class DegreeProgramControllerComponentTest {
         List<DegreeProgram> persistedDegreePrograms = new ArrayList<>();
         int randInt = TestDataUtility.randomInt(10, 30);
         for (int i = 0; i < randInt; i++) {
-            DegreeProgram degreeProgram = TestDataUtility.randomDegreeProgram(TestDataUtility.randomInt(1, 10));
+            DegreeProgram degreeProgram = TestDataUtility.degreeProgramWithTestValues(TestDataUtility.randomInt(1, 10));
             dpDao.create(degreeProgram);
             degreeProgramsToClean.add(degreeProgram);
             persistedDegreePrograms.add(degreeProgram);
@@ -221,11 +221,11 @@ public class DegreeProgramControllerComponentTest {
      */
     @Test
     public void updateById() throws Exception {
-        DegreeProgram createDegreeProgram = TestDataUtility.randomDegreeProgram(TestDataUtility.randomInt(1, 10));
+        DegreeProgram createDegreeProgram = TestDataUtility.degreeProgramWithTestValues(TestDataUtility.randomInt(1, 10));
         dpDao.create(createDegreeProgram);
         degreeProgramsToClean.add(createDegreeProgram);
 
-        DegreeProgram dpToUpdate = TestDataUtility.randomDegreeProgram(TestDataUtility.randomInt(1, 10));
+        DegreeProgram dpToUpdate = TestDataUtility.degreeProgramWithTestValues(TestDataUtility.randomInt(1, 10));
 
         // exercise endpoint
         ExtractableResponse<Response> response = given()
@@ -267,7 +267,7 @@ public class DegreeProgramControllerComponentTest {
      */
     @Test
     public void deleteById() {
-        DegreeProgram degreeProgram = TestDataUtility.randomDegreeProgram(5);
+        DegreeProgram degreeProgram = TestDataUtility.degreeProgramWithTestValues(5);
         dpDao.create(degreeProgram);
 
         // exercise endpoint

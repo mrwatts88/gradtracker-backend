@@ -10,10 +10,12 @@ public class FormTest {
     @Test
     public void testFieldLength(){
         Form obj = new Form();
-        obj.setFields(new ArrayList<Field>());
+        obj.setFields(new ArrayList<>());
         Assert.assertEquals(0, obj.size());
 
-        obj.setFields(new ArrayList<Field>(){{add(new Field());}});
+        obj.setFields(new ArrayList<>() {{
+            add(new Field());
+        }});
         Assert.assertEquals(1, obj.size());
     }
 }
