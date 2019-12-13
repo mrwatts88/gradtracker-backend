@@ -130,10 +130,13 @@ public class DegreeProgramDao extends BaseDao<Long, DegreeProgram> {
 
     @Override
     public void delete(Long id) {
+        if (id == null) {
+            throw new DaoException("When deleting a degree program the id should be null");
+        }
         LOG.trace("Deleting degree program {}", id);
 
         List<DegreeProgramState> dpStates = degreeProgramStateDao.readAllStatesByDegreeProgramId(id);
-        for(DegreeProgramState degreeProgramState : dpStates) {
+        for (DegreeProgramState degreeProgramState : dpStates) {
             degreeProgramStateDao.delete(degreeProgramState.getId());
         }
 
