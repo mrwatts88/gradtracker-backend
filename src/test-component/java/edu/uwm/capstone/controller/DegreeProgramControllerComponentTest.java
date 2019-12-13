@@ -247,5 +247,64 @@ public class DegreeProgramControllerComponentTest {
         assertTrue(allContained);
     }
 
+    /**
+     * Verify that {@link DegreeProgramRestController#update} is working correctly.
+     */
+    @Test
+    public void updateById() throws Exception {
+        DegreeProgram testProg = new DegreeProgram("Program for test!", "Testing data", defaultState);
+        dpDao.create(testProg);
+
+        DegreeProgram dpToUpdate = TestDataUtility.randomDegreeProgram(1);
+
+        // exercise endpoint
+        ExtractableResponse<Response> response = given()
+                .header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .body(mapper.writeValueAsString(dpToUpdate))
+                .when()
+                .put(DegreeProgramRestController.DEGREE_PROGRAM_PATH+testProg.getId())
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        DegreeProgram receivedProgram = response.body().as(DegreeProgram.class);
+
+        //if Id is populated - record created successfully
+        assertNotNull(receivedProgram);
+        assertNotNull(receivedProgram.getId());
+        assertNotNull(receivedProgram.getCreatedDate());
+        assertNotEquals(testProg, receivedProgram);
+        List<DegreeProgramState> states = receivedProgram.getDegreeProgramStates();
+        assertNotNull(states);
+        boolean initialStateFound = false;
+        for (DegreeProgramState ds: states){
+            if (ds.isInitial()){
+                initialStateFound = true;
+                break;
+            }
+        }
+        assertTrue(initialStateFound);
+        degreeProgramsToClean.add(receivedProgram);
+    }
+
+    /**
+     * Verify that {@link DegreeProgramRestController#deleteById} is working correctly.
+     */
+    @Test
+    public void deleteById() throws Exception {
+        DegreeProgram testProg = new DegreeProgram("Program for test!", "Testing data", defaultState);
+        dpDao.create(testProg);
+
+        // exercise endpoint
+        ExtractableResponse<Response> response = given()
+                .header(new Header("Authorization", authorizationToken))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .body(mapper.writeValueAsString(testProg))
+                .when()
+                .delete(DegreeProgramRestController.DEGREE_PROGRAM_PATH+testProg.getId())
+                .then().log().ifValidationFails()
+                .statusCode(HttpStatus.OK.value()).extract();
+    }
+
 }
 
