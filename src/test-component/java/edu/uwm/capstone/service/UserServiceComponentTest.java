@@ -1,6 +1,9 @@
 package edu.uwm.capstone.service;
 
 import edu.uwm.capstone.Application;
+import edu.uwm.capstone.db.DegreeProgramDao;
+import edu.uwm.capstone.db.UserDao;
+import edu.uwm.capstone.model.DegreeProgram;
 import edu.uwm.capstone.model.User;
 import edu.uwm.capstone.util.TestDataUtility;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -26,7 +29,11 @@ public class UserServiceComponentTest {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    DegreeProgramDao degreeProgramDao;
+
     private List<User> usersToCleanup = new ArrayList<>();
+    private List<DegreeProgram> degreeProgramsToCleanup = new ArrayList<>();
 
     @Before
     public void setUp() {
@@ -37,6 +44,8 @@ public class UserServiceComponentTest {
     public void teardown() {
         usersToCleanup.forEach(user -> userService.delete(user.getId()));
         usersToCleanup.clear();
+        degreeProgramsToCleanup.forEach(dp -> degreeProgramDao.delete(dp.getId()));
+        degreeProgramsToCleanup.clear();
     }
 
     /**
@@ -248,6 +257,47 @@ public class UserServiceComponentTest {
         assertNotEquals(verifyCreateUser.getLastName(), verifyUpdateUser.getLastName());
         assertNotEquals(verifyCreateUser.getPantherId(), verifyUpdateUser.getPantherId());
         assertNotEquals(verifyCreateUser.getEmail(), verifyUpdateUser.getEmail());
+    }
+
+    /**
+     * Verify that {@link UserDao#updateState} is working correctly.
+     */
+    @Test
+    public void updateState() {
+        User createUser = TestDataUtility.userWithTestValues();
+        // Create an User
+        userService.create(createUser);
+
+        // Verify user Id got generated
+        assertNotNull(createUser.getId());
+        usersToCleanup.add(createUser);
+
+        // Create a DegreeProgram
+        DegreeProgram dp = TestDataUtility.degreeProgramWithTestValues(5);
+        degreeProgramDao.create(dp);
+
+        // Verify dp Id got generated
+        assertNotNull(dp.getId());
+        degreeProgramsToCleanup.add(dp);
+
+        // Exercise the updateState method
+        userService.updateCurrentState(createUser.getId(), dp.initialState().getId());
+
+        // Read updated User from DB
+        User verifyUpdateUser = userService.read(createUser.getId());
+        assertNotNull(verifyUpdateUser);
+
+        // Make sure it has same user Id
+        assertEquals(verifyUpdateUser.getId(), createUser.getId());
+
+        // Verify that CurrentState got updated
+        assertEquals(dp.initialState(), verifyUpdateUser.getCurrentState());
+
+        // Verify that other fields are in fact intact
+        assertEquals(createUser.getFirstName(), verifyUpdateUser.getFirstName());
+        assertEquals(createUser.getLastName(), verifyUpdateUser.getLastName());
+        assertEquals(createUser.getPantherId(), verifyUpdateUser.getPantherId());
+        assertEquals(createUser.getEmail(), verifyUpdateUser.getEmail());
     }
 
     /**
